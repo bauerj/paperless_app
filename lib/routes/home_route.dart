@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:paperless_app/routes/documents_route.dart';
 import 'package:paperless_app/routes/login_route.dart';
 import 'package:paperless_app/routes/server_details_route.dart';
+
+import '../api.dart';
 
 class HomeRoute extends StatefulWidget {
   @override
@@ -46,7 +49,15 @@ class _HomeRouteState extends State<HomeRoute> {
         context,
         MaterialPageRoute(builder: (context) => LoginRoute()),
       );
+      return;
     }
+
+    API(url, username: username, password: password);
+
+    Navigator.pushReplacement (
+      context,
+      MaterialPageRoute(builder: (context) => DocumentsRoute()),
+    );
   }
 
   @override

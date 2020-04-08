@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:http_auth/http_auth.dart' as http_auth;
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'api.g.dart';
@@ -39,6 +38,7 @@ class Document {
   DateTime modified;
   String fileName;
   String thumbnailUrl;
+  String downloadUrl;
 
   factory Document.fromJson(Map<String, dynamic> json) => _$DocumentFromJson(json);
 }
@@ -58,7 +58,7 @@ class ResponseList<T> {
   }
 
   Future<ResponseList<T>> getNext() async {
-    var json = await API.instance.get(next, isFullUrl: true);
+    var json = await API.instance.get(next);
     return ResponseList<T>.fromJson(json);
   }
 
@@ -96,36 +96,17 @@ class _Converter<T> implements JsonConverter<T, Object> {
   }
 }
 
-class AuthClient extends http.BaseClient{
-  http.Client _httpClient = new http.Client();
-  String _username;
-  String _password;
-
-  AuthClient(this._username, this._password);
-
-  @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) {
-    request.headers.addAll({"Authorization": getAuthString()});
-    return _httpClient.send(request);
-  }
-
-  String getAuthString() {
-    final token = base64.encode(latin1.encode('$_username:$_password'));
-    final authstr = 'Basic ' + token.trim();
-    return authstr;
-  }
-}
-
-
 class API {
   static API instance;
   String baseURL;
   String username;
   String password;
-  AuthClient client;
+  String authString;
+  final Dio dio = new Dio();
 
   API(String baseURL, {this.username="", this.password=""}) {
-    client = AuthClient(username, password);
+    authString = getAuthString(username, password);
+    dio.options.headers.addAll({"Authorization": authString});
 
     if (!baseURL.startsWith("http://") && !baseURL.startsWith("https://"))
       baseURL = "https://" + baseURL;
@@ -133,39 +114,61 @@ class API {
     instance = this;
   }
 
+  String getAuthString(String username, String password) {
+    final token = base64.encode(latin1.encode('$username:$password'));
+    final authstr = 'Basic ' + token.trim();
+    return authstr;
+  }
+
   Future<bool> testConnection() async {
-    var response = await http.get(baseURL + "/api/");
-    return (response.statusCode == 200 && response.body.contains("{"));
+    var response = await dio.get(baseURL + "/api/");
+    return (response.statusCode == 200 && response.data.contains("{"));
   }
 
   Future<bool> checkCredentials() async {
-    var response = await client.get(baseURL + "/api/documents/");
+    var response = await dio.get(baseURL + "/api/documents/");
     return (response.statusCode == 200);
   }
 
-  Future<Map<String, dynamic>> get(String context, {isFullUrl = false}) async {
-    String url = isFullUrl ? context : baseURL + "/api/" + context + "/?format=json";
-    if (!url.startsWith(baseURL)) {
-      // Try to repair
-      url = baseURL + "/api/" + url.split("/api/")[1];
+  String getFullURL(String url) {
+    if (url.startsWith("/")) {
+      return baseURL + url;
     }
-    var response = await client.get(url);
-    return jsonDecode(response.body);
+    if (!url.startsWith(baseURL) && url.contains("/api/")) {
+      // Try to repair
+      return baseURL + "/api/" + url.split("/api/")[1];
+    }
+    return url;
+  }
+
+  Future<Map<String, dynamic>> getAPIResource(String resourceType) async {
+    return await get("/api/" + resourceType + "/?format=json");
+  }
+
+  Future<Map<String, dynamic>> get(String url) async {
+    url = getFullURL(url);
+    var response = await dio.get(url);
+    return response.data;
   }
 
   Future<ResponseList<Document>> getDocuments() async {
-    var json = await get("documents");
+    var json = await getAPIResource("documents");
     return ResponseList<Document>.fromJson(json);
   }
 
   Future<ResponseList<Correspondent>> getCorrespondents() async {
-    var json = await get("correspondents");
+    var json = await getAPIResource("correspondents");
     return ResponseList<Correspondent>.fromJson(json);
   }
 
   Future<ResponseList<Tag>> getTags() async {
-    var json = await get("tags");
+    var json = await getAPIResource("tags");
     return ResponseList<Tag>.fromJson(json);
+  }
+
+  Future<void> downloadFile(String url, String savePath, {ProgressCallback onReceiveProgress}) async {
+    url = getFullURL(url);
+    await dio.download(url, savePath, onReceiveProgress: onReceiveProgress);
   }
 
 }

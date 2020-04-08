@@ -2,9 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:paperless_app/widgets/correspondent_widget.dart';
+import 'package:paperless_app/widgets/ink_wrapper.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 import '../api.dart';
 
@@ -27,6 +32,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     0, 0, -1, 0, 255, //
     0, 0, 0, 1, 0, //
   ];
+
   final List<double> identityMatrix = [
     1, 0, 0, 0, //
     0, 0, 1, 0, //
@@ -34,6 +40,19 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     1, 0, 0, 0, //
     0, 0, 1, 0, //
   ];
+
+  void downloadDocument(Document doc) async {
+    ProgressDialog pr = new ProgressDialog(context, type: ProgressDialogType.Download);
+    await pr.show();
+
+    final tempDir = await getTemporaryDirectory();
+    final pdfPath = '${tempDir.path}/${doc.checksum}.pdf';
+
+    await API.instance.downloadFile(doc.downloadUrl, pdfPath, onReceiveProgress: (int c, int t) => pr.update(progress: c/t*100));
+    await pr.hide();
+
+    OpenFile.open(pdfPath);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,67 +65,80 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
               controller: scrollController,
               itemCount: documents.results.length,
               itemBuilder: (context, index) {
-                List<TagWidget> tagWidgets = documents.results[index].tags.map((t) => TagWidget.fromTagId(t, tags)).toList();
+                List<TagWidget> tagWidgets = documents.results[index].tags
+                    .map((t) => TagWidget.fromTagId(t, tags))
+                    .toList();
                 return Card(
                   margin: EdgeInsets.all(10),
-                  child: Column(
-                    children: <Widget>[
-                      Stack(children: <Widget>[
-                        ColorFiltered(
-                            colorFilter: ColorFilter.matrix(
-                                invertImage ? invertMatrix : identityMatrix),
-                            child: CachedNetworkImage(
-                              fit: BoxFit.cover,
-                              height: 200,
-                              width: double.infinity,
-                              imageUrl: API.instance.baseURL +
-                                  documents.results[index].thumbnailUrl,
-                              httpHeaders: {
-                                "Authorization":
-                                    API.instance.client.getAuthString()
-                              },
-                              placeholder: (context, url) =>
-                                  CircularProgressIndicator(),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            )),
-                        Container(
-                          padding: EdgeInsets.all(5.0),
-                          height: 200,
-                          alignment: Alignment.bottomCenter,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: <Color>[
-                                Colors.white.withAlpha(0),
-                                Colors.white.withAlpha(0),
-                                Colors.white30,
-                                Colors.white,
-                                Colors.white,
-                              ],
+                  child: InkWrapper(
+                    splashColor: Colors.greenAccent.withOpacity(1/2),
+                    onTap: () => downloadDocument(documents.results[index]),
+                    child: Column(
+                      children: <Widget>[
+                        Stack(children: <Widget>[
+                          ColorFiltered(
+                              colorFilter: ColorFilter.matrix(
+                                  invertImage ? invertMatrix : identityMatrix),
+                              child: CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                height: 200,
+                                width: double.infinity,
+                                imageUrl: API.instance.baseURL +
+                                    documents.results[index].thumbnailUrl,
+                                httpHeaders: {
+                                  "Authorization":
+                                      API.instance.authString
+                                },
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              )),
+                          Container(
+                            padding: EdgeInsets.all(5.0),
+                            height: 200,
+                            alignment: Alignment.bottomCenter,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: <Color>[
+                                  Colors.white.withAlpha(0),
+                                  Colors.white.withAlpha(0),
+                                  Colors.white30,
+                                  Colors.white,
+                                  Colors.white,
+                                ],
+                              ),
+                            ),
+                            child: Text(
+                              '${documents.results[index].title}',
+                              textAlign: TextAlign.start,
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ),
-                          child: Text(
-                            '${documents.results[index].title}',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                        ]),
+                        Padding(
+                          padding: EdgeInsets.all(7),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                  '${dateFormat.format(documents.results[index].created)}',
+                                  textAlign: TextAlign.left),
+                              CorrespondentWidget.fromCorrespondentId(
+                                  documents.results[index].correspondent,
+                                  correspondents),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: tagWidgets,
+                              ),
+                            ],
                           ),
                         ),
-                      ]),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                              '${dateFormat.format(documents.results[index].created)}',
-                              textAlign: TextAlign.left),
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: tagWidgets,
-                          ),
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },

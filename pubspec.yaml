@@ -32,8 +32,6 @@ dependencies:
   cached_network_image: ^2.0.0
   intl: ^0.16.1
   open_file: ^3.0.1
-  progress_dialog: ^1.2.1
-
 
 
 dev_dependencies:

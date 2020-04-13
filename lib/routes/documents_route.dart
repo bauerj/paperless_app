@@ -2,14 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:open_file/open_file.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:paperless_app/widgets/correspondent_widget.dart';
 import 'package:paperless_app/widgets/ink_wrapper.dart';
+import 'package:paperless_app/widgets/online_pdf_dialog.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 
 import '../api.dart';
 
@@ -41,18 +39,16 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     0, 0, 1, 0, //
   ];
 
-  void downloadDocument(Document doc) async {
-    ProgressDialog pr = new ProgressDialog(context, type: ProgressDialogType.Download);
-    await pr.show();
-
-    final tempDir = await getTemporaryDirectory();
-    final pdfPath = '${tempDir.path}/${doc.checksum}.pdf';
-
-    await API.instance.downloadFile(doc.downloadUrl, pdfPath, onReceiveProgress: (int c, int t) => pr.update(progress: c/t*100));
-    await pr.hide();
-
-    OpenFile.open(pdfPath);
+  void showDocumentPdf(Document doc) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => OnlinePdfDialog(
+        doc
+      ),
+    );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +68,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                   margin: EdgeInsets.all(10),
                   child: InkWrapper(
                     splashColor: Colors.greenAccent.withOpacity(1/2),
-                    onTap: () => downloadDocument(documents.results[index]),
+                    onTap: () => showDocumentPdf(documents.results[index]),
                     child: Column(
                       children: <Widget>[
                         Stack(children: <Widget>[

@@ -52,8 +52,10 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
 
   @override
   Widget build(BuildContext context) {
-    bool invertImage =
+    bool showDark =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
+    Color bg = showDark ? Colors.black : Colors.white;
+    Color fg = showDark ? Colors.white : Colors.black;
     return Scaffold(
         body: Center(
       child: documents != null
@@ -74,7 +76,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                         Stack(children: <Widget>[
                           ColorFiltered(
                               colorFilter: ColorFilter.matrix(
-                                  invertImage ? invertMatrix : identityMatrix),
+                                  showDark ? invertMatrix : identityMatrix),
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 height: 200,
@@ -99,11 +101,11 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: <Color>[
-                                  Colors.white.withAlpha(0),
-                                  Colors.white.withAlpha(0),
-                                  Colors.white30,
-                                  Colors.white,
-                                  Colors.white,
+                                  bg.withAlpha(0),
+                                  bg.withAlpha(0),
+                                  bg.withAlpha(130),
+                                  bg,
+                                  bg,
                                 ],
                               ),
                             ),
@@ -111,7 +113,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                               '${documents.results[index].title}',
                               textAlign: TextAlign.start,
                               style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
+                                  TextStyle(fontSize: 20, color: fg),
                             ),
                           ),
                         ]),

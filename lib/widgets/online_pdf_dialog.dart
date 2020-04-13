@@ -35,9 +35,13 @@ class _OnlinePdfDialogState extends State<OnlinePdfDialog> {
     });
   }
 
-  void downloadDocument() async {
+  static Future<String> getDownloadPath(Document doc) async {
     final tempDir = await getTemporaryDirectory();
-    final pdfPath = '${tempDir.path}/${doc.checksum}.pdf';
+    return '${tempDir.path}/${doc.checksum}.pdf';
+  }
+
+  void downloadDocument() async {
+    final pdfPath = await getDownloadPath(doc);
 
     if (!await io.File(pdfPath).exists()) {
       await API.instance.downloadFile(doc.downloadUrl, pdfPath,

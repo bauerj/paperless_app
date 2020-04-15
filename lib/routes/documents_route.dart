@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -21,7 +22,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   ResponseList<Tag> tags;
   ResponseList<Correspondent> correspondents;
   ScrollController scrollController;
-  bool requesting = false;
+  bool requesting = true;
   DateFormat dateFormat;
 
   final List<double> invertMatrix = [
@@ -42,13 +43,9 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   void showDocumentPdf(Document doc) {
     showDialog(
       context: context,
-      builder: (BuildContext context) => OnlinePdfDialog(
-        doc
-      ),
+      builder: (BuildContext context) => OnlinePdfDialog(doc),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -57,98 +54,119 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     Color bg = showDark ? Colors.black : Colors.white;
     Color fg = showDark ? Colors.white : Colors.black;
     return Scaffold(
+        appBar: AppBar(
+            leading: Padding(
+                child: SvgPicture.asset("assets/logo.svg", color: Colors.white),
+                padding: EdgeInsets.all(13)),
+            title: Text(
+              "My Documents",
+            ),
+            bottom: PreferredSize(
+              child: requesting ? LinearProgressIndicator() : Container(),
+              preferredSize: Size(double.infinity, 3),
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () => {},
+              ),
+              IconButton(
+                icon: Icon(Icons.sort_by_alpha),
+                onPressed: () => {},
+              ),
+            ]),
         body: Center(
-      child: documents != null
-          ? ListView.builder(
-              controller: scrollController,
-              itemCount: documents.results.length,
-              itemBuilder: (context, index) {
-                List<TagWidget> tagWidgets = documents.results[index].tags
-                    .map((t) => TagWidget.fromTagId(t, tags))
-                    .toList();
-                return Card(
-                  margin: EdgeInsets.all(10),
-                  child: InkWrapper(
-                    splashColor: Colors.greenAccent.withOpacity(1/2),
-                    onTap: () => showDocumentPdf(documents.results[index]),
-                    child: Column(
-                      children: <Widget>[
-                        Stack(children: <Widget>[
-                          ColorFiltered(
-                              colorFilter: ColorFilter.matrix(
-                                  showDark ? invertMatrix : identityMatrix),
-                              child: CachedNetworkImage(
-                                fit: BoxFit.cover,
+          child: documents != null
+              ? ListView.builder(
+                  controller: scrollController,
+                  itemCount: documents.results.length,
+                  itemBuilder: (context, index) {
+                    List<TagWidget> tagWidgets = documents.results[index].tags
+                        .map((t) => TagWidget.fromTagId(t, tags))
+                        .toList();
+                    return Card(
+                      margin: EdgeInsets.all(10),
+                      child: InkWrapper(
+                        splashColor: Colors.greenAccent.withOpacity(1 / 2),
+                        onTap: () => showDocumentPdf(documents.results[index]),
+                        child: Column(
+                          children: <Widget>[
+                            Stack(children: <Widget>[
+                              ColorFiltered(
+                                  colorFilter: ColorFilter.matrix(
+                                      showDark ? invertMatrix : identityMatrix),
+                                  child: CachedNetworkImage(
+                                    fit: BoxFit.cover,
+                                    height: 200,
+                                    width: double.infinity,
+                                    imageUrl: API.instance.baseURL +
+                                        documents.results[index].thumbnailUrl,
+                                    httpHeaders: {
+                                      "Authorization": API.instance.authString
+                                    },
+                                    placeholder: (context, url) =>
+                                        CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  )),
+                              Container(
+                                padding: EdgeInsets.all(5.0),
                                 height: 200,
-                                width: double.infinity,
-                                imageUrl: API.instance.baseURL +
-                                    documents.results[index].thumbnailUrl,
-                                httpHeaders: {
-                                  "Authorization":
-                                      API.instance.authString
-                                },
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              )),
-                          Container(
-                            padding: EdgeInsets.all(5.0),
-                            height: 200,
-                            alignment: Alignment.bottomCenter,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: <Color>[
-                                  bg.withAlpha(0),
-                                  bg.withAlpha(0),
-                                  bg.withAlpha(130),
-                                  bg,
-                                  bg,
+                                alignment: Alignment.bottomCenter,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: <Color>[
+                                      bg.withAlpha(0),
+                                      bg.withAlpha(0),
+                                      bg.withAlpha(130),
+                                      bg,
+                                      bg,
+                                    ],
+                                  ),
+                                ),
+                                child: Text(
+                                  '${documents.results[index].title}',
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(fontSize: 20, color: fg),
+                                ),
+                              ),
+                            ]),
+                            Padding(
+                              padding: EdgeInsets.all(7),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                      '${dateFormat.format(documents.results[index].created)}',
+                                      textAlign: TextAlign.left),
+                                  CorrespondentWidget.fromCorrespondentId(
+                                      documents.results[index].correspondent,
+                                      correspondents),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: tagWidgets,
+                                  ),
                                 ],
                               ),
                             ),
-                            child: Text(
-                              '${documents.results[index].title}',
-                              textAlign: TextAlign.start,
-                              style:
-                                  TextStyle(fontSize: 20, color: fg),
-                            ),
-                          ),
-                        ]),
-                        Padding(
-                          padding: EdgeInsets.all(7),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                  '${dateFormat.format(documents.results[index].created)}',
-                                  textAlign: TextAlign.left),
-                              CorrespondentWidget.fromCorrespondentId(
-                                  documents.results[index].correspondent,
-                                  correspondents),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: tagWidgets,
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            )
-          : CircularProgressIndicator(),
-    ));
+                      ),
+                    );
+                  },
+                )
+              : CircularProgressIndicator(),
+        ));
   }
 
   void loadDocuments() async {
     var _documents = await API.instance.getDocuments();
     setState(() {
       documents = _documents;
+      requesting = false;
     });
   }
 
@@ -197,13 +215,15 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     if (scrollController.position.extentAfter < 900 &&
         !requesting &&
         documents.hasMoreData()) {
-      requesting = true;
+      setState(() {
+        requesting = true;
+      });
       var _documents = await documents.getNext();
       setState(() {
         documents.next = _documents.next;
         documents.results.addAll(_documents.results);
+        requesting = false;
       });
-      requesting = false;
     }
   }
 }

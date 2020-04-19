@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:paperless_app/widgets/correspondent_widget.dart';
 import 'package:paperless_app/widgets/ink_wrapper.dart';
 import 'package:paperless_app/widgets/online_pdf_dialog.dart';
+import 'package:paperless_app/widgets/select_order_route.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
 
 import '../api.dart';
@@ -24,6 +25,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   ScrollController scrollController;
   bool requesting = true;
   DateFormat dateFormat;
+  String ordering = "-created";
 
   final List<double> invertMatrix = [
     -1, 0, 0, 0, 255, //
@@ -39,6 +41,19 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     1, 0, 0, 0, //
     0, 0, 1, 0, //
   ];
+
+  Future<void> setOrdering(String ordering) async {
+    setState(() {
+      this.ordering = ordering;
+      requesting = true;
+      documents = null;
+    });
+    var _documents = await API.instance.getDocuments(ordering: ordering);
+    setState(() {
+      documents = _documents;
+      requesting = false;
+    });
+  }
 
   void showDocumentPdf(Document doc) {
     showDialog(
@@ -68,11 +83,19 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.search),
-                onPressed: () => {},
+                onPressed: () {},
               ),
               IconButton(
                 icon: Icon(Icons.sort_by_alpha),
-                onPressed: () => {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => SelectOrderRoute(
+                      setOrdering: setOrdering,
+                      ordering: ordering,
+                    ),
+                  );
+                },
               ),
             ]),
         body: Center(

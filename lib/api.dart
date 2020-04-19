@@ -141,8 +141,12 @@ class API {
     return url;
   }
 
-  Future<Map<String, dynamic>> getAPIResource(String resourceType) async {
-    return await get("/api/" + resourceType + "/?format=json");
+  Future<Map<String, dynamic>> getAPIResource(String resourceType, {String ordering}) async {
+    String url = "/api/" + resourceType + "/?format=json";
+    if (ordering != null) {
+      url += "&ordering="+ordering;
+    }
+    return await get(url);
   }
 
   Future<Map<String, dynamic>> get(String url) async {
@@ -151,8 +155,8 @@ class API {
     return response.data;
   }
 
-  Future<ResponseList<Document>> getDocuments() async {
-    var json = await getAPIResource("documents");
+  Future<ResponseList<Document>> getDocuments({String ordering="-created"}) async {
+    var json = await getAPIResource("documents", ordering: ordering);
     return ResponseList<Document>.fromJson(json);
   }
 

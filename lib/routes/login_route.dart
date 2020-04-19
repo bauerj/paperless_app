@@ -2,6 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:paperless_app/routes/documents_route.dart';
 import 'package:paperless_app/widgets/button_widget.dart';
 import 'package:paperless_app/widgets/display_steps_widget.dart';
 import 'package:paperless_app/widgets/textfield_widget.dart';
@@ -35,8 +36,10 @@ class _LoginRouteState extends State<LoginRoute> {
 
       try {
         if (await API(serverUrl, username: username, password: password).checkCredentials()) {
-          _scaffoldKey.currentState
-              .showSnackBar(SnackBar(content: Text('OK!')));
+          Navigator.pushReplacement (
+            context,
+            MaterialPageRoute(builder: (context) => DocumentsRoute()),
+          );
         }
       } catch (e) {
         showDialog(
@@ -65,7 +68,7 @@ class _LoginRouteState extends State<LoginRoute> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         SizedBox(height: 20),
-                        DisplayStepsWidget(currentStep: 1, totalSteps: 3),
+                        DisplayStepsWidget(currentStep: 1, totalSteps: 2),
                         SizedBox(height: 60),
                         SizedBox(
                           height: 155.0,

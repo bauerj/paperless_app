@@ -70,7 +70,7 @@ class _ServerDetailsRouteState extends State<ServerDetailsRoute> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 20),
-                    DisplayStepsWidget(currentStep: 0, totalSteps: 3),
+                    DisplayStepsWidget(currentStep: 0, totalSteps: 2),
                     SizedBox(height: 60),
                     SizedBox(
                       height: 155.0,

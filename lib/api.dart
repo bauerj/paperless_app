@@ -121,8 +121,8 @@ class API {
   }
 
   Future<bool> testConnection() async {
-    var response = await dio.get(baseURL + "/api/");
-    return (response.statusCode == 200 && response.data.contains("{"));
+    var response = await new Dio().get(baseURL + "/api/");
+    return (response.statusCode == 200);
   }
 
   Future<bool> checkCredentials() async {

@@ -45,16 +45,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   ];
 
   Future<void> setOrdering(String ordering) async {
-    setState(() {
-      this.ordering = ordering;
-      requesting = true;
-      documents = null;
-    });
-    var _documents = await API.instance.getDocuments(ordering: ordering, search: searchString);
-    setState(() {
-      documents = _documents;
-      requesting = false;
-    });
+    this.ordering = ordering;
+    reloadDocuments();
   }
 
   void showDocumentPdf(Document doc) {
@@ -64,11 +56,15 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     );
   }
 
-  void searchDocument(String searchString) async {
+  Future<void> searchDocument(String searchString) async {
     if (searchString == this.searchString) {
       return;
     }
     this.searchString = searchString;
+    await reloadDocuments();
+  }
+
+  Future<void> reloadDocuments() async {
     setState(() {
       requesting = true;
       documents = null;
@@ -112,7 +108,9 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       body: Stack(children: <Widget>[
         Center(
             child: documents != null
-                ? ListView.builder(
+                ? RefreshIndicator(
+                onRefresh: reloadDocuments,
+                child: ListView.builder(
                     controller: scrollController,
                     itemCount: documents.results.length,
                     itemBuilder: (context, index) {
@@ -195,7 +193,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                         ),
                       );
                     },
-                  )
+                  ))
                 : Container(),
           ),
         PreferredSize(child:requesting ? LinearProgressIndicator() : Container(), preferredSize: Size.fromHeight(5),),
@@ -204,13 +202,6 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     );
   }
 
-  void loadDocuments() async {
-    var _documents = await API.instance.getDocuments();
-    setState(() {
-      documents = _documents;
-      requesting = false;
-    });
-  }
 
   void loadTags() async {
     var _tags = await API.instance.getTags();
@@ -238,7 +229,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
 
   @override
   void initState() {
-    loadDocuments();
+    reloadDocuments();
     loadTags();
     loadCorrespondents();
     initializeDateFormatting();

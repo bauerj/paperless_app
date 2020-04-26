@@ -23,6 +23,7 @@ Anything missing? Please open an issue.
 
 ### Android
 [![Get on Google Play](assets/google-play-badge.png)](https://play.google.com/store/apps/details?id=eu.bauerj.paperless_app)
+
 I also plan to release this to F-Droid eventually, but this has lower priority.
 
 ### iOS

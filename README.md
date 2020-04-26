@@ -22,7 +22,7 @@ Anything missing? Please open an issue.
 ## Get The App
 
 ### Android
-The app is currently under review for the Google® Play Store. Once that is completed a link to access the beta program will be posted here. 
+[![Get on Google Play](assets/google-play-badge.png)](https://play.google.com/store/apps/details?id=eu.bauerj.paperless_app)
 I also plan to release this to F-Droid eventually, but this has lower priority.
 
 ### iOS

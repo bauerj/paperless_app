@@ -23,7 +23,7 @@ class PaperlessApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: Colors.black,
+        primaryColor: Colors.green.shade900,
         primarySwatch: Colors.lightGreen,
         accentColor: Colors.lightGreenAccent,
         fontFamily: 'AlegreyaSans'

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:paperless_app/routes/server_details_route.dart';
 import 'package:paperless_app/widgets/correspondent_widget.dart';
 import 'package:paperless_app/widgets/ink_wrapper.dart';
 import 'package:paperless_app/widgets/online_pdf_dialog.dart';
@@ -20,6 +21,8 @@ class DocumentsRoute extends StatefulWidget {
 }
 
 class _DocumentsRouteState extends State<DocumentsRoute> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   ResponseList<Document> documents;
   ResponseList<Tag> tags;
   ResponseList<Correspondent> correspondents;
@@ -69,11 +72,36 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       requesting = true;
       documents = null;
     });
-    var _documents = await API.instance.getDocuments(ordering: ordering, search: searchString);
-    setState(() {
-      documents = _documents;
-      requesting = false;
-    });
+    try {
+      var _documents = await API.instance
+          .getDocuments(ordering: ordering, search: searchString);
+
+      setState(() {
+        documents = _documents;
+        requesting = false;
+      });
+    } catch (e) {
+      showDialog(
+          context: _scaffoldKey.currentContext,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                title: Text("Error while connecting to server"),
+                content: Text(e.toString()),
+                actions: <Widget>[
+                  new FlatButton(
+                      onPressed: reloadDocuments, child: Text("Retry")),
+                  new FlatButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ServerDetailsRoute()),
+                        );
+                      },
+                      child: Text("Edit Server Details"))
+                ]);
+          });
+    }
   }
 
   @override
@@ -83,6 +111,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     Color bg = showDark ? Colors.black : Colors.white;
     Color fg = showDark ? Colors.white : Colors.black;
     return Scaffold(
+      key: _scaffoldKey,
       appBar: SearchAppBar(
           leading: Padding(
               child: SvgPicture.asset("assets/logo.svg", color: Colors.white),
@@ -105,103 +134,110 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
               },
             ),
           ]),
-      body: Stack(children: <Widget>[
-        Center(
+      body: Stack(
+        children: <Widget>[
+          Center(
             child: documents != null
                 ? RefreshIndicator(
-                onRefresh: reloadDocuments,
-                child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: documents.results.length,
-                    itemBuilder: (context, index) {
-                      List<TagWidget> tagWidgets = documents.results[index].tags
-                          .map((t) => TagWidget.fromTagId(t, tags))
-                          .toList();
-                      return Card(
-                        margin: EdgeInsets.all(10),
-                        child: InkWrapper(
-                          splashColor: Colors.greenAccent.withOpacity(1 / 2),
-                          onTap: () =>
-                              showDocumentPdf(documents.results[index]),
-                          child: Column(
-                            children: <Widget>[
-                              Stack(children: <Widget>[
-                                ColorFiltered(
-                                    colorFilter: ColorFilter.matrix(showDark
-                                        ? invertMatrix
-                                        : identityMatrix),
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      height: 200,
-                                      width: double.infinity,
-                                      imageUrl: API.instance.baseURL +
-                                          documents.results[index].thumbnailUrl,
-                                      httpHeaders: {
-                                        "Authorization": API.instance.authString
-                                      },
-                                      placeholder: (context, url) =>
-                                          CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    )),
-                                Container(
-                                  padding: EdgeInsets.all(5.0),
-                                  height: 200,
-                                  alignment: Alignment.bottomCenter,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: <Color>[
-                                        bg.withAlpha(0),
-                                        bg.withAlpha(0),
-                                        bg.withAlpha(130),
-                                        bg,
-                                        bg,
-                                      ],
+                    onRefresh: reloadDocuments,
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: documents.results.length,
+                      itemBuilder: (context, index) {
+                        List<TagWidget> tagWidgets = documents
+                            .results[index].tags
+                            .map((t) => TagWidget.fromTagId(t, tags))
+                            .toList();
+                        return Card(
+                          margin: EdgeInsets.all(10),
+                          child: InkWrapper(
+                            splashColor: Colors.greenAccent.withOpacity(1 / 2),
+                            onTap: () =>
+                                showDocumentPdf(documents.results[index]),
+                            child: Column(
+                              children: <Widget>[
+                                Stack(children: <Widget>[
+                                  ColorFiltered(
+                                      colorFilter: ColorFilter.matrix(showDark
+                                          ? invertMatrix
+                                          : identityMatrix),
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        height: 200,
+                                        width: double.infinity,
+                                        imageUrl: API.instance.baseURL +
+                                            documents
+                                                .results[index].thumbnailUrl,
+                                        httpHeaders: {
+                                          "Authorization":
+                                              API.instance.authString
+                                        },
+                                        placeholder: (context, url) =>
+                                            CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                      )),
+                                  Container(
+                                    padding: EdgeInsets.all(5.0),
+                                    height: 200,
+                                    alignment: Alignment.bottomCenter,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: <Color>[
+                                          bg.withAlpha(0),
+                                          bg.withAlpha(0),
+                                          bg.withAlpha(130),
+                                          bg,
+                                          bg,
+                                        ],
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '${documents.results[index].title}',
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(fontSize: 20, color: fg),
                                     ),
                                   ),
-                                  child: Text(
-                                    '${documents.results[index].title}',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(fontSize: 20, color: fg),
+                                ]),
+                                Padding(
+                                  padding: EdgeInsets.all(7),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                          '${dateFormat.format(documents.results[index].created)}',
+                                          textAlign: TextAlign.left),
+                                      CorrespondentWidget.fromCorrespondentId(
+                                          documents
+                                              .results[index].correspondent,
+                                          correspondents),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: tagWidgets,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ]),
-                              Padding(
-                                padding: EdgeInsets.all(7),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                        '${dateFormat.format(documents.results[index].created)}',
-                                        textAlign: TextAlign.left),
-                                    CorrespondentWidget.fromCorrespondentId(
-                                        documents.results[index].correspondent,
-                                        correspondents),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: tagWidgets,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ))
+                        );
+                      },
+                    ))
                 : Container(),
           ),
-        PreferredSize(child:requesting ? LinearProgressIndicator() : Container(), preferredSize: Size.fromHeight(5),),
-      ],),
-
+          PreferredSize(
+            child: requesting ? LinearProgressIndicator() : Container(),
+            preferredSize: Size.fromHeight(5),
+          ),
+        ],
+      ),
     );
   }
-
 
   void loadTags() async {
     var _tags = await API.instance.getTags();

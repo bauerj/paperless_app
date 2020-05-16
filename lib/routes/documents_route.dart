@@ -6,12 +6,14 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:paperless_app/routes/server_details_route.dart';
+import 'package:paperless_app/routes/settings_route.dart';
 import 'package:paperless_app/widgets/correspondent_widget.dart';
 import 'package:paperless_app/widgets/ink_wrapper.dart';
 import 'package:paperless_app/widgets/online_pdf_dialog.dart';
 import 'package:paperless_app/widgets/search_app_bar.dart';
 import 'package:paperless_app/widgets/select_order_route.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api.dart';
 
@@ -31,6 +33,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   DateFormat dateFormat;
   String ordering = "-created";
   String searchString;
+  bool invertDocumentPreview = true;
 
   final List<double> invertMatrix = [
     -1, 0, 0, 0, 255, //
@@ -108,6 +111,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   Widget build(BuildContext context) {
     bool showDark =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
+    bool invertDocument = showDark && invertDocumentPreview;
     Color bg = showDark ? Colors.black : Colors.white;
     Color fg = showDark ? Colors.white : Colors.black;
     return Scaffold(
@@ -133,6 +137,23 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                 );
               },
             ),
+            PopupMenuButton<String>(
+              onSelected: (String selected) async {
+                if (selected == "settings") {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsRoute()),
+                  );
+                  loadSettings();
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return <PopupMenuItem<String>>[
+                  PopupMenuItem<String>(
+                      value: "settings", child: Text("Settings"))
+                ];
+              },
+            )
           ]),
       body: Stack(
         children: <Widget>[
@@ -158,9 +179,10 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                               children: <Widget>[
                                 Stack(children: <Widget>[
                                   ColorFiltered(
-                                      colorFilter: ColorFilter.matrix(showDark
-                                          ? invertMatrix
-                                          : identityMatrix),
+                                      colorFilter: ColorFilter.matrix(
+                                          invertDocument
+                                              ? invertMatrix
+                                              : identityMatrix),
                                       child: CachedNetworkImage(
                                         fit: BoxFit.cover,
                                         height: 200,
@@ -263,12 +285,20 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     });
   }
 
+  void loadSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      invertDocumentPreview = prefs.getBool("invert_document_preview") ?? true;
+    });
+  }
+
   @override
   void initState() {
     reloadDocuments();
     loadTags();
     loadCorrespondents();
     initializeDateFormatting();
+    loadSettings();
     dateFormat = new DateFormat.yMMMMd();
     scrollController = new ScrollController()..addListener(_scrollListener);
     super.initState();

@@ -1,0 +1,14 @@
+To use this, you need to have a Paperless server set up. See https://paperless.readthedocs.io/en/latest/#why-this-exists for more information.
+
+This open-source app allows you to easily access your documents stored in Paperless from your smartphone. If you need to access an important document on the go, you can find it in seconds.
+Paper is a nightmare. Environmental issues aside, there's no excuse for it in the 21st century. It takes up space, collects dust, doesn't support any form of a search feature, indexing is tedious, it's heavy and prone to damage and loss.
+Paperless takes documents from your scanner, recognises the text, extracts metadata and gives you the tools you need to manage your documents digitally. It can automatically detect the correspondent and creation date and offers you a search function - all you have to do is scan the documents. Your documents have never been so well organised.
+Paperless offers a powerful web interface that is difficult to use on a smartphone. With this app you have a native option to access your documents easily.
+It provides the following functionality:
+•	Securely saves your credentials so you only have to login once
+•	Full-text search
+•	Customisable order
+•	Open PDF documents
+•	Dark Mode
+
+Anything missing? Please open an issue on https://github.com/bauerj/paperless_app or send an email to paperless_app@bauerj.eu.

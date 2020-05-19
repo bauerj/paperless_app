@@ -1,6 +1,6 @@
 # Paperless App
 
-Access all your scanned documents, wherever you are.
+![Access all your scanned documents, wherever you are.](fastlane/metadata/android/en-US/images/featureGraphic.png)
 
 To use this, you need to have a Paperless server set up. See [Paperless Documentation](https://paperless.readthedocs.io/en/latest/#why-this-exists) for more information.
 

@@ -7,6 +7,7 @@ import 'package:paperless_app/widgets/textfield_widget.dart';
 
 import '../widgets/display_steps_widget.dart';
 import 'package:paperless_app/widgets/button_widget.dart';
+import 'package:paperless_app/i18n.dart';
 
 import 'login_route.dart';
 
@@ -17,7 +18,8 @@ class ServerDetailsRoute extends StatefulWidget {
   final String url;
   final bool isWelcome;
 
-  ServerDetailsRoute({Key key, this.url, this.isWelcome = true}) : super(key: key);
+  ServerDetailsRoute({Key key, this.url, this.isWelcome = true})
+      : super(key: key);
 
   @override
   _ServerDetailsRouteState createState() => _ServerDetailsRouteState(url);
@@ -34,11 +36,11 @@ class _ServerDetailsRouteState extends State<ServerDetailsRoute> {
       _formKey.currentState.deactivate();
       await GetIt.I<FlutterSecureStorage>()
           .write(key: "server_url", value: serverUrl);
-      _scaffoldKey.currentState
-          .showSnackBar(SnackBar(content: Text('Connecting to $serverUrl...')));
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('Connecting to %s...'.i18nFormat([serverUrl]))));
       try {
         if (await API(serverUrl).testConnection()) {
-          Navigator.pushReplacement (
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => LoginRoute()),
           );
@@ -48,7 +50,8 @@ class _ServerDetailsRouteState extends State<ServerDetailsRoute> {
             context: _scaffoldKey.currentContext,
             builder: (BuildContext ctx) {
               return AlertDialog(
-                  title: Text("Connection Error"), content: Text(e.toString()));
+                  title: Text("Error while connecting to server".i18n),
+                  content: Text(e.toString()));
             });
       }
     }
@@ -82,13 +85,13 @@ class _ServerDetailsRouteState extends State<ServerDetailsRoute> {
                     ),
                     SizedBox(height: 40),
                     Text(
-                      "Welcome to Paperless",
+                      "Welcome to Paperless".i18n,
                       style: TextStyle(fontSize: 30),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 25.0),
                     Text(
-                      "Please enter your Paperless server URL:",
+                      "Please enter your Paperless server URL:".i18n,
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 15.0),
@@ -103,7 +106,7 @@ class _ServerDetailsRouteState extends State<ServerDetailsRoute> {
                       initialValue: serverUrl,
                       validator: (value) {
                         if (value.isEmpty || Uri.tryParse(value) == null)
-                          return "Please enter a URL";
+                          return "Please enter a URL".i18n;
                         return null;
                       },
                       onSaved: (String url) {
@@ -112,7 +115,7 @@ class _ServerDetailsRouteState extends State<ServerDetailsRoute> {
                     ),
                     SizedBox(height: 35.0),
                     ButtonWidget(
-                      "Connect",
+                      "Connect".i18n,
                       onPressed: save,
                     ),
                   ],

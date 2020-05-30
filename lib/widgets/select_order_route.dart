@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:paperless_app/i18n.dart';
+
 class SelectOrderRoute extends StatefulWidget {
   final String ordering;
   final Future<void> Function(String ordering) setOrdering;
@@ -29,20 +31,20 @@ class _SelectOrderRouteState extends State<SelectOrderRoute> {
         child: Column(
       children: <Widget>[
         SizedBox(height: 20,),
-        Text("Sort Documents By", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),),
+        Text("Sort Documents By".i18n, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),),
         SizedBox(height: 20,),
-        getFor("created", "Date created"),
-        getFor("added", "Date added"),
-        getFor("modified", "Last Modification"),
-        getFor("title", "Document Title"),
-        getFor("correspondent", "Correspondent"),
+        getFor("created", "Date created".i18n),
+        getFor("added", "Date added".i18n),
+        getFor("modified", "Last Modification".i18n),
+        getFor("title", "Document Title".i18n),
+        getFor("correspondent", "Correspondent".i18n),
         Row(children: <Widget>[
           SizedBox(width: 5,),
-          Expanded(child: RaisedButton(child: Text("Cancel"), onPressed: () {
+          Expanded(child: RaisedButton(child: Text("Cancel".i18n), onPressed: () {
             Navigator.of(context).pop();
           })),
           SizedBox(width: 5,),
-          Expanded(child: RaisedButton(child: Text("Okay"), onPressed: () {
+          Expanded(child: RaisedButton(child: Text("Okay".i18n), onPressed: () {
             setOrdering((ascending ? "-" : "")  + selected);
             Navigator.of(context).pop();
           },)),
@@ -94,14 +96,14 @@ class OrderWidget extends StatelessWidget {
       ordering = Row(
         children: <Widget>[
           Icon(Icons.arrow_upward),
-          Text("Ascending"),
+          Text("Ascending".i18n),
         ],
       );
     } else {
       ordering = Row(
         children: <Widget>[
           Icon(Icons.arrow_downward),
-          Text("Descending"),
+          Text("Descending".i18n),
         ],
       );
     }

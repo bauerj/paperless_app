@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 0.0.4+4
 
 environment:
-  sdk: ">=2.2.0 <3.0.0"
+  sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -27,10 +27,13 @@ dependencies:
   json_annotation: ^3.0.1
   http_auth: ^0.2.9
   cached_network_image: ^2.0.0
-  intl: ^0.16.1
+  i18n_extension: ^1.3.8
+  flutter_localizations:
+    sdk: flutter
   open_file: ^3.0.1
   settings_ui: ^0.2.0
   shared_preferences: '>=0.5.7+2 <2.0.0'
+  sprintf: "^4.0.0"
 
 
 dev_dependencies:
@@ -48,11 +51,12 @@ flutter:
   uses-material-design: true
   assets:
     - logo.svg
+    - assets/locales/
   fonts:
     - family: AlegreyaSans
       fonts:
-        - asset: fonts/AlegreyaSans-Regular.ttf
-        - asset: fonts/AlegreyaSans-Italic.ttf
+        - asset: assets/fonts/AlegreyaSans-Regular.ttf
+        - asset: assets/fonts/AlegreyaSans-Italic.ttf
           style: italic
-        - asset: fonts/AlegreyaSans-Bold.ttf
+        - asset: assets/fonts/AlegreyaSans-Bold.ttf
           weight: 700

@@ -6,6 +6,7 @@ import 'package:paperless_app/routes/documents_route.dart';
 import 'package:paperless_app/widgets/button_widget.dart';
 import 'package:paperless_app/widgets/display_steps_widget.dart';
 import 'package:paperless_app/widgets/textfield_widget.dart';
+import 'package:paperless_app/i18n.dart';
 
 import '../api.dart';
 
@@ -32,7 +33,7 @@ class _LoginRouteState extends State<LoginRoute> {
       await GetIt.I<FlutterSecureStorage>().write(key: "password", value: password);
 
       _scaffoldKey.currentState
-          .showSnackBar(SnackBar(content: Text('Checking credentials...')));
+          .showSnackBar(SnackBar(content: Text('Checking credentials...'.i18n)));
 
       try {
         if (await API(serverUrl, username: username, password: password).checkCredentials()) {
@@ -46,7 +47,7 @@ class _LoginRouteState extends State<LoginRoute> {
             context: _scaffoldKey.currentContext,
             builder: (BuildContext ctx) {
               return AlertDialog(
-                  title: Text("Connection Error"), content: Text(e.toString()));
+                  title: Text("Error while connecting to server".i18n), content: Text(e.toString()));
             });
       }
     }
@@ -80,13 +81,13 @@ class _LoginRouteState extends State<LoginRoute> {
                         ),
                         SizedBox(height: 40),
                         Text(
-                          "Welcome to Paperless",
+                          "Welcome to Paperless".i18n,
                           style: TextStyle(fontSize: 30),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 25.0),
                         Text(
-                          "Please enter your credentials to continue:",
+                          "Please enter your credentials to continue:".i18n,
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 15.0),
@@ -100,7 +101,7 @@ class _LoginRouteState extends State<LoginRoute> {
                           initialValue: username,
                           validator: (value) {
                             if (value.isEmpty)
-                              return "Please enter your username";
+                              return "Please enter your username".i18n;
                             return null;
                           },
                           onSaved: (String u) {

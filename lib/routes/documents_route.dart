@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:paperless_app/routes/server_details_route.dart';
 import 'package:paperless_app/routes/settings_route.dart';
 import 'package:paperless_app/widgets/correspondent_widget.dart';
@@ -13,7 +14,7 @@ import 'package:paperless_app/widgets/online_pdf_dialog.dart';
 import 'package:paperless_app/widgets/search_app_bar.dart';
 import 'package:paperless_app/widgets/select_order_route.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:paperless_app/i18n.dart';
 
 import '../api.dart';
 
@@ -88,11 +89,11 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
           context: _scaffoldKey.currentContext,
           builder: (BuildContext context) {
             return AlertDialog(
-                title: Text("Error while connecting to server"),
+                title: Text("Error while connecting to server".i18n),
                 content: Text(e.toString()),
                 actions: <Widget>[
                   new FlatButton(
-                      onPressed: reloadDocuments, child: Text("Retry")),
+                      onPressed: reloadDocuments, child: Text("Retry".i18n)),
                   new FlatButton(
                       onPressed: () {
                         Navigator.pushReplacement(
@@ -101,7 +102,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                               builder: (context) => ServerDetailsRoute()),
                         );
                       },
-                      child: Text("Edit Server Details"))
+                      child: Text("Edit Server Details".i18n))
                 ]);
           });
     }
@@ -121,7 +122,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
               child: SvgPicture.asset("assets/logo.svg", color: Colors.white),
               padding: EdgeInsets.all(13)),
           title: Text(
-            "My Documents",
+            "My Documents".i18n,
           ),
           searchListener: searchDocument,
           actions: <Widget>[
@@ -150,7 +151,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
               itemBuilder: (BuildContext context) {
                 return <PopupMenuItem<String>>[
                   PopupMenuItem<String>(
-                      value: "settings", child: Text("Settings"))
+                      value: "settings", child: Text("Settings".i18n))
                 ];
               },
             )

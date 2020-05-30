@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:paperless_app/i18n.dart';
 
 final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -36,10 +37,10 @@ class _SettingsRouteState extends State<SettingsRoute> {
       body: SettingsList(
           sections: [
             SettingsSection(
-              title: 'View',
+              title: 'View'.i18n,
               tiles: [
                 SettingsTile.switchTile(
-                  title: 'Invert Document Preview in Dark Mode',
+                  title: 'Invert Document Preview in Dark Mode'.i18n,
                   leading: Icon(Icons.invert_colors),
                   switchValue: invertDocumentPreview,
                   onToggle: (bool value) {

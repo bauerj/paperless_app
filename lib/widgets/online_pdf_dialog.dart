@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 
 import '../api.dart';
+import 'package:paperless_app/i18n.dart';
 
 class OnlinePdfDialog extends StatefulWidget {
   final Document document;
@@ -64,7 +65,7 @@ class _OnlinePdfDialogState extends State<OnlinePdfDialog> {
               child: Column(
                 children: <Widget>[
                   Text(
-                    "Downloading Document",
+                    "Downloading Document".i18n,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 25),
                   ),

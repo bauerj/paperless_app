@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:paperless_app/i18n.dart';
+
 class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget leading;
   final Widget title;
@@ -51,7 +53,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
               onFieldSubmitted: (e) {listener(e);},
               decoration: new InputDecoration(
                   prefixIcon: new Icon(Icons.search),
-                  hintText: 'Search for document...'
+                  hintText: 'Search for document...'.i18n
               ),
             );
             focusNode.requestFocus();

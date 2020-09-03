@@ -22,9 +22,12 @@ Anything missing? Please open an issue.
 ## Get The App
 
 ### Android
-[![Get on Google Play](assets/google-play-badge.png)](https://play.google.com/store/apps/details?id=eu.bauerj.paperless_app)
-
-I also plan to release this to F-Droid eventually, but this has lower priority.
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/eu.bauerj.paperless_app/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=eu.bauerj.paperless_app)
 
 ### iOS
 The code for this app should run on iOS as well (maybe it needs a few minor modifications).

@@ -37,8 +37,9 @@ class _OnlinePdfDialogState extends State<OnlinePdfDialog> {
   }
 
   static Future<String> getDownloadPath(Document doc) async {
+    final fileType = doc.fileName.split(".").last;
     final tempDir = await getTemporaryDirectory();
-    return '${tempDir.path}/${doc.checksum}.pdf';
+    return '${tempDir.path}/${doc.checksum}.$fileType';
   }
 
   void downloadDocument() async {

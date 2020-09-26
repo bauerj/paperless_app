@@ -27,4 +27,7 @@ extension Localization on String {
   String i18nFormat(List<String> params) {
     return sprintf(this.i18n, params);
   }
+
+  String plural(int value) => localizePlural(value, this, MyI18n.translations);
+  String fill(List<Object> params) => localizeFill(this, params);
 }

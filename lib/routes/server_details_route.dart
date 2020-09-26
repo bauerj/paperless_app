@@ -37,7 +37,7 @@ class _ServerDetailsRouteState extends State<ServerDetailsRoute> {
       await GetIt.I<FlutterSecureStorage>()
           .write(key: "server_url", value: serverUrl);
       _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text('Connecting to %s...'.i18nFormat([serverUrl]))));
+          content: Text('Connecting to %s...'.i18n.fill([serverUrl]))));
       try {
         if (await API(serverUrl).testConnection()) {
           Navigator.pushReplacement(

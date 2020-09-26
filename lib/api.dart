@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -176,6 +177,14 @@ class API {
   Future<void> downloadFile(String url, String savePath, {ProgressCallback onReceiveProgress}) async {
     url = getFullURL(url);
     await dio.download(url, savePath, onReceiveProgress: onReceiveProgress);
+  }
+
+  Future <bool> uploadFile(String path) async {
+    FormData formData = new FormData.fromMap({
+      "document": await MultipartFile.fromFile(path)
+    });
+    var response = await dio.post(getFullURL("/push"), data: formData);
+    return 200 <= response.statusCode && response.statusCode < 300;
   }
 
 }

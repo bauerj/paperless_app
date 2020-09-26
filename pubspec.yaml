@@ -11,7 +11,7 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.0.5+5
+version: 0.0.6+6
 
 environment:
   sdk: ">=2.8.0 <3.0.0"
@@ -34,6 +34,10 @@ dependencies:
   settings_ui: ^0.2.0
   shared_preferences: '>=0.5.7+2 <2.0.0'
   sprintf: "^4.0.0"
+  edge_detection:
+    git:
+      url: https://github.com/bauerj/edge_detection
+      ref: b63a24de3fcf38aabed52b1566de40763d5f38f1
 
 
 dev_dependencies:

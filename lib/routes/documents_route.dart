@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:paperless_app/scan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:edge_detection/edge_detection.dart';
 
 import 'package:paperless_app/routes/server_details_route.dart';
 import 'package:paperless_app/routes/settings_route.dart';
@@ -35,6 +37,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   String ordering = "-created";
   String searchString;
   bool invertDocumentPreview = true;
+  int scanAmount = 0;
+  ScanHandler scanHandler = ScanHandler();
 
   final List<double> invertMatrix = [
     -1, 0, 0, 0, 255, //
@@ -72,6 +76,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   }
 
   Future<void> reloadDocuments() async {
+    scanHandler.handleScans();
     setState(() {
       requesting = true;
       documents = null;
@@ -117,6 +122,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     Color fg = showDark ? Colors.white : Colors.black;
     return Scaffold(
       key: _scaffoldKey,
+      floatingActionButton: FloatingActionButton(
+          onPressed: scanHandler.scanDocument, child: Icon(Icons.add)),
       appBar: SearchAppBar(
           leading: Padding(
               child: SvgPicture.asset("assets/logo.svg", color: Colors.white),
@@ -195,7 +202,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                                           "Authorization":
                                               API.instance.authString
                                         },
-                                         errorWidget: (context, url, error) =>
+                                        errorWidget: (context, url, error) =>
                                             Icon(Icons.error),
                                       )),
                                   Container(
@@ -255,6 +262,27 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
             child: requesting ? LinearProgressIndicator() : Container(),
             preferredSize: Size.fromHeight(5),
           ),
+          Padding(
+            child: scanAmount > 0
+                ? Card(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 50),
+                          CircularProgressIndicator(),
+                          SizedBox(width: 10),
+                          Flexible(child: Text(
+                               "Uploading 1 scanned document".plural(scanAmount),
+                            textAlign: TextAlign.center,
+                          )),
+                          SizedBox(width: 10),
+                          Icon(Icons.upload_file)
+                        ],
+                      ),
+                    )
+                : Container(),
+            padding: EdgeInsets.all(20),
+          ),
         ],
       ),
     );
@@ -291,6 +319,12 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     });
   }
 
+  void onScanAmountChange(int _scanAmount) {
+    setState(() {
+      scanAmount = _scanAmount;
+    });
+  }
+
   @override
   void initState() {
     reloadDocuments();
@@ -300,6 +334,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     loadSettings();
     dateFormat = new DateFormat.yMMMMd();
     scrollController = new ScrollController()..addListener(_scrollListener);
+    scanHandler.attachListener(onScanAmountChange);
     super.initState();
   }
 

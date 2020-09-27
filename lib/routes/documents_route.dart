@@ -113,6 +113,20 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     }
   }
 
+  Future<void> scanDocument() async {
+    try {
+      scanHandler.scanDocument();
+    } catch (e) {
+      showDialog(
+          context: _scaffoldKey.currentContext,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                title: Text("Error while uploading document".i18n),
+                content: Text(e.toString()));
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool showDark =
@@ -122,8 +136,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     Color fg = showDark ? Colors.white : Colors.black;
     return Scaffold(
       key: _scaffoldKey,
-      floatingActionButton: FloatingActionButton(
-          onPressed: scanHandler.scanDocument, child: Icon(Icons.add)),
+      floatingActionButton:
+          FloatingActionButton(onPressed: scanDocument, child: Icon(Icons.add)),
       appBar: SearchAppBar(
           leading: Padding(
               child: SvgPicture.asset("assets/logo.svg", color: Colors.white),
@@ -265,21 +279,22 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
           Padding(
             child: scanAmount > 0
                 ? Card(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(height: 50),
-                          CircularProgressIndicator(),
-                          SizedBox(width: 10),
-                          Flexible(child: Text(
-                               "Uploading 1 scanned document".plural(scanAmount),
-                            textAlign: TextAlign.center,
-                          )),
-                          SizedBox(width: 10),
-                          Icon(Icons.upload_file)
-                        ],
-                      ),
-                    )
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 50),
+                        CircularProgressIndicator(),
+                        SizedBox(width: 10),
+                        Flexible(
+                            child: Text(
+                          "Uploading 1 scanned document".plural(scanAmount),
+                          textAlign: TextAlign.center,
+                        )),
+                        SizedBox(width: 10),
+                        Icon(Icons.upload_file)
+                      ],
+                    ),
+                  )
                 : Container(),
             padding: EdgeInsets.all(20),
           ),

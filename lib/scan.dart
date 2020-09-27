@@ -39,9 +39,8 @@ class ScanHandler {
   }
 
   Future<void> handleScan(File scannedDocument) async {
-    if (await API.instance.uploadFile(scannedDocument.path)) {
-      await scannedDocument.delete();
-    }
+    await API.instance.uploadFile(scannedDocument.path);
+    await scannedDocument.delete();
   }
 
   Future<void> scanDocument() async {

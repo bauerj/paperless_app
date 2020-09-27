@@ -179,12 +179,16 @@ class API {
     await dio.download(url, savePath, onReceiveProgress: onReceiveProgress);
   }
 
-  Future <bool> uploadFile(String path) async {
+  Future<void> uploadFile(String path) async {
     FormData formData = new FormData.fromMap({
       "document": await MultipartFile.fromFile(path)
     });
-    var response = await dio.post(getFullURL("/push"), data: formData);
-    return 200 <= response.statusCode && response.statusCode < 300;
+    try {
+      await dio.post(getFullURL("/push"), data: formData);
+    }
+    catch (e) {
+      print(e.toString());
+    }
   }
 
 }

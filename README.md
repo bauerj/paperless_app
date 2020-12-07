@@ -2,7 +2,7 @@
 
 ![Access all your scanned documents, wherever you are.](fastlane/metadata/android/en-US/images/featureGraphic.png)
 
-To use this, you need to have a Paperless server set up. See [Paperless Documentation](https://paperless.readthedocs.io/en/latest/#why-this-exists) for more information.
+To use this, you need to have a Paperless server set up. See [Paperless Documentation](https://paperless-ng.readthedocs.io/en/latest/index.html#why-this-exists) for more information.
 
 This open-source app allows you to easily access your documents stored in Paperless from your smartphone. If you need to access an important document on the go, you can find it in seconds.
 Paper is a nightmare. Environmental issues aside, there's no excuse for it in the 21st century. It takes up space, collects dust, doesn't support any form of a search feature, indexing is tedious, it's heavy and prone to damage and loss.

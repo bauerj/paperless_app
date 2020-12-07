@@ -6,7 +6,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:paperless_app/scan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:edge_detection/edge_detection.dart';
 
 import 'package:paperless_app/routes/server_details_route.dart';
 import 'package:paperless_app/routes/settings_route.dart';
@@ -209,9 +208,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                                         fit: BoxFit.cover,
                                         height: 200,
                                         width: double.infinity,
-                                        imageUrl: API.instance.baseURL +
-                                            documents
-                                                .results[index].thumbnailUrl,
+                                        imageUrl: documents.results[index]
+                                            .getThumbnailUrl(),
                                         httpHeaders: {
                                           "Authorization":
                                               API.instance.authString

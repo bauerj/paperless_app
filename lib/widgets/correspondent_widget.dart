@@ -7,16 +7,14 @@ class CorrespondentWidget extends StatelessWidget {
 
   CorrespondentWidget(this.correspondent);
 
-  static CorrespondentWidget fromCorrespondentId(String _correspondentId, ResponseList<Correspondent> correspondents) {
+  static CorrespondentWidget fromCorrespondentId(int _correspondentId, ResponseList<Correspondent> correspondents) {
     if (correspondents == null || _correspondentId == null) {
       Correspondent correspondent = Correspondent();
       correspondent.name = "";
       return new CorrespondentWidget(correspondent);
     }
-    var parts = _correspondentId.split("/");
-    int correspondentId = int.parse(parts[parts.length - 2]);
     for (var _correspondent in correspondents.results) {
-      if (_correspondent.id == correspondentId) {
+      if (_correspondent.id == _correspondentId) {
           return CorrespondentWidget(_correspondent);
         }
     }

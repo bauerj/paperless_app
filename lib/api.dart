@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -12,7 +11,8 @@ class Correspondent {
   int id;
   String name;
 
-  factory Correspondent.fromJson(Map<String, dynamic> json) => _$CorrespondentFromJson(json);
+  factory Correspondent.fromJson(Map<String, dynamic> json) =>
+      _$CorrespondentFromJson(json);
 }
 
 @JsonSerializable()
@@ -23,25 +23,57 @@ class Tag {
   int colour;
 
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
-
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Document {
   Document();
   int id;
-  String correspondent;
+  int correspondent;
   String title;
   String content;
-  List<String> tags;
+  List<int> tags;
   String checksum;
   DateTime created;
   DateTime modified;
   String fileName;
-  String thumbnailUrl;
-  String downloadUrl;
 
-  factory Document.fromJson(Map<String, dynamic> json) => _$DocumentFromJson(json);
+  factory Document.fromJson(Map<String, dynamic> json) =>
+      _$DocumentFromJson(json);
+
+  String getThumbnailUrl() {
+    return "${API.instance.baseURL}/fetch/thumb/$id";
+  }
+
+  String getDownloadUrl() {
+    return "${API.instance.baseURL}/fetch/doc/$id";
+  }
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class OgDocument extends Document {
+  OgDocument();
+
+  static int _idFromUrl(String url) {
+    return url == null ? null : _idsFromUrls([url])[0];
+  }
+
+  static List<int> _idsFromUrls(List<dynamic> urls) {
+    List<int> ids = new List();
+    for (String url in urls) {
+      var parts = url.split("/");
+      ids.add(int.parse(parts[parts.length - 2]));
+    }
+    return ids;
+  }
+
+  @JsonKey(fromJson: _idFromUrl)
+  int correspondent;
+  @JsonKey(fromJson: _idsFromUrls)
+  List<int> tags;
+
+  factory OgDocument.fromJson(Map<String, dynamic> json) =>
+      _$OgDocumentFromJson(json);
 }
 
 @JsonSerializable()
@@ -52,7 +84,8 @@ class ResponseList<T> {
   @_Converter()
   List<T> results;
 
-  factory ResponseList.fromJson(Map<String, dynamic> json) => _$ResponseListFromJson(json);
+  factory ResponseList.fromJson(Map<String, dynamic> json) =>
+      _$ResponseListFromJson(json);
 
   bool hasMoreData() {
     return next != null;
@@ -62,7 +95,6 @@ class ResponseList<T> {
     var json = await API.instance.get(next);
     return ResponseList<T>.fromJson(json);
   }
-
 }
 
 class _Converter<T> implements JsonConverter<T, Object> {
@@ -70,18 +102,22 @@ class _Converter<T> implements JsonConverter<T, Object> {
 
   @override
   T fromJson(Object json) {
+    if (json is Map<String, dynamic> && json.containsKey('colour')) {
+      return Tag.fromJson(json) as T;
+    }
+    if (json is Map<String, dynamic> && json.containsKey('name')) {
+      return Correspondent.fromJson(json) as T;
+    }
     if (json is Map<String, dynamic> &&
-        json.containsKey('checksum')) {
+        json.containsKey('correspondent') &&
+        !json.containsKey("thumbnail_url")) {
       return Document.fromJson(json) as T;
     }
     if (json is Map<String, dynamic> &&
-        json.containsKey('colour')) {
-      return Tag.fromJson(json) as T;
+        json.containsKey('correspondent')) {
+      return OgDocument.fromJson(json) as T;
     }
-    if (json is Map<String, dynamic> &&
-        json.containsKey('name')) {
-      return Correspondent.fromJson(json) as T;
-    }
+
     // This will only work if `json` is a native JSON type:
     //   num, String, bool, null, etc
     // *and* is assignable to `T`.
@@ -105,7 +141,7 @@ class API {
   String authString;
   final Dio dio = new Dio();
 
-  API(String baseURL, {this.username="", this.password=""}) {
+  API(String baseURL, {this.username = "", this.password = ""}) {
     authString = getAuthString(username, password);
     dio.options.headers.addAll({"Authorization": authString});
 
@@ -142,13 +178,15 @@ class API {
     return url;
   }
 
-  Future<Map<String, dynamic>> getAPIResource(String resourceType, {String ordering, String search}) async {
+  Future<Map<String, dynamic>> getAPIResource(String resourceType,
+      {String ordering, String search}) async {
     String url = "/api/" + resourceType + "/?format=json";
+    print(url);
     if (ordering != null) {
-      url += "&ordering="+ordering;
+      url += "&ordering=" + ordering;
     }
     if (search != null) {
-      url += "&search="+search;
+      url += "&search=" + search;
     }
     return await get(url);
   }
@@ -159,8 +197,10 @@ class API {
     return response.data;
   }
 
-  Future<ResponseList<Document>> getDocuments({String ordering="-created", String search}) async {
-    var json = await getAPIResource("documents", ordering: ordering, search: search);
+  Future<ResponseList<Document>> getDocuments(
+      {String ordering = "-created", String search}) async {
+    var json =
+        await getAPIResource("documents", ordering: ordering, search: search);
     return ResponseList<Document>.fromJson(json);
   }
 
@@ -174,21 +214,19 @@ class API {
     return ResponseList<Tag>.fromJson(json);
   }
 
-  Future<void> downloadFile(String url, String savePath, {ProgressCallback onReceiveProgress}) async {
+  Future<void> downloadFile(String url, String savePath,
+      {ProgressCallback onReceiveProgress}) async {
     url = getFullURL(url);
     await dio.download(url, savePath, onReceiveProgress: onReceiveProgress);
   }
 
   Future<void> uploadFile(String path) async {
-    FormData formData = new FormData.fromMap({
-      "document": await MultipartFile.fromFile(path)
-    });
+    FormData formData =
+        new FormData.fromMap({"document": await MultipartFile.fromFile(path)});
     try {
       await dio.post(getFullURL("/push"), data: formData);
-    }
-    catch (e) {
+    } catch (e) {
       print(e.toString());
     }
   }
-
 }

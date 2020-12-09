@@ -10,6 +10,7 @@ class TextfieldWidget extends StatelessWidget {
   final FormFieldSetter<String> onSaved;
   final String hintText;
   final bool obscureText;
+  final Iterable<String> autofillHints;
 
   TextfieldWidget({
     this.onFieldSubmitted,
@@ -20,7 +21,8 @@ class TextfieldWidget extends StatelessWidget {
     this.validator,
     this.onSaved,
     this.hintText = "",
-    this.obscureText = false
+    this.obscureText = false,
+    this.autofillHints
   });
 
   @override
@@ -34,6 +36,7 @@ class TextfieldWidget extends StatelessWidget {
       validator: validator,
       onSaved: onSaved,
       obscureText: obscureText,
+      autofillHints: autofillHints,
       decoration: InputDecoration(
           contentPadding:
           EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),

@@ -36,7 +36,8 @@ class Document {
   String checksum;
   DateTime created;
   DateTime modified;
-  String fileName;
+  String originalFileName;
+  String archivedFileName;
 
   factory Document.fromJson(Map<String, dynamic> json) =>
       _$DocumentFromJson(json);
@@ -71,6 +72,9 @@ class OgDocument extends Document {
   int correspondent;
   @JsonKey(fromJson: _idsFromUrls)
   List<int> tags;
+
+  @JsonKey(name: "file_name")
+  String originalFileName;
 
   factory OgDocument.fromJson(Map<String, dynamic> json) =>
       _$OgDocumentFromJson(json);

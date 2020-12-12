@@ -117,8 +117,7 @@ class _Converter<T> implements JsonConverter<T, Object> {
         !json.containsKey("thumbnail_url")) {
       return Document.fromJson(json) as T;
     }
-    if (json is Map<String, dynamic> &&
-        json.containsKey('correspondent')) {
+    if (json is Map<String, dynamic> && json.containsKey('correspondent')) {
       return OgDocument.fromJson(json) as T;
     }
 
@@ -228,7 +227,29 @@ class API {
     FormData formData =
         new FormData.fromMap({"document": await MultipartFile.fromFile(path)});
     try {
-      await dio.post(getFullURL("/push"), data: formData);
+      var response = await dio.post(
+        getFullURL("/push"),
+        data: formData,
+        options: Options(
+          followRedirects: false,
+          contentType: 'multipart/form-data',
+          validateStatus: (status) {
+            return status < 400;
+          },
+        ),
+      );
+
+      if (response.statusCode == 302) {
+        formData = new FormData.fromMap(
+            {"document": await MultipartFile.fromFile(path)});
+        await dio.post(
+          getFullURL("/api/documents/post_document/"),
+          data: formData,
+          options: Options(
+            contentType: 'multipart/form-data',
+          ),
+        );
+      }
     } catch (e) {
       print(e.toString());
     }

@@ -42,6 +42,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   String searchString;
   bool invertDocumentPreview = true;
   int scanAmount = 0;
+  int shareAmount = 0;
   ScanHandler scanHandler = ScanHandler();
   StreamSubscription intentDataStreamSubscription;
   List<SharedMediaFile> sharedFiles;
@@ -292,7 +293,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
             preferredSize: Size.fromHeight(5),
           ),
           Padding(
-            child: scanAmount > 0
+            child: scanAmount > 0 || shareAmount > 0
                 ? Card(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -303,8 +304,9 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                         Flexible(
                             child: Text(
                           "Uploading " +
-                              scanAmount.toString() +
-                              " scanned document".plural(scanAmount),
+                              (scanAmount + shareAmount).toString() +
+                              " scanned document"
+                                  .plural(scanAmount + shareAmount),
                           textAlign: TextAlign.center,
                         )),
                         SizedBox(width: 10),
@@ -358,12 +360,12 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   }
 
   void uploadSharedDocuments() async {
-    print(sharedFiles);
     if (sharedFiles != null && sharedFiles.isNotEmpty) {
       for (var f in sharedFiles) {
-        print(f.path);
-        print("Uploading shared doc...");
         await API.instance.uploadFile(f.path);
+        setState(() {
+          shareAmount--;
+        });
       }
     }
   }
@@ -375,7 +377,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       setState(() {
         sharedFiles = value;
         if (sharedFiles != null) {
-          scanAmount = sharedFiles.length;
+          shareAmount += sharedFiles.length;
         }
       });
       uploadSharedDocuments();
@@ -388,7 +390,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       setState(() {
         sharedFiles = value;
         if (sharedFiles != null) {
-          scanAmount = sharedFiles.length;
+          shareAmount += sharedFiles.length;
         }
       });
       uploadSharedDocuments();

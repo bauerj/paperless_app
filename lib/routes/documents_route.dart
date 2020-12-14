@@ -302,7 +302,9 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                         SizedBox(width: 10),
                         Flexible(
                             child: Text(
-                          "Uploading 1 scanned document".plural(scanAmount),
+                          "Uploading " +
+                              scanAmount.toString() +
+                              " scanned document".plural(scanAmount),
                           textAlign: TextAlign.center,
                         )),
                         SizedBox(width: 10),

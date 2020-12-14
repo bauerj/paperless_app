@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:json_annotation/json_annotation.dart';
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart'
+    as SecureStorage;
+import 'package:get_it/get_it.dart';
 part 'api.g.dart';
 
 @JsonSerializable()
@@ -264,12 +266,15 @@ class API {
       // Try again, with paperless-ng
       if (response.statusCode == 302) {
         this.apiFlavour = "paperless-ng";
-        // Update secure storage here?
+        await GetIt.I<SecureStorage.FlutterSecureStorage>()
+            .write(key: "api_flavour", value: "paperless-ng");
         return this.uploadFile(path);
       }
       // Try again, with paperless (this case is unlikely)
       if (response.statusCode == 405) {
         this.apiFlavour = "paperless";
+        await GetIt.I<SecureStorage.FlutterSecureStorage>()
+            .write(key: "api_flavour", value: "paperless");
         return this.uploadFile(path);
       }
     } catch (e) {

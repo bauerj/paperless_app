@@ -303,10 +303,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                         SizedBox(width: 10),
                         Flexible(
                             child: Text(
-                          "Uploading " +
-                              (scanAmount + shareAmount).toString() +
-                              " scanned document"
-                                  .plural(scanAmount + shareAmount),
+                          "Uploading 1 scanned document"
+                              .plural(scanAmount + shareAmount),
                           textAlign: TextAlign.center,
                         )),
                         SizedBox(width: 10),

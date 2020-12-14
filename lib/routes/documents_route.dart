@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:paperless_app/routes/login_route.dart';
 import 'package:paperless_app/scan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:paperless_app/routes/server_details_route.dart';
 import 'package:paperless_app/routes/settings_route.dart';
@@ -166,12 +169,22 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                     MaterialPageRoute(builder: (context) => SettingsRoute()),
                   );
                   loadSettings();
+                } else if (selected == "logout") {
+                  await GetIt.I<FlutterSecureStorage>().deleteAll();
+                  API.instance = null;
+                  await Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ServerDetailsRoute()),
+                  );
                 }
               },
               itemBuilder: (BuildContext context) {
                 return <PopupMenuItem<String>>[
                   PopupMenuItem<String>(
-                      value: "settings", child: Text("Settings".i18n))
+                      value: "settings", child: Text("Settings".i18n)),
+                  PopupMenuItem<String>(
+                      value: "logout", child: Text("Logout".i18n))
                 ];
               },
             )

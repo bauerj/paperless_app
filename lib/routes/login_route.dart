@@ -41,6 +41,8 @@ class _LoginRouteState extends State<LoginRoute> {
       try {
         if (await API(serverUrl, username: username, password: password)
             .checkCredentials()) {
+          await GetIt.I<FlutterSecureStorage>()
+              .write(key: "api_flavour", value: API.instance.apiFlavour);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => DocumentsRoute()),

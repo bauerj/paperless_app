@@ -18,15 +18,14 @@ class _HomeRouteState extends State<HomeRoute> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body:  Center(
-      child:
-        SizedBox(
-          height: 155.0,
-          child: SvgPicture.asset(
-            "assets/logo.svg",
-            color: Colors.green,
-            fit: BoxFit.contain,
-          ),
+        body: Center(
+      child: SizedBox(
+        height: 155.0,
+        child: SvgPicture.asset(
+          "assets/logo.svg",
+          color: Colors.green,
+          fit: BoxFit.contain,
+        ),
       ),
     ));
   }
@@ -34,7 +33,7 @@ class _HomeRouteState extends State<HomeRoute> {
   void loadData() async {
     var url = await GetIt.I<FlutterSecureStorage>().read(key: "server_url");
     if (url == null) {
-      Navigator.pushReplacement (
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => ServerDetailsRoute()),
       );
@@ -43,18 +42,23 @@ class _HomeRouteState extends State<HomeRoute> {
 
     var username = await GetIt.I<FlutterSecureStorage>().read(key: "username");
     var password = await GetIt.I<FlutterSecureStorage>().read(key: "password");
+    var apiFlavour =
+        await GetIt.I<FlutterSecureStorage>().read(key: "api_flavour");
 
     if (username == null || password == null) {
-      Navigator.pushReplacement (
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginRoute()),
       );
       return;
     }
+    if (apiFlavour == null) {
+      apiFlavour = "paperless";
+    }
 
-    API(url, username: username, password: password);
+    API(url, username: username, password: password, apiFlavour: apiFlavour);
 
-    Navigator.pushReplacement (
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => DocumentsRoute()),
     );

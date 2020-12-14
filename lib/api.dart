@@ -117,8 +117,7 @@ class _Converter<T> implements JsonConverter<T, Object> {
         !json.containsKey("thumbnail_url")) {
       return Document.fromJson(json) as T;
     }
-    if (json is Map<String, dynamic> &&
-        json.containsKey('correspondent')) {
+    if (json is Map<String, dynamic> && json.containsKey('correspondent')) {
       return OgDocument.fromJson(json) as T;
     }
 
@@ -143,9 +142,11 @@ class API {
   String username;
   String password;
   String authString;
+  String apiFlavour;
   final Dio dio = new Dio();
 
-  API(String baseURL, {this.username = "", this.password = ""}) {
+  API(String baseURL,
+      {this.username = "", this.password = "", this.apiFlavour = "paperless"}) {
     authString = getAuthString(username, password);
     dio.options.headers.addAll({"Authorization": authString});
 
@@ -168,6 +169,20 @@ class API {
 
   Future<bool> checkCredentials() async {
     var response = await dio.get(baseURL + "/api/documents/");
+
+    // Check for NG compatibility
+    if (response.statusCode == 200) {
+      // Should be replaced with token auth eventually
+      var tokenResponse =
+          await dio.get(baseURL + "/api/token/", options: Options(
+        validateStatus: (status) {
+          return status == 405 || status == 404;
+        },
+      ));
+      if (tokenResponse.statusCode == 405) {
+        this.apiFlavour = "paperless-ng";
+      }
+    }
     return (response.statusCode == 200);
   }
 
@@ -228,7 +243,35 @@ class API {
     FormData formData =
         new FormData.fromMap({"document": await MultipartFile.fromFile(path)});
     try {
-      await dio.post(getFullURL("/push"), data: formData);
+      var initialRoute = "/push";
+      if (this.apiFlavour == "paperless-ng") {
+        initialRoute = "/api/documents/post_document/";
+      }
+
+      // Attempt to post document
+      var response = await dio.post(
+        getFullURL(initialRoute),
+        data: formData,
+        options: Options(
+          followRedirects: false,
+          contentType: 'multipart/form-data',
+          validateStatus: (status) {
+            return status < 400 || status == 405;
+          },
+        ),
+      );
+
+      // Try again, with paperless-ng
+      if (response.statusCode == 302) {
+        this.apiFlavour = "paperless-ng";
+        // Update secure storage here?
+        return this.uploadFile(path);
+      }
+      // Try again, with paperless (this case is unlikely)
+      if (response.statusCode == 405) {
+        this.apiFlavour = "paperless";
+        return this.uploadFile(path);
+      }
     } catch (e) {
       print(e.toString());
     }

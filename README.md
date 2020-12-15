@@ -48,10 +48,6 @@ In order to build the app for local testing, follow these steps:
 3. Open the app in [whichever editor you prefer](https://flutter.dev/docs/get-started/editor) and start it.
 
 ## Releasing new versions
-1. Update pubspec.yaml.
-2. Run `flutter upgrade` to upgrade SDK.
-3. Test if the app still runs.
-4. Tag a new release.
-5. Run `flutter build apk --split-per-abi`.
-6. Upload APKs to Github releases.
-7. Upload APKs to Play Store.
+1. Run `bin/release.dart`
+2. Upload APKs to Github releases.
+3. Upload APKs to Play Store.

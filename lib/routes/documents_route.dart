@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'dart:async';
 
 import 'package:paperless_app/routes/server_details_route.dart';
 import 'package:paperless_app/routes/settings_route.dart';
@@ -40,7 +42,10 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   String searchString;
   bool invertDocumentPreview = true;
   int scanAmount = 0;
+  int shareAmount = 0;
   ScanHandler scanHandler = ScanHandler();
+  StreamSubscription intentDataStreamSubscription;
+  List<SharedMediaFile> sharedFiles;
 
   final List<double> invertMatrix = [
     -1, 0, 0, 0, 255, //
@@ -288,7 +293,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
             preferredSize: Size.fromHeight(5),
           ),
           Padding(
-            child: scanAmount > 0
+            child: scanAmount > 0 || shareAmount > 0
                 ? Card(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -298,7 +303,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                         SizedBox(width: 10),
                         Flexible(
                             child: Text(
-                          "Uploading 1 scanned document".plural(scanAmount),
+                          "Uploading 1 scanned document"
+                              .plural(scanAmount + shareAmount),
                           textAlign: TextAlign.center,
                         )),
                         SizedBox(width: 10),
@@ -351,6 +357,44 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     });
   }
 
+  void uploadSharedDocuments() async {
+    if (sharedFiles != null && sharedFiles.isNotEmpty) {
+      for (var f in sharedFiles) {
+        await API.instance.uploadFile(f.path);
+        setState(() {
+          shareAmount--;
+        });
+      }
+    }
+  }
+
+  void loadShareSheet() {
+    // For sharing images coming from outside the app while the app is in the memory
+    intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream().listen(
+        (List<SharedMediaFile> value) {
+      setState(() {
+        sharedFiles = value;
+        if (sharedFiles != null) {
+          shareAmount += sharedFiles.length;
+        }
+      });
+      uploadSharedDocuments();
+    }, onError: (err) {
+      print("getIntentDataStream error: $err");
+    });
+
+    // For sharing images coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
+      setState(() {
+        sharedFiles = value;
+        if (sharedFiles != null) {
+          shareAmount += sharedFiles.length;
+        }
+      });
+      uploadSharedDocuments();
+    });
+  }
+
   @override
   void initState() {
     reloadDocuments();
@@ -361,12 +405,14 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     dateFormat = new DateFormat.yMMMMd();
     scrollController = new ScrollController()..addListener(_scrollListener);
     scanHandler.attachListener(onScanAmountChange);
+    loadShareSheet();
     super.initState();
   }
 
   @override
   void dispose() {
     scrollController.removeListener(_scrollListener);
+    intentDataStreamSubscription.cancel();
     super.dispose();
   }
 

@@ -15,6 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.41.1"
+  archive:
+    dependency: transitive
+    description:
+      name: archive
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.13"
   args:
     dependency: transitive
     description:
@@ -70,7 +77,7 @@ packages:
       name: build_runner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.9"
+    version: "1.10.11"
   build_runner_core:
     dependency: transitive
     description:
@@ -98,7 +105,7 @@ packages:
       name: cached_network_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.1"
+    version: "2.5.0"
   characters:
     dependency: transitive
     description:
@@ -180,8 +187,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: b63a24de3fcf38aabed52b1566de40763d5f38f1
-      resolved-ref: b63a24de3fcf38aabed52b1566de40763d5f38f1
+      ref: ec8639fffef3d6d0714b260067f77dd1261b39ed
+      resolved-ref: ec8639fffef3d6d0714b260067f77dd1261b39ed
       url: "https://github.com/bauerj/edge_detection"
     source: git
     version: "1.0.5"
@@ -205,7 +212,7 @@ packages:
       name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.1"
+    version: "6.0.0-nullsafety.4"
   fixnum:
     dependency: transitive
     description:
@@ -231,7 +238,7 @@ packages:
       name: flutter_cache_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -267,7 +274,7 @@ packages:
       name: get_it
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.4"
+    version: "5.0.3"
   glob:
     dependency: transitive
     description:
@@ -295,7 +302,7 @@ packages:
       name: http_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.9"
+    version: "0.3.1"
   http_multi_server:
     dependency: transitive
     description:
@@ -317,13 +324,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.5"
+  image:
+    dependency: transitive
+    description:
+      name: image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.19"
   intl:
     dependency: transitive
     description:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.16.1"
+    version: "0.17.0-nullsafety.2"
   io:
     dependency: transitive
     description:
@@ -393,7 +407,7 @@ packages:
       name: node_io
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.1.1"
   octo_image:
     dependency: transitive
     description:
@@ -491,7 +505,7 @@ packages:
       name: platform
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.1"
+    version: "3.0.0-nullsafety.4"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -512,7 +526,7 @@ packages:
       name: process
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.13"
+    version: "4.0.0-nullsafety.4"
   pub_semver:
     dependency: transitive
     description:
@@ -554,7 +568,7 @@ packages:
       name: settings_ui
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0"
+    version: "0.5.0"
   shared_preferences:
     dependency: "direct main"
     description:

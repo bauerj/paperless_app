@@ -105,7 +105,11 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                 content: Text(e.toString()),
                 actions: <Widget>[
                   new FlatButton(
-                      onPressed: reloadDocuments, child: Text("Retry".i18n)),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        reloadDocuments();
+                      },
+                      child: Text("Retry".i18n)),
                   new FlatButton(
                       onPressed: () {
                         Navigator.pushReplacement(

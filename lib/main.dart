@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:i18n_extension/i18n_widget.dart';
@@ -7,13 +8,22 @@ import 'package:get_it/get_it.dart';
 import 'package:paperless_app/routes/home_route.dart';
 import 'package:paperless_app/i18n.dart';
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() {
+  HttpOverrides.global = new MyHttpOverrides();
   GetIt.I.registerSingleton<FlutterSecureStorage>(new FlutterSecureStorage());
   runApp(PaperlessApp());
 }
 
 class PaperlessApp extends StatelessWidget {
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -26,13 +36,12 @@ class PaperlessApp extends StatelessWidget {
         fontFamily: 'AlegreyaSans',
       ),
       darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.green.shade900,
-        primarySwatch: Colors.lightGreen,
-        accentColor: Colors.lightGreenAccent,
-        fontFamily: 'AlegreyaSans'
-      ),
-      home: I18n(child:HomeRoute()),
+          brightness: Brightness.dark,
+          primaryColor: Colors.green.shade900,
+          primarySwatch: Colors.lightGreen,
+          accentColor: Colors.lightGreenAccent,
+          fontFamily: 'AlegreyaSans'),
+      home: I18n(child: HomeRoute()),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

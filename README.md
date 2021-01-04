@@ -1,5 +1,7 @@
 # Paperless App
 
+[![Gitter](https://badges.gitter.im/paperless_app/community.svg)](https://gitter.im/paperless_app/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 ![Access all your scanned documents, wherever you are.](fastlane/metadata/android/en-US/images/featureGraphic.png)
 
 To use this, you need to have a Paperless server set up. See [Paperless Documentation](https://paperless-ng.readthedocs.io/en/latest/index.html#why-this-exists) for more information.

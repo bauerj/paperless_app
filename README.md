@@ -1,6 +1,7 @@
 # Paperless App
 
 [![Gitter](https://badges.gitter.im/paperless_app/community.svg)](https://gitter.im/paperless_app/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Crowdin](https://badges.crowdin.net/paperless-app/localized.svg)](https://crowdin.com/project/paperless-app)
 
 ![Access all your scanned documents, wherever you are.](fastlane/metadata/android/en-US/images/featureGraphic.png)
 

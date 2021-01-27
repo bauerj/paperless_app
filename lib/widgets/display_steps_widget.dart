@@ -13,8 +13,7 @@ class DisplayStepsWidget extends StatelessWidget {
     for (int i = 0; i < this.totalSteps; i++) {
       var borderRadius = BorderRadius.zero;
       Color color = (i < this.currentStep) ? Colors.green : Colors.grey;
-      if (i == currentStep)
-        color = Colors.grey.shade800;
+      if (i == currentStep) color = Colors.grey.shade800;
       if (i == 0) {
         borderRadius = BorderRadius.only(
             topLeft: Radius.circular(10), bottomLeft: Radius.circular(10));

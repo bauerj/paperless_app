@@ -12,18 +12,17 @@ class TextfieldWidget extends StatelessWidget {
   final bool obscureText;
   final Iterable<String> autofillHints;
 
-  TextfieldWidget({
-    this.onFieldSubmitted,
-    this.autocorrect = false,
-    this.autofocus = false,
-    this.keyboardType,
-    this.initialValue = "",
-    this.validator,
-    this.onSaved,
-    this.hintText = "",
-    this.obscureText = false,
-    this.autofillHints
-  });
+  TextfieldWidget(
+      {this.onFieldSubmitted,
+      this.autocorrect = false,
+      this.autofocus = false,
+      this.keyboardType,
+      this.initialValue = "",
+      this.validator,
+      this.onSaved,
+      this.hintText = "",
+      this.obscureText = false,
+      this.autofillHints});
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +37,10 @@ class TextfieldWidget extends StatelessWidget {
       obscureText: obscureText,
       autofillHints: autofillHints,
       decoration: InputDecoration(
-          contentPadding:
-          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           hintText: hintText,
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(32.0))),
+          border:
+              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
     );
   }
 }

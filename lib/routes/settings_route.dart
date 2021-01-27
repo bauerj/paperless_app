@@ -17,9 +17,9 @@ class _SettingsRouteState extends State<SettingsRoute> {
   SharedPreferences prefs;
   _SettingsRouteState();
 
-
   @override
-  void initState()  {
+  void initState() {
+    super.initState();
     loadPreferences();
   }
 
@@ -28,32 +28,32 @@ class _SettingsRouteState extends State<SettingsRoute> {
     setState(() {
       invertDocumentPreview = prefs.getBool("invert_document_preview") ?? true;
     });
-}
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       body: SettingsList(
-          sections: [
-            SettingsSection(
-              title: 'View'.i18n,
-              tiles: [
-                SettingsTile.switchTile(
-                  title: 'Invert Document Preview in Dark Mode'.i18n,
-                  leading: Icon(Icons.invert_colors),
-                  switchValue: invertDocumentPreview,
-                  onToggle: (bool value) {
-                    prefs.setBool("invert_document_preview", value);
-                    setState(() {
-                      invertDocumentPreview = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
+        sections: [
+          SettingsSection(
+            title: 'View'.i18n,
+            tiles: [
+              SettingsTile.switchTile(
+                title: 'Invert Document Preview in Dark Mode'.i18n,
+                leading: Icon(Icons.invert_colors),
+                switchValue: invertDocumentPreview,
+                onToggle: (bool value) {
+                  prefs.setBool("invert_document_preview", value);
+                  setState(() {
+                    invertDocumentPreview = value;
+                  });
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

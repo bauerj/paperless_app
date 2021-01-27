@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:yaml/yaml.dart';
+
+import 'package:archive/archive.dart';
+import 'package:archive/archive_io.dart';
 
 import 'package:i18n_extension/i18n_getstrings.dart';
 
@@ -39,24 +43,22 @@ Future<void> version() async {
 }
 
 Future<void> translation() async {
-  var strings = GetI18nStrings("./lib").run();
-  for (var translationFile in new Directory('./assets/locales/').listSync()) {
-    var translation =
-        json.decode(new File(translationFile.path).readAsStringSync());
-    for (var source in strings) {
-      var i = 0;
-      if (!translation.containsKey(source)) {
-        translation[source] = null;
-        i++;
-      }
-      if (i > 0) {
-        print("$i new string(s) to translate in $translationFile");
-        JsonEncoder encoder = new JsonEncoder.withIndent(' ' * 4);
-        File(translationFile.path)
-            .writeAsStringSync(encoder.convert(translation));
-      }
+  var translation = await Dio()
+      .get("https://crowdin.com/backend/download/project/paperless-app.zip",
+          options: Options(
+            responseType: ResponseType.bytes,
+          ));
+  final archive = ZipDecoder().decodeBytes(translation.data);
+  for (final file in archive) {
+    final filename = file.name.split("strings-").last;
+    if (file.isFile) {
+      final data = file.content as List<int>;
+      File('assets/locales/$filename')
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(data);
     }
   }
+  print("Downloaded translations for ${archive.length/2} languages");
 }
 
 Future<void> build() async {

@@ -5,7 +5,8 @@ import 'package:paperless_app/i18n.dart';
 class SelectOrderRoute extends StatefulWidget {
   final String ordering;
   final Future<void> Function(String ordering) setOrdering;
-  SelectOrderRoute({this.setOrdering, Key key, this.ordering}) : super(key: key);
+  SelectOrderRoute({this.setOrdering, Key key, this.ordering})
+      : super(key: key);
 
   @override
   _SelectOrderRouteState createState() {
@@ -27,31 +28,56 @@ class _SelectOrderRouteState extends State<SelectOrderRoute> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
         child: Column(
-      children: <Widget>[
-        SizedBox(height: 20,),
-        Text("Sort Documents By".i18n, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),),
-        SizedBox(height: 20,),
-        getFor("created", "Date created".i18n),
-        getFor("added", "Date added".i18n),
-        getFor("modified", "Last Modification".i18n),
-        getFor("title", "Document Title".i18n),
-        getFor("correspondent", "Correspondent".i18n),
-        Row(children: <Widget>[
-          SizedBox(width: 5,),
-          Expanded(child: RaisedButton(child: Text("Cancel".i18n), onPressed: () {
-            Navigator.of(context).pop();
-          })),
-          SizedBox(width: 5,),
-          Expanded(child: RaisedButton(child: Text("Okay".i18n), onPressed: () {
-            setOrdering((ascending ? "-" : "")  + selected);
-            Navigator.of(context).pop();
-          },)),
-          SizedBox(width: 5,),
-        ],)
-      ],
-        ),),);
+          children: <Widget>[
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              "Sort Documents By".i18n,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            getFor("created", "Date created".i18n),
+            getFor("added", "Date added".i18n),
+            getFor("modified", "Last Modification".i18n),
+            getFor("title", "Document Title".i18n),
+            getFor("correspondent", "Correspondent".i18n),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                    child: RaisedButton(
+                        child: Text("Cancel".i18n),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        })),
+                SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                    child: RaisedButton(
+                  child: Text("Okay".i18n),
+                  onPressed: () {
+                    setOrdering((ascending ? "-" : "") + selected);
+                    Navigator.of(context).pop();
+                  },
+                )),
+                SizedBox(
+                  width: 5,
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   OrderWidget getFor(String name, String label) {
@@ -119,10 +145,13 @@ class OrderWidget extends StatelessWidget {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Text(label,
-                  style: TextStyle(
-                    fontWeight: selectedOrder != SelectedOrder.NONE ? FontWeight.bold : FontWeight.normal
-                  ),),
+                  Text(
+                    label,
+                    style: TextStyle(
+                        fontWeight: selectedOrder != SelectedOrder.NONE
+                            ? FontWeight.bold
+                            : FontWeight.normal),
+                  ),
                 ],
               ),
               ordering

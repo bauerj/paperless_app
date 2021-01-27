@@ -16,7 +16,7 @@ packages:
     source: hosted
     version: "0.41.1"
   archive:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: archive
       url: "https://pub.dartlang.org"
@@ -275,6 +275,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.3"
+  gettext_parser:
+    dependency: transitive
+    description:
+      name: gettext_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0+1"
   glob:
     dependency: transitive
     description:
@@ -320,10 +327,12 @@ packages:
   i18n_extension:
     dependency: "direct main"
     description:
-      name: i18n_extension
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.4.5"
+      path: "."
+      ref: ada9b3b66991cee90ac7415ff084958037e6d555
+      resolved-ref: ada9b3b66991cee90ac7415ff084958037e6d555
+      url: "https://github.com/bauerj/i18n_extension"
+    source: git
+    version: "1.5.1"
   image:
     dependency: transitive
     description:
@@ -645,12 +654,12 @@ packages:
     source: hosted
     version: "1.8.0-nullsafety.4"
   sprintf:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: sprintf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "5.0.0"
   sqflite:
     dependency: transitive
     description:

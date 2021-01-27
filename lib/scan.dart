@@ -4,7 +4,6 @@ import 'package:edge_detection/edge_detection.dart';
 import 'package:paperless_app/api.dart';
 import 'package:path_provider/path_provider.dart';
 
-
 class ScanHandler {
   Directory scansDir;
   List<Function(int scansAmount)> statusListeners = List();
@@ -15,23 +14,21 @@ class ScanHandler {
     if (!await scansDir.exists()) {
       scansDir.create();
     }
-}
+  }
 
   void attachListener(Function(int scansAmount) listener) {
     statusListeners.add(listener);
   }
 
   Future<void> handleScans() async {
-    if (running)
-      return;
+    if (running) return;
     await _init();
     running = true;
     while (true) {
       var scansAmount = await scansDir.list().length;
       print("Amount: $scansAmount");
       statusListeners.first(scansAmount);
-      if (scansAmount == 0)
-        break;
+      if (scansAmount == 0) break;
       await handleScan(await scansDir.list().first);
     }
 

@@ -193,7 +193,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                   PopupMenuItem<String>(
                       value: "settings", child: Text("Settings".i18n)),
                   PopupMenuItem<String>(
-                      value: "logout", child: Text("Logout".i18n))
+                      value: "logout", child: Text("Logout".i18n)),
                 ];
               },
             )

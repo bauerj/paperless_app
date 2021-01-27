@@ -7,17 +7,16 @@ import 'package:get_it/get_it.dart';
 import 'package:paperless_app/routes/home_route.dart';
 import 'package:paperless_app/i18n.dart';
 
-void main() {
+void main()  {
   GetIt.I.registerSingleton<FlutterSecureStorage>(new FlutterSecureStorage());
   runApp(PaperlessApp());
 }
 
 class PaperlessApp extends StatelessWidget {
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    MyI18n.loadTranslations(context);
+    MyI18n.loadTranslations();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Paperless App',
@@ -26,13 +25,12 @@ class PaperlessApp extends StatelessWidget {
         fontFamily: 'AlegreyaSans',
       ),
       darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.green.shade900,
-        primarySwatch: Colors.lightGreen,
-        accentColor: Colors.lightGreenAccent,
-        fontFamily: 'AlegreyaSans'
-      ),
-      home: I18n(child:HomeRoute()),
+          brightness: Brightness.dark,
+          primaryColor: Colors.green.shade900,
+          primarySwatch: Colors.lightGreen,
+          accentColor: Colors.lightGreenAccent,
+          fontFamily: 'AlegreyaSans'),
+      home: I18n(child: HomeRoute()),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

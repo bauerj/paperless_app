@@ -10,7 +10,14 @@ class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   final List<Widget> actions;
   final void Function(String text) searchListener;
 
-  const SearchAppBar({Key key, this.leading, this.title, this.bottom, this.actions, this.searchListener}) : super(key: key);
+  const SearchAppBar(
+      {Key key,
+      this.leading,
+      this.title,
+      this.bottom,
+      this.actions,
+      this.searchListener})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -18,7 +25,7 @@ class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize =>  new Size.fromHeight(56);
+  Size get preferredSize => new Size.fromHeight(56);
 }
 
 class _SearchAppBarState extends State<SearchAppBar> {
@@ -32,8 +39,8 @@ class _SearchAppBarState extends State<SearchAppBar> {
   IconData searchIcon = Icons.search;
   Widget appBarTitle;
 
-
-  _SearchAppBarState(this.leading, this.title, this.bottom, this.actions, this.listener) {
+  _SearchAppBarState(
+      this.leading, this.title, this.bottom, this.actions, this.listener) {
     appBarTitle = title;
   }
 
@@ -50,11 +57,12 @@ class _SearchAppBarState extends State<SearchAppBar> {
             appBarTitle = new TextFormField(
               focusNode: focusNode,
               textInputAction: TextInputAction.search,
-              onFieldSubmitted: (e) {listener(e);},
+              onFieldSubmitted: (e) {
+                listener(e);
+              },
               decoration: new InputDecoration(
                   prefixIcon: new Icon(Icons.search),
-                  hintText: 'Search for document...'.i18n
-              ),
+                  hintText: 'Search for document...'.i18n),
             );
             focusNode.requestFocus();
           });
@@ -63,7 +71,6 @@ class _SearchAppBarState extends State<SearchAppBar> {
             searchIcon = Icons.search;
             appBarTitle = title;
             listener(null);
-
           });
         }
       },
@@ -71,11 +78,6 @@ class _SearchAppBarState extends State<SearchAppBar> {
     actions.addAll(this.actions);
 
     return AppBar(
-      leading: leading,
-      title: appBarTitle,
-      bottom: bottom,
-      actions: actions
-    );
+        leading: leading, title: appBarTitle, bottom: bottom, actions: actions);
   }
-
 }

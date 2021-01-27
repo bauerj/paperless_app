@@ -37,7 +37,7 @@ class _OnlinePdfDialogState extends State<OnlinePdfDialog> {
   }
 
   static Future<String> getDownloadPath(Document doc) async {
-    String fileName = doc.archivedFileName ?? doc.originalFileName ??  "x.pdf";
+    String fileName = doc.archivedFileName ?? doc.originalFileName ?? "x.pdf";
     final fileType = fileName.split(".").last;
     final tempDir = await getTemporaryDirectory();
     return '${tempDir.path}/${doc.id}.$fileType';

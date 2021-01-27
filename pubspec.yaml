@@ -27,14 +27,16 @@ dependencies:
   json_annotation: ^3.1.1
   http_auth: ^0.3.1
   cached_network_image: ^2.5.0
-  i18n_extension: ^1.4.5
+  i18n_extension: # Not merged yet
+    git:
+      url: https://github.com/bauerj/i18n_extension
+      ref: ada9b3b66991cee90ac7415ff084958037e6d555
   flutter_localizations:
     sdk: flutter
   open_file: ^3.0.3
   settings_ui: ^0.5.0
   shared_preferences: '>=0.5.7+2 <2.0.0'
   receive_sharing_intent: ^1.4.2
-  sprintf: "^4.0.0"
   edge_detection:
     git:
       url: https://github.com/bauerj/edge_detection
@@ -44,6 +46,7 @@ dependencies:
 dev_dependencies:
   json_serializable: ^3.5.1
   build_runner: ^1.10.11
+  archive: ^2.0.13
   flutter_test:
     sdk: flutter
 

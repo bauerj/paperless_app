@@ -7,16 +7,9 @@ void main(List<String> arguments) async {
     Directory("build").createSync();
   }
 
-  var p = await Process.run(
-          "flutter",
-          [
-            "pub",
-            "run",
-            "i18n_extension:getstrings",
-            "-f",
-            "build/strings.pot"
-          ],
-          runInShell: true);
+  var p = await Process.run("flutter",
+      ["pub", "run", "i18n_extension:getstrings", "-f", "build/strings.pot"],
+      runInShell: true);
   print(p.stdout);
   print(p.stderr);
 
@@ -53,7 +46,8 @@ void main(List<String> arguments) async {
 
   print("${response.statusCode}: ${response.data}");
 
-  response = await dio.post("https://api.crowdin.com/api/v2/projects/405180/translations/builds",
+  response = await dio.post(
+      "https://api.crowdin.com/api/v2/projects/405180/translations/builds",
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
       }),

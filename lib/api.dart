@@ -7,7 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart'
 import 'package:get_it/get_it.dart';
 part 'api.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class Correspondent {
   Correspondent();
   int id;
@@ -17,7 +17,7 @@ class Correspondent {
       _$CorrespondentFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class Tag {
   Tag();
   int id;
@@ -27,7 +27,7 @@ class Tag {
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class Document {
   Document();
   int id;
@@ -53,7 +53,7 @@ class Document {
   }
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class OgDocument extends Document {
   OgDocument();
 
@@ -62,7 +62,7 @@ class OgDocument extends Document {
   }
 
   static List<int> _idsFromUrls(List<dynamic> urls) {
-    List<int> ids = new List();
+    List<int> ids = [];
     for (String url in urls) {
       var parts = url.split("/");
       ids.add(int.parse(parts[parts.length - 2]));
@@ -82,7 +82,7 @@ class OgDocument extends Document {
       _$OgDocumentFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ResponseList<T> {
   ResponseList();
   int count;

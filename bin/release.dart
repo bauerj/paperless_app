@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:yaml/yaml.dart';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
-
-import 'package:i18n_extension/i18n_getstrings.dart';
 
 var newVersion;
 
@@ -58,7 +55,7 @@ Future<void> translation() async {
         ..writeAsBytesSync(data);
     }
   }
-  print("Downloaded translations for ${archive.length/2} languages");
+  print("Downloaded translations for ${archive.length / 2} languages");
 }
 
 Future<void> build() async {

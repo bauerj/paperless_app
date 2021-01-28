@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 class ScanHandler {
   Directory scansDir;
-  List<Function(int scansAmount)> statusListeners = List();
+  List<Function(int scansAmount)> statusListeners = [];
   bool running = false;
 
   Future<void> _init() async {

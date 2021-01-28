@@ -46,7 +46,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> actions = new List();
+    List<Widget> actions = [];
 
     actions.add(IconButton(
       icon: Icon(searchIcon),

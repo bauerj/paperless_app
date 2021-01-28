@@ -35,7 +35,7 @@ class _LoginRouteState extends State<LoginRoute> {
       await GetIt.I<FlutterSecureStorage>()
           .write(key: "password", value: password);
 
-      _scaffoldKey.currentState.showSnackBar(
+      ScaffoldMessenger.of(_scaffoldKey.currentContext).showSnackBar(
           SnackBar(content: Text('Checking credentials...'.i18n)));
 
       try {

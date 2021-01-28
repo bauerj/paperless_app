@@ -7,7 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:paperless_app/routes/home_route.dart';
 import 'package:paperless_app/i18n.dart';
 
-void main()  {
+void main() {
   GetIt.I.registerSingleton<FlutterSecureStorage>(new FlutterSecureStorage());
   runApp(PaperlessApp());
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:paperless_app/routes/about_route.dart';
 import 'package:paperless_app/scan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -185,12 +186,19 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                     MaterialPageRoute(
                         builder: (context) => ServerDetailsRoute()),
                   );
+                } else if (selected == "about") {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AboutRoute()),
+                  );
                 }
               },
               itemBuilder: (BuildContext context) {
                 return <PopupMenuItem<String>>[
                   PopupMenuItem<String>(
                       value: "settings", child: Text("Settings".i18n)),
+                  PopupMenuItem<String>(
+                      value: "about", child: Text("About".i18n)),
                   PopupMenuItem<String>(
                       value: "logout", child: Text("Logout".i18n)),
                 ];

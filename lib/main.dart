@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:i18n_extension/i18n_widget.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -8,15 +9,22 @@ import 'package:paperless_app/routes/home_route.dart';
 import 'package:paperless_app/i18n.dart';
 
 void main() {
-  GetIt.I.registerSingleton<FlutterSecureStorage>(new FlutterSecureStorage());
   runApp(PaperlessApp());
 }
 
-class PaperlessApp extends StatelessWidget {
-  // This widget is the root of your application.
+class PaperlessApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _PaperlessAppState();
+  }
+}
+
+class _PaperlessAppState extends State<PaperlessApp> {
+  Future<void> loadAsync;
+
+  // This widget is the root of the application.
   @override
   Widget build(BuildContext context) {
-    MyI18n.loadTranslations();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Paperless App',
@@ -30,7 +38,24 @@ class PaperlessApp extends StatelessWidget {
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.lightGreenAccent,
           fontFamily: 'AlegreyaSans'),
-      home: I18n(child: HomeRoute()),
+      home: FutureBuilder(
+        future: loadAsync,
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done)
+            return I18n(
+              child: HomeRoute(),
+            );
+          return Center(
+              child: SizedBox(
+            height: 155.0,
+            child: SvgPicture.asset(
+              "assets/logo.svg",
+              color: Colors.lightGreen,
+              fit: BoxFit.contain,
+            ),
+          ));
+        },
+      ),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -41,5 +66,12 @@ class PaperlessApp extends StatelessWidget {
         const Locale('de', "DE"),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    GetIt.I.registerSingleton<FlutterSecureStorage>(new FlutterSecureStorage());
+    loadAsync = MyI18n.loadTranslations();
   }
 }

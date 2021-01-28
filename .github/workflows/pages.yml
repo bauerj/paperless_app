@@ -1,0 +1,28 @@
+name: Create Contributors List
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  contributor_list:
+    name: Contributor List
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.1
+        with:
+          persist-credentials: false
+      - run: mkdir build/pages
+      - run: wget https://api.github.com/repos/bauerj/paperless_app/contributors?per_page=100 -O build/pages/contributors.json
+        name: Get Github contributors
+      - name: Get Crowdin contributors
+        run: |
+          wget https://api.crowdin.com/api/v2/projects/405180/members?limit=500 --header="Authorization: Bearer $CROWDIN_API_KEY" -O build/pages/translators.json
+        env:
+          CROWDIN_API_KEY: ${{ secrets.CROWDIN_API_KEY }}
+      - name: Deploy
+          uses: JamesIves/github-pages-deploy-action@3.7.1
+          with:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            BRANCH: gh-pages
+            FOLDER: build/pages
+            CLEAN: true

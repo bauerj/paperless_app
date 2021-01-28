@@ -50,20 +50,25 @@ class _AboutRouteState extends State<AboutRoute> {
                       factor: 2,
                     ),
                     Text(
-                      "Paperless App is open-source software licenced under the GNU General Public Licence.".i18n,
+                      "Paperless App is open-source software licenced under the GNU General Public Licence."
+                          .i18n,
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      "Paperless App would not have been possible without the help of some awesome people.".i18n,
+                      "Paperless App would not have been possible without the help of some awesome people."
+                          .i18n,
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(
                       height: 20,
                     ),
                     _Heading("Code contributors".i18n),
-                    Text("The following people have submitted code on Github:".i18n
+                    Text("The following people have submitted code on Github:"
+                        .i18n
                         .i18n),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Column(children: contributorsTexts),
                     SizedBox(
                       height: 20,
@@ -72,7 +77,9 @@ class _AboutRouteState extends State<AboutRoute> {
                     Text(
                         "Translations for Paperless App were made on Crowdin by:"
                             .i18n),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Column(children: translatorsTexts),
                   ],
                 ))));

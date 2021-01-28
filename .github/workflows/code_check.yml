@@ -16,6 +16,10 @@ jobs:
           channel: 'beta'
       - name: Install dependencies
         run: flutter pub get
+      - name: Create locale directory
+        run: mkdir assets/locales
+      - name: Install dependencies
+        run: flutter pub run build_runner build
       - name: Check formatting
         run: flutter format --dry-run --set-exit-if-changed .
       - name: Do static code analysis

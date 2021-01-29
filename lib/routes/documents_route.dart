@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:i18n_extension/i18n_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:paperless_app/routes/about_route.dart';
@@ -413,7 +414,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     loadCorrespondents();
     initializeDateFormatting();
     loadSettings();
-    dateFormat = new DateFormat.yMMMMd();
+    dateFormat = new DateFormat.yMMMMd(I18n.language);
     scrollController = new ScrollController()..addListener(_scrollListener);
     scanHandler.attachListener(onScanAmountChange);
     loadShareSheet();

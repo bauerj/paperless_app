@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paperless_app/i18n.dart';
+import 'package:paperless_app/widgets/button_widget.dart';
 
 class AboutRoute extends StatefulWidget {
   @override
@@ -59,9 +60,6 @@ class _AboutRouteState extends State<AboutRoute> {
                           .i18n,
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
                     _Heading("Code contributors".i18n),
                     Text("The following people have submitted code on Github:"
                         .i18n
@@ -70,9 +68,6 @@ class _AboutRouteState extends State<AboutRoute> {
                       height: 10,
                     ),
                     Column(children: contributorsTexts),
-                    SizedBox(
-                      height: 20,
-                    ),
                     _Heading("Translators".i18n),
                     Text(
                         "Translations for Paperless App were made on Crowdin by:"
@@ -81,6 +76,20 @@ class _AboutRouteState extends State<AboutRoute> {
                       height: 10,
                     ),
                     Column(children: translatorsTexts),
+                    _Heading("Special Thanks".i18n),
+                    Text("Daniel Quinn"),
+                    Text("Jonas Winkler"),
+                    Text(
+                        "And everyone else who worked on Paperless(-NG).".i18n),
+                    _Heading("Open Source libraries".i18n),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ButtonWidget(
+                      "Show licence information".i18n,
+                      onPressed: () => showLicensePage(context: context),
+                      scale: 0.8,
+                    )
                   ],
                 ))));
   }
@@ -92,9 +101,16 @@ class _Heading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        textScaleFactor: 2.5 * factor,
-        style: TextStyle(fontWeight: FontWeight.bold));
+    return Column(
+      children: [
+        SizedBox(
+          height: 20,
+        ),
+        Text(text,
+            textScaleFactor: 2.5 * factor,
+            style: TextStyle(fontWeight: FontWeight.bold))
+      ],
+    );
   }
 
   _Heading(this.text, {this.factor = 1});

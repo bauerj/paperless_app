@@ -30,20 +30,20 @@ class Tag {
 @JsonSerializable(createToJson: false)
 class OgTag extends Tag {
   static final List<String> _tagColours = [
-        "#000",
-        "#a6cee3",
-        "#1f78b4",
-        "#b2df8a",
-        "#33a02c",
-        "#fb9a99",
-        "#e31a1c",
-        "#fdbf6f",
-        "#ff7f00",
-        "#cab2d6",
-        "#6a3d9a",
-        "#b15928",
-        "#000000",
-        "#cccccc",
+    "#000",
+    "#a6cee3",
+    "#1f78b4",
+    "#b2df8a",
+    "#33a02c",
+    "#fb9a99",
+    "#e31a1c",
+    "#fdbf6f",
+    "#ff7f00",
+    "#cab2d6",
+    "#6a3d9a",
+    "#b15928",
+    "#000000",
+    "#cccccc",
   ];
 
   OgTag();

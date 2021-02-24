@@ -5,7 +5,6 @@ import '../api.dart';
 class TagWidget extends StatelessWidget {
   final Tag tag;
 
-
   TagWidget(this.tag);
 
   static TagWidget fromTagId(int _tagId, ResponseList<Tag> tags) {
@@ -43,5 +42,4 @@ class TagWidget extends StatelessWidget {
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
   }
-
 }

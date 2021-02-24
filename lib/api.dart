@@ -17,14 +17,45 @@ class Correspondent {
       _$CorrespondentFromJson(json);
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class Tag {
   Tag();
   int id;
   String name;
-  int colour;
+  String colourCode;
 
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
+}
+
+@JsonSerializable(createToJson: false)
+class OgTag extends Tag {
+  static final List<String> _tagColours = [
+        "#000",
+        "#a6cee3",
+        "#1f78b4",
+        "#b2df8a",
+        "#33a02c",
+        "#fb9a99",
+        "#e31a1c",
+        "#fdbf6f",
+        "#ff7f00",
+        "#cab2d6",
+        "#6a3d9a",
+        "#b15928",
+        "#000000",
+        "#cccccc",
+  ];
+
+  OgTag();
+
+  static String _colourCodeFromindex(int index) {
+    return _tagColours[index];
+  }
+
+  @JsonKey(fromJson: _colourCodeFromindex, name: "colour")
+  String colourCode;
+
+  factory OgTag.fromJson(Map<String, dynamic> json) => _$OgTagFromJson(json);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
@@ -109,6 +140,9 @@ class _Converter<T> implements JsonConverter<T, Object> {
   @override
   T fromJson(Object json) {
     if (json is Map<String, dynamic> && json.containsKey('colour')) {
+      return OgTag.fromJson(json) as T;
+    }
+    if (json is Map<String, dynamic> && json.containsKey('colour_code')) {
       return Tag.fromJson(json) as T;
     }
     if (json is Map<String, dynamic> && json.containsKey('name')) {

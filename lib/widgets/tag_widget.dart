@@ -4,21 +4,7 @@ import '../api.dart';
 
 class TagWidget extends StatelessWidget {
   final Tag tag;
-  final List<int> tagColors = [
-    0xe3cea6ff,
-    0xb4781fff,
-    0x8adfb2ff,
-    0x2ca033ff,
-    0x999afbff,
-    0x1c1ae3ff,
-    0x6fbffdff,
-    0x007fffff,
-    0xd6b2caff,
-    0x9a3d6aff,
-    0x2859b1ff,
-    0x000000ff,
-    0xccccccff
-  ];
+
 
   TagWidget(this.tag);
 
@@ -26,7 +12,7 @@ class TagWidget extends StatelessWidget {
     if (tags == null) {
       Tag tag = Tag();
       tag.name = "...";
-      tag.colour = 1;
+      tag.colourCode = "#000";
       return new TagWidget(tag);
     }
     for (var _tag in tags.results) {
@@ -47,6 +33,15 @@ class TagWidget extends StatelessWidget {
   }
 
   Color getColor() {
-    return new Color(tagColors[tag.colour % tagColors.length]);
+    return _fromHex(tag.colourCode);
   }
+
+  // https://stackoverflow.com/a/50081214/1024057
+  static Color _fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
 }

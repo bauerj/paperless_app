@@ -21,17 +21,19 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_svg: ^0.19.2+1
+  flutter_svg:
+    # This is necessary to use the latest Flutter SDK
+    # https://github.com/dnfield/flutter_svg/issues/479
+    git:
+      url: git://github.com/gskinnerTeam/flutter_svg.git
+      ref: 12b55b464d2e253f411a17798527a7daa2c00ceb
   flutter_secure_storage: ^3.3.5
   get_it: ^5.0.3
   dio: ^3.0.10
   json_annotation: ^3.1.1
   http_auth: ^0.3.1
   cached_network_image: ^2.5.0
-  i18n_extension: # Not merged yet
-    git:
-      url: https://github.com/bauerj/i18n_extension
-      ref: ada9b3b66991cee90ac7415ff084958037e6d555
+  i18n_extension: ^3.0.0-dev.1
   flutter_localizations:
     sdk: flutter
   open_file: ^3.0.3

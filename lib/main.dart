@@ -64,6 +64,11 @@ class _PaperlessAppState extends State<PaperlessApp> {
       supportedLocales: [
         const Locale('en', "GB"),
         const Locale('de', "DE"),
+        const Locale('nl', "NL"),
+        const Locale('fr', "FR"),
+        const Locale('it', "IT"),
+        const Locale('pt', "PT"),
+        const Locale('pt', "BR"),
       ],
     );
   }

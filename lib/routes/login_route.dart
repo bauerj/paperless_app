@@ -105,7 +105,7 @@ class _LoginRouteState extends State<LoginRoute> {
                         },
                         autofocus: true,
                         autofillHints: [AutofillHints.username],
-                        hintText: "username",
+                        hintText: "Username".i18n,
                         keyboardType: TextInputType.emailAddress,
                         initialValue: username,
                         validator: (value) {
@@ -126,7 +126,7 @@ class _LoginRouteState extends State<LoginRoute> {
                         initialValue: password,
                         autofillHints: [AutofillHints.password],
                         obscureText: true,
-                        hintText: "Password",
+                        hintText: "Password".i18n,
                         validator: (value) {
                           if (value.isEmpty)
                             return "Please enter your password";

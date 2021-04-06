@@ -1,8 +1,6 @@
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:paperless_app/i18n.dart';
 
-
-
 class PaperlessAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
   @override
   String cancel = 'Cancel'.i18n;

@@ -451,9 +451,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     }
   }
 
-  void _showPicker(
-    context,
-  ) {
+  void _showPicker(context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -487,7 +485,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     Navigator.of(context).pop();
     if (assets != null && assets.length > 0) {
       setState(() {
-        shareAmount = assets.length;
+        shareAmount += assets.length;
       });
 
       for (var image in assets) {

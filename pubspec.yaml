@@ -33,7 +33,7 @@ dependencies:
   get_it: ^6.0.0
   http_auth: ^1.0.0
   i18n_extension: ^4.0.0
-  json_annotation: ^4.0.1
+  json_annotation: ^3.1.1
   open_file: ^3.1.0
   receive_sharing_intent: ^1.4.5
   settings_ui: ^0.6.0
@@ -44,8 +44,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   archive: ^3.1.2
-  build_runner: ^1.12.2
-  json_serializable: ^4.1.0
+  build_runner: ^1.10.9
+  json_serializable: ^3.5.1
 
 dependency_overrides:
   cached_network_image: any

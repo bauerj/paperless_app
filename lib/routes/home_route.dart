@@ -15,23 +15,34 @@ class HomeRoute extends StatefulWidget {
 }
 
 class _HomeRouteState extends State<HomeRoute> {
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         body: Center(
-      child: SizedBox(
-        height: 155.0,
-        child: SvgPicture.asset(
-          "assets/logo.svg",
-          color: Colors.green,
-          fit: BoxFit.contain,
-        ),
-      ),
-    ));
+          child: SizedBox(
+            height: 155.0,
+            child: SvgPicture.asset(
+              "assets/logo.svg",
+              color: Colors.green,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ));
   }
 
   void loadData() async {
-    var url = await GetIt.I<FlutterSecureStorage>().read(key: "server_url");
+    var url;
+    try {
+      url = await GetIt.I<FlutterSecureStorage>().read(key: "server_url");
+    } catch (e, s) {
+      ScaffoldMessenger.of(_scaffoldKey.currentContext).showSnackBar(SnackBar(
+        content: Text("Unable to access secure storage: $e ($s))"),
+        duration: Duration(seconds: 15),
+      ));
+    }
     if (url == null) {
       Navigator.pushReplacement(
         context,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -22,6 +24,8 @@ import 'package:paperless_app/widgets/search_app_bar.dart';
 import 'package:paperless_app/widgets/select_order_route.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
 import 'package:paperless_app/i18n.dart';
+import 'package:paperless_app/delegates/paperless_text_delegate.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../api.dart';
 
@@ -148,8 +152,11 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     Color fg = showDark ? Colors.white : Colors.black;
     return Scaffold(
       key: _scaffoldKey,
-      floatingActionButton:
-          FloatingActionButton(onPressed: scanDocument, child: Icon(Icons.add)),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _showPicker(context);
+          },
+          child: Icon(Icons.add)),
       appBar: SearchAppBar(
           leading: Padding(
               child: SvgPicture.asset("assets/logo.svg", color: Colors.white),
@@ -441,6 +448,55 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
         documents.results.addAll(_documents.results);
         requesting = false;
       });
+    }
+  }
+
+  void _showPicker(
+    context,
+  ) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                    leading: const Icon(Icons.photo_library),
+                    title: Text('Gallery'.i18n),
+                    onTap: () {
+                      _getImage(context);
+                    }),
+                ListTile(
+                  leading: const Icon(Icons.photo_camera),
+                  title: Text('Camera'.i18n),
+                  onTap: () {
+                    scanDocument();
+                    Navigator.of(bc).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  Future _getImage(context) async {
+    List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+        requestType: RequestType.image,
+        textDelegate: PaperlessAssetsPickerTextDelegate());
+    Navigator.of(context).pop();
+    if (assets != null && assets.length > 0) {
+      setState(() {
+        shareAmount = assets.length;
+      });
+
+      for (var image in assets) {
+        File img = await image.file;
+        await API.instance.uploadFile(img.path);
+        setState(() {
+          shareAmount--;
+        });
+      }
     }
   }
 }

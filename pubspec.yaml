@@ -20,43 +20,39 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  flutter_svg:
-    # This is necessary to use the latest Flutter SDK
-    # https://github.com/dnfield/flutter_svg/issues/479
-    git:
-      url: git://github.com/gskinnerTeam/flutter_svg.git
-      ref: 12b55b464d2e253f411a17798527a7daa2c00ceb
-  flutter_secure_storage: ^3.3.5
-  get_it: ^5.0.3
-  dio: ^3.0.10
-  json_annotation: ^3.1.1
-  http_auth: ^0.3.1
-  cached_network_image: ^2.5.0
-  i18n_extension: ^3.0.0-dev.1
   flutter_localizations:
     sdk: flutter
-  open_file: ^3.0.3
-  settings_ui: ^0.5.0
-  shared_preferences: '>=0.5.7+2 <2.0.0'
-  receive_sharing_intent: ^1.4.2
   edge_detection:
     git:
       url: https://github.com/bauerj/edge_detection
       ref: ec8639fffef3d6d0714b260067f77dd1261b39ed
-
+  cached_network_image: ^3.0.0
+  dio: ^4.0.0
+  flutter_secure_storage: ^4.1.0
+  flutter_svg: ^0.19.3
+  get_it: ^6.0.0
+  http_auth: ^1.0.0
+  i18n_extension: ^4.0.0
+  json_annotation: ^4.0.1
+  open_file: ^3.1.0
+  receive_sharing_intent: ^1.4.5
+  settings_ui: ^0.6.0
+  shared_preferences: ">=0.5.7+2 <2.0.0"
+  wechat_assets_picker: ^5.1.0
 
 dev_dependencies:
-  json_serializable: ^3.5.1
-  build_runner: ^1.10.11
-  archive: ^2.0.13
   flutter_test:
     sdk: flutter
+  archive: ^3.1.2
+  build_runner: ^1.12.2
+  json_serializable: ^4.1.0
 
+dependency_overrides:
+  cached_network_image: any
+  flutter_svg: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
 # The following section is specific to Flutter.
 flutter:
   uses-material-design: true

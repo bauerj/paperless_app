@@ -458,7 +458,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
           return SafeArea(
             child: Wrap(
               children: <Widget>[
-                ListTile(title:Text(
+                ListTile(
+                    title: Text(
                   "Add Document from".i18n,
                   style: TextStyle(fontSize: 20),
                 )),

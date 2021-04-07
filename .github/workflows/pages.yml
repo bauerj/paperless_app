@@ -19,6 +19,8 @@ jobs:
           wget https://api.crowdin.com/api/v2/projects/405180/members?limit=500 --header="Authorization: Bearer $CROWDIN_API_KEY" -O build/pages/translators.json
         env:
           CROWDIN_API_KEY: ${{ secrets.CROWDIN_API_KEY }}
+      - run: |
+          echo "{\"translators\": $(cat build/pages/translators.json), \"contributors\": $(cat build/pages/contributors.json)}" > build/pages/contributors-combined.json
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:

@@ -25,7 +25,9 @@ class _AboutRouteState extends State<AboutRoute> {
         .data;
 
     setState(() {
-      translators = _translators.map((e) => e["data"]["fullName"]).toList();
+      translators = _translators
+          .map((e) => e["data"]["fullName"] ?? e["data"]["username"])
+          .toList();
       contributors = _contributors.map((e) => e["login"]).toList();
     });
   }

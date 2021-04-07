@@ -458,6 +458,10 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
           return SafeArea(
             child: Wrap(
               children: <Widget>[
+                ListTile(title:Text(
+                  "Add Document from".i18n,
+                  style: TextStyle(fontSize: 20),
+                )),
                 ListTile(
                     leading: const Icon(Icons.photo_library),
                     title: Text('Gallery'.i18n),
@@ -481,7 +485,10 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   Future _getImage(context) async {
     List<AssetEntity> assets = await AssetPicker.pickAssets(context,
         requestType: RequestType.image,
-        textDelegate: PaperlessAssetsPickerTextDelegate());
+        sortPathDelegate: PaperlessSortPathDelegate(),
+        maxAssets: 100,
+        pickerTheme: Theme.of(context),
+        textDelegate: paperlessAssetsPickerTextDelegate());
     Navigator.of(context).pop();
     if (assets != null && assets.length > 0) {
       setState(() {

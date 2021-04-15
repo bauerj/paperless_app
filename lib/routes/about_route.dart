@@ -16,19 +16,16 @@ class _AboutRouteState extends State<AboutRoute> {
   List<dynamic> translators = [];
 
   Future<void> loadContributors() async {
-    var _translators = (await Dio()
-            .get("https://bauerj.github.io/paperless_app/translators.json"))
-        .data["data"];
-
-    var _contributors = (await Dio()
-            .get("https://bauerj.github.io/paperless_app/contributors.json"))
+    var _contributors = (await Dio().get(
+            "https://bauerj.github.io/paperless_app/contributors-combined.json"))
         .data;
 
     setState(() {
-      translators = _translators
+      translators = _contributors["translators"]["data"]
           .map((e) => e["data"]["fullName"] ?? e["data"]["username"])
           .toList();
-      contributors = _contributors.map((e) => e["login"]).toList();
+      contributors =
+          _contributors["contributors"].map((e) => e["login"]).toList();
     });
   }
 

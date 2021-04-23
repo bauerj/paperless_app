@@ -25,22 +25,16 @@ class TagWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: new BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color: getColor()),
-
+      decoration: new BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          color: getColor()),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
         child: Row(children: [
-          Icon(
-            Icons.label_important_outline,
-            size: 17,
-            color: getTextColor()
-          ),
-          Text(
-            tag.name,
-            textAlign: TextAlign.right,
-            style: TextStyle(color: getTextColor()
-            )
-          )
+          Icon(Icons.label_important_outline, size: 17, color: getTextColor()),
+          Text(tag.name,
+              textAlign: TextAlign.right,
+              style: TextStyle(color: getTextColor()))
         ]),
       ),
     );

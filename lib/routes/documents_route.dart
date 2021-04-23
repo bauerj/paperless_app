@@ -7,9 +7,10 @@ import 'package:i18n_extension/i18n_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:paperless_app/routes/about_route.dart';
+import 'package:paperless_app/routes/document_detail_route.dart';
 import 'package:paperless_app/scan.dart';
+import 'package:paperless_app/widgets/document_preview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -18,8 +19,6 @@ import 'dart:async';
 import 'package:paperless_app/routes/server_details_route.dart';
 import 'package:paperless_app/routes/settings_route.dart';
 import 'package:paperless_app/widgets/correspondent_widget.dart';
-import 'package:paperless_app/widgets/ink_wrapper.dart';
-import 'package:paperless_app/widgets/online_pdf_dialog.dart';
 import 'package:paperless_app/widgets/search_app_bar.dart';
 import 'package:paperless_app/widgets/select_order_route.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
@@ -30,6 +29,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../api.dart';
 
 class DocumentsRoute extends StatefulWidget {
+  static DateFormat dateFormat = DateFormat();
   @override
   State<StatefulWidget> createState() => _DocumentsRouteState();
 }
@@ -42,40 +42,25 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   ResponseList<Correspondent> correspondents;
   ScrollController scrollController;
   bool requesting = true;
-  DateFormat dateFormat;
   String ordering = "-created";
   String searchString;
-  bool invertDocumentPreview = true;
   int scanAmount = 0;
   int shareAmount = 0;
   ScanHandler scanHandler = ScanHandler();
   StreamSubscription intentDataStreamSubscription;
   List<SharedMediaFile> sharedFiles;
-
-  final List<double> invertMatrix = [
-    -1, 0, 0, 0, 255, //
-    0, -1, 0, 0, 255, //
-    0, 0, -1, 0, 255, //
-    0, 0, 0, 1, 0, //
-  ];
-
-  final List<double> identityMatrix = [
-    1, 0, 0, 0, //
-    0, 0, 1, 0, //
-    0, 0, 0, 0, //
-    1, 0, 0, 0, //
-    0, 0, 1, 0, //
-  ];
+  bool invertDocumentPreview = true;
 
   Future<void> setOrdering(String ordering) async {
     this.ordering = ordering;
     reloadDocuments();
   }
 
-  void showDocumentPdf(Document doc) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => OnlinePdfDialog(doc),
+  void showDocument(Document doc) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => DocumentDetailRoute(doc, tags, correspondents)),
     );
   }
 
@@ -109,13 +94,13 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                 title: Text("Error while connecting to server".i18n),
                 content: Text(e.toString()),
                 actions: <Widget>[
-                  new FlatButton(
+                  new TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                         reloadDocuments();
                       },
                       child: Text("Retry".i18n)),
-                  new FlatButton(
+                  new TextButton(
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
@@ -145,11 +130,6 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
 
   @override
   Widget build(BuildContext context) {
-    bool showDark =
-        MediaQuery.of(context).platformBrightness == Brightness.dark;
-    bool invertDocument = showDark && invertDocumentPreview;
-    Color bg = showDark ? Colors.black : Colors.white;
-    Color fg = showDark ? Colors.white : Colors.black;
     return Scaffold(
       key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
@@ -229,78 +209,35 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                             .toList();
                         return Card(
                           margin: EdgeInsets.all(10),
-                          child: InkWrapper(
-                            splashColor: Colors.greenAccent.withOpacity(1 / 2),
-                            onTap: () =>
-                                showDocumentPdf(documents.results[index]),
-                            child: Column(
-                              children: <Widget>[
-                                Stack(children: <Widget>[
-                                  ColorFiltered(
-                                      colorFilter: ColorFilter.matrix(
-                                          invertDocument
-                                              ? invertMatrix
-                                              : identityMatrix),
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.cover,
-                                        height: 200,
-                                        width: double.infinity,
-                                        imageUrl: documents.results[index]
-                                            .getThumbnailUrl(),
-                                        httpHeaders: {
-                                          "Authorization":
-                                              API.instance.authString
-                                        },
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      )),
-                                  Container(
-                                    padding: EdgeInsets.all(5.0),
-                                    height: 200,
-                                    alignment: Alignment.bottomCenter,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: <Color>[
-                                          bg.withAlpha(0),
-                                          bg.withAlpha(0),
-                                          bg.withAlpha(130),
-                                          bg,
-                                          bg,
-                                        ],
-                                      ),
+                          child: Column(
+                            children: <Widget>[
+                              DocumentPreview(
+                                invertDocumentPreview,
+                                documents.results[index],
+                                onTap: () =>
+                                    showDocument(documents.results[index]),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(7),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                        '${DocumentsRoute.dateFormat.format(documents.results[index].created)}',
+                                        textAlign: TextAlign.left),
+                                    CorrespondentWidget.fromCorrespondentId(
+                                        documents.results[index].correspondent,
+                                        correspondents),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: tagWidgets,
                                     ),
-                                    child: Text(
-                                      '${documents.results[index].title}',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(fontSize: 20, color: fg),
-                                    ),
-                                  ),
-                                ]),
-                                Padding(
-                                  padding: EdgeInsets.all(7),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                          '${dateFormat.format(documents.results[index].created)}',
-                                          textAlign: TextAlign.left),
-                                      CorrespondentWidget.fromCorrespondentId(
-                                          documents
-                                              .results[index].correspondent,
-                                          correspondents),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: tagWidgets,
-                                      ),
-                                    ],
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         );
                       },
@@ -421,7 +358,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     loadCorrespondents();
     initializeDateFormatting();
     loadSettings();
-    dateFormat = new DateFormat.yMMMMd(I18n.language);
+    DocumentsRoute.dateFormat = new DateFormat.yMMMMd(I18n.language);
     scrollController = new ScrollController()..addListener(_scrollListener);
     scanHandler.attachListener(onScanAmountChange);
     loadShareSheet();

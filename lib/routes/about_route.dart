@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paperless_app/i18n.dart';
 import 'package:paperless_app/widgets/button_widget.dart';
+import 'package:paperless_app/widgets/heading.dart';
 
 class AboutRoute extends StatefulWidget {
   @override
@@ -45,7 +46,7 @@ class _AboutRouteState extends State<AboutRoute> {
                 padding: EdgeInsets.all(30),
                 child: Column(
                   children: [
-                    _Heading(
+                    Heading(
                       "About".i18n,
                       factor: 2,
                     ),
@@ -59,7 +60,7 @@ class _AboutRouteState extends State<AboutRoute> {
                           .i18n,
                       textAlign: TextAlign.center,
                     ),
-                    _Heading("Code contributors".i18n),
+                    Heading("Code contributors".i18n),
                     Text("The following people have submitted code on Github:"
                         .i18n
                         .i18n),
@@ -67,7 +68,7 @@ class _AboutRouteState extends State<AboutRoute> {
                       height: 10,
                     ),
                     Column(children: contributorsTexts),
-                    _Heading("Translators".i18n),
+                    Heading("Translators".i18n),
                     Text(
                         "Translations for Paperless App were made on Crowdin by:"
                             .i18n),
@@ -75,12 +76,12 @@ class _AboutRouteState extends State<AboutRoute> {
                       height: 10,
                     ),
                     Column(children: translatorsTexts),
-                    _Heading("Special Thanks".i18n),
+                    Heading("Special Thanks".i18n),
                     Text("Daniel Quinn"),
                     Text("Jonas Winkler"),
                     Text(
                         "And everyone else who worked on Paperless(-NG).".i18n),
-                    _Heading("Open Source libraries".i18n),
+                    Heading("Open Source libraries".i18n),
                     SizedBox(
                       height: 10,
                     ),
@@ -92,25 +93,4 @@ class _AboutRouteState extends State<AboutRoute> {
                   ],
                 ))));
   }
-}
-
-class _Heading extends StatelessWidget {
-  final String text;
-  final double factor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 20,
-        ),
-        Text(text,
-            textScaleFactor: 2.5 * factor,
-            style: TextStyle(fontWeight: FontWeight.bold))
-      ],
-    );
-  }
-
-  _Heading(this.text, {this.factor = 1});
 }

@@ -53,7 +53,7 @@ class _SelectOrderRouteState extends State<SelectOrderRoute> {
                   width: 5,
                 ),
                 Expanded(
-                    child: RaisedButton(
+                    child: ElevatedButton(
                         child: Text("Cancel".i18n),
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -62,7 +62,7 @@ class _SelectOrderRouteState extends State<SelectOrderRoute> {
                   width: 5,
                 ),
                 Expanded(
-                    child: RaisedButton(
+                    child: ElevatedButton(
                   child: Text("Okay".i18n),
                   onPressed: () {
                     setOrdering((ascending ? "-" : "") + selected);

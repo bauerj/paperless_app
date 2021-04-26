@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paperless_app/i18n.dart';
 
 import '../api.dart';
 
@@ -8,10 +9,11 @@ class CorrespondentWidget extends StatelessWidget {
   CorrespondentWidget(this.correspondent);
 
   static CorrespondentWidget fromCorrespondentId(
-      int _correspondentId, ResponseList<Correspondent> correspondents) {
+      int _correspondentId, ResponseList<Correspondent> correspondents,
+      {bool showIfNone: false}) {
     if (correspondents == null || _correspondentId == null) {
       Correspondent correspondent = Correspondent();
-      correspondent.name = "";
+      correspondent.name = showIfNone ? "None".i18n : "";
       return new CorrespondentWidget(correspondent);
     }
     for (var _correspondent in correspondents.results) {
@@ -27,7 +29,7 @@ class CorrespondentWidget extends StatelessWidget {
     return Text(correspondent.name,
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontWeight: FontWeight.bold,
-        ));
+            fontWeight: FontWeight.bold,
+            color: correspondent.name == "None" ? Colors.grey : null));
   }
 }

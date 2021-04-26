@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../api.dart';
+import 'ink_wrapper.dart';
 
 class TagWidget extends StatelessWidget {
   final Tag tag;
@@ -56,5 +57,55 @@ class TagWidget extends StatelessWidget {
     if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
+  }
+}
+
+class SelectableTagWidget extends StatefulWidget {
+  final Function(bool) onEdit;
+  final TagWidget child;
+  final bool value;
+
+  const SelectableTagWidget(
+    this.child,
+    this.value, {
+    this.onEdit,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return SelectableTagWidgetState(child, value, onEdit: onEdit);
+  }
+}
+
+class SelectableTagWidgetState extends State<SelectableTagWidget> {
+  final Function(bool) onEdit;
+  final TagWidget child;
+  bool value;
+
+  SelectableTagWidgetState(this.child, this.value, {this.onEdit});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWrapper(
+        splashColor: Colors.greenAccent.withOpacity(1 / 2),
+        onTap: () {
+          setState(() {
+            value = !value;
+          });
+          onEdit(value);
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            child,
+            Checkbox(
+                value: value,
+                onChanged: (v) {
+                  value = v;
+                  onEdit(v);
+                })
+          ],
+        ));
   }
 }

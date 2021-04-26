@@ -82,6 +82,15 @@ class Document {
   String getDownloadUrl() {
     return "${API.instance.baseURL}/fetch/doc/$id";
   }
+
+  Correspondent getCorrespondent(ResponseList<Correspondent> correspondents) {
+    for (var c in correspondents.results) {
+      if (c.id == correspondent) {
+        return c;
+      }
+    }
+    return null;
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
@@ -241,7 +250,7 @@ class API {
       url += "&ordering=" + ordering;
     }
     if (search != null) {
-      url += "&search=" + search;
+      url += "&query=" + search;
     }
     return await get(url);
   }
@@ -314,5 +323,30 @@ class API {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<void> deleteResource(String type, int id) async {
+    await dio.delete(getFullURL("/api/$type/$id"));
+  }
+
+  Future<void> deleteDocument(Document doc) async {
+    await deleteResource("document", doc.id);
+  }
+
+  Future<void> deleteTag(Tag tag) async {
+    await deleteResource("tag", tag.id);
+  }
+
+  Future<void> deleteCorrespondent(Correspondent correspondent) async {
+    await deleteResource("correspondent", correspondent.id);
+  }
+
+  Future<void> updateResource(
+      String type, int id, Map<String, dynamic> newValue) async {
+    await dio.put(getFullURL("/api/$type/$id"), data: jsonEncode(newValue));
+  }
+
+  Future<void> updateDocument(int id, Map<String, dynamic> newDocument) async {
+    await updateResource("document", id, newDocument);
   }
 }

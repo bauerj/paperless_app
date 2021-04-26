@@ -25,7 +25,6 @@ class DocumentDetailRoute extends StatefulWidget {
   }
 }
 
-// Oben in der Statusleiste Dokumentenname, Share, ...(Löschen)
 class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
   final Document _document;
   final ResponseList<Tag> _tags;
@@ -51,7 +50,7 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
           PopupMenuButton<String>(
             onSelected: (String selected) async {
               if (selected == "delete") {
-                showDialog(
+                return showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
@@ -62,7 +61,7 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                           actions: <Widget>[
                             new TextButton(
                                 onPressed: () {
-                                  // TODO: API.instance
+                                  API.instance.deleteDocument(_document);
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                 },
@@ -75,9 +74,45 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                           ]);
                     });
               }
+              if (selected == "rename") {
+                TextEditingController _textFieldController =
+                    TextEditingController();
+                _textFieldController.value =
+                    TextEditingValue(text: _document.title);
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text("Enter new document name".i18n),
+                        actions: <Widget>[
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("Cancel".i18n)),
+                          TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _document.title =
+                                      _textFieldController.value.text;
+                                });
+                                saveTitle();
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("OK".i18n)),
+                        ],
+                        content: TextField(
+                          onChanged: (value) {},
+                          controller: _textFieldController,
+                        ),
+                      );
+                    });
+              }
             },
             itemBuilder: (BuildContext context) {
               return <PopupMenuItem<String>>[
+                PopupMenuItem<String>(
+                    value: "rename", child: Text("Rename".i18n)),
                 PopupMenuItem<String>(
                     value: "delete", child: Text("Delete".i18n)),
               ];
@@ -105,22 +140,123 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 7, right: 10),
-                    child: Heading("Created".i18n, factor: 0.5),
-                  ),
-                  Text(DocumentsRoute.dateFormat.format(_document.created..toLocal()))
-                ]),
-                Heading(
+                _EditableHeading(
+                  "Created".i18n,
+                  onEdit: () async {
+                    DateTime newDate = await showDatePicker(
+                        initialDate: _document.created.toLocal(),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now().add(Duration(days: 100)),
+                        context: context);
+                    if (newDate != null) {
+                      setState(() {
+                        _document.created = newDate;
+                        saveCreatedDate();
+                      });
+                    }
+                  },
+                ),
+                Text(DocumentsRoute.dateFormat
+                    .format(_document.created..toLocal())),
+                _EditableHeading(
                   "Correspondent".i18n,
-                  factor: 0.5,
+                  onEdit: () {
+                    List<Widget> options = [];
+                    options.add(
+                      SimpleDialogOption(
+                        child: Text(
+                          "None".i18n,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _document.correspondent = null;
+                            saveCorrespondent();
+                          });
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    );
+                    for (var c in _correspondents.results) {
+                      options.add(SimpleDialogOption(
+                        child: Text(c.name),
+                        onPressed: () {
+                          setState(() {
+                            _document.correspondent = c.id;
+                            saveCorrespondent();
+                          });
+                          Navigator.of(context).pop();
+                        },
+                      ));
+                    }
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SimpleDialog(
+                            title: Text("Select Correspondent".i18n),
+                            children: options,
+                          );
+                        });
+                  },
                 ),
                 CorrespondentWidget.fromCorrespondentId(
-                    _document.correspondent, _correspondents),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 5, right: 10),
-                  child: Heading("Tags".i18n, factor: 0.5),
+                    _document.correspondent, _correspondents,
+                    showIfNone: true),
+                _EditableHeading(
+                  "Tags".i18n,
+                  onEdit: () {
+                    List<Widget> items = [];
+                    for (var t in _tags.results) {
+                      items.add(
+                        SelectableTagWidget(
+                          TagWidget.fromTagId(t.id, _tags),
+                          _document.tags.contains(t.id),
+                          onEdit: (v) {
+                            setState(() {
+                              if (v)
+                                _document.tags.add(t.id);
+                              else
+                                _document.tags
+                                    .removeWhere((tag) => t.id == tag);
+                              saveTags();
+                            });
+                          },
+                        ),
+                      );
+                    }
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text("Select Tags".i18n),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text("OK".i18n),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                            content: SingleChildScrollView(
+                              child: Container(
+                                width: double.maxFinite,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxHeight:
+                                        MediaQuery.of(context).size.height *
+                                            0.7,
+                                  ),
+                                  child: ListView(
+                                    children: items,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        });
+                  },
                 ),
                 Row(
                     children: _document.tags
@@ -146,5 +282,65 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
       context: context,
       builder: (BuildContext context) => OnlinePdfDialog(doc, shareOnly: true),
     );
+  }
+
+  Future<void> saveTags() async {
+    API.instance.updateDocument(_document.id, {"tags": _document.tags});
+  }
+
+  Future<void> saveCreatedDate() async {
+    API.instance.updateDocument(
+        _document.id, {"created": _document.created.toIso8601String()});
+  }
+
+  Future<void> saveCorrespondent() async {
+    API.instance.updateDocument(
+        _document.id, {"correspondent": _document.correspondent});
+  }
+
+  Future<void> saveTitle() async {
+    API.instance.updateDocument(_document.id, {"title": _document.title});
+  }
+}
+
+class _EditableHeading extends StatefulWidget {
+  final VoidCallback onEdit;
+  final String text;
+
+  const _EditableHeading(this.text, {Key key, this.onEdit}) : super(key: key);
+
+  @override
+  _EditableHeadingState createState() {
+    return _EditableHeadingState(text, onEdit);
+  }
+}
+
+class _EditableHeadingState extends State<_EditableHeading> {
+  final String text;
+  final VoidCallback onEdit;
+
+  _EditableHeadingState(this.text, this.onEdit);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.only(top: 10),
+        child: Row(
+          children: [
+            Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Heading(
+                  text,
+                  factor: 0.5,
+                )),
+            IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: onEdit,
+                iconSize: 12,
+                splashRadius: 12.0,
+                splashColor: Colors.greenAccent,
+                color: Color.fromARGB(255, 120, 120, 120)),
+          ],
+        ));
   }
 }

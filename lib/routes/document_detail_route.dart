@@ -110,7 +110,7 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                     padding: EdgeInsets.only(bottom: 7, right: 10),
                     child: Heading("Created".i18n, factor: 0.5),
                   ),
-                  Text(DocumentsRoute.dateFormat.format(_document.created))
+                  Text(DocumentsRoute.dateFormat.format(_document.created..toLocal()))
                 ]),
                 Heading(
                   "Correspondent".i18n,

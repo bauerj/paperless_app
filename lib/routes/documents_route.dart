@@ -224,7 +224,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Text(
-                                        '${DocumentsRoute.dateFormat.format(documents.results[index].created)}',
+                                        '${DocumentsRoute.dateFormat.format(documents.results[index].created..toLocal())}',
                                         textAlign: TextAlign.left),
                                     CorrespondentWidget.fromCorrespondentId(
                                         documents.results[index].correspondent,

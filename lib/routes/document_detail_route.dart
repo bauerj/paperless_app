@@ -39,6 +39,8 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
 
   @override
   Widget build(BuildContext context) {
+    bool editable =
+        API.instance.getCapabilities().contains(APICapability.UPDATE_DOCUMENTS);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -110,12 +112,14 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
               }
             },
             itemBuilder: (BuildContext context) {
-              return <PopupMenuItem<String>>[
-                PopupMenuItem<String>(
-                    value: "rename", child: Text("Rename".i18n)),
-                PopupMenuItem<String>(
-                    value: "delete", child: Text("Delete".i18n)),
-              ];
+              return editable
+                  ? <PopupMenuItem<String>>[
+                      PopupMenuItem<String>(
+                          value: "rename", child: Text("Rename".i18n)),
+                      PopupMenuItem<String>(
+                          value: "delete", child: Text("Delete".i18n)),
+                    ]
+                  : [];
             },
           )
         ],
@@ -142,6 +146,7 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
               children: [
                 _EditableHeading(
                   "Created".i18n,
+                  editable: editable,
                   onEdit: () async {
                     DateTime newDate = await showDatePicker(
                         initialDate: _document.created.toLocal(),
@@ -160,6 +165,7 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                     .format(_document.created..toLocal())),
                 _EditableHeading(
                   "Correspondent".i18n,
+                  editable: editable,
                   onEdit: () {
                     List<Widget> options = [];
                     options.add(
@@ -206,6 +212,7 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                     showIfNone: true),
                 _EditableHeading(
                   "Tags".i18n,
+                  editable: editable,
                   onEdit: () {
                     List<Widget> items = [];
                     for (var t in _tags.results) {
@@ -285,41 +292,44 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
   }
 
   Future<void> saveTags() async {
-    API.instance.updateDocument(_document.id, {"tags": _document.tags});
+    await API.instance.updateDocument(_document.id, {"tags": _document.tags});
   }
 
   Future<void> saveCreatedDate() async {
-    API.instance.updateDocument(
+    await API.instance.updateDocument(
         _document.id, {"created": _document.created.toIso8601String()});
   }
 
   Future<void> saveCorrespondent() async {
-    API.instance.updateDocument(
+    await API.instance.updateDocument(
         _document.id, {"correspondent": _document.correspondent});
   }
 
   Future<void> saveTitle() async {
-    API.instance.updateDocument(_document.id, {"title": _document.title});
+    await API.instance.updateDocument(_document.id, {"title": _document.title});
   }
 }
 
 class _EditableHeading extends StatefulWidget {
   final VoidCallback onEdit;
   final String text;
+  final bool editable;
 
-  const _EditableHeading(this.text, {Key key, this.onEdit}) : super(key: key);
+  const _EditableHeading(this.text, {Key key, this.onEdit, this.editable})
+      : super(key: key);
 
   @override
   _EditableHeadingState createState() {
-    return _EditableHeadingState(text, onEdit);
+    return _EditableHeadingState(text, onEdit, editable);
   }
 }
 
 class _EditableHeadingState extends State<_EditableHeading> {
   final String text;
   final VoidCallback onEdit;
+  final bool editable;
 
-  _EditableHeadingState(this.text, this.onEdit);
+  _EditableHeadingState(this.text, this.onEdit, this.editable);
 
   @override
   Widget build(BuildContext context) {
@@ -333,13 +343,15 @@ class _EditableHeadingState extends State<_EditableHeading> {
                   text,
                   factor: 0.5,
                 )),
-            IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: onEdit,
-                iconSize: 12,
-                splashRadius: 12.0,
-                splashColor: Colors.greenAccent,
-                color: Color.fromARGB(255, 120, 120, 120)),
+            editable
+                ? IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: onEdit,
+                    iconSize: 12,
+                    splashRadius: 12.0,
+                    splashColor: Colors.greenAccent,
+                    color: Color.fromARGB(255, 120, 120, 120))
+                : Text(""),
           ],
         ));
   }

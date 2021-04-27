@@ -181,6 +181,8 @@ class _Converter<T> implements JsonConverter<T, Object> {
   }
 }
 
+enum APICapability { TAG_COLOR, UPDATE_DOCUMENTS }
+
 class API {
   static API instance;
   String baseURL;
@@ -199,6 +201,10 @@ class API {
       baseURL = "https://" + baseURL;
     this.baseURL = baseURL;
     instance = this;
+  }
+
+  List<APICapability> getCapabilities() {
+    return [];
   }
 
   String getAuthString(String username, String password) {

@@ -56,12 +56,13 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     reloadDocuments();
   }
 
-  void showDocument(Document doc) {
-    Navigator.push(
+  void showDocument(Document doc) async {
+    await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => DocumentDetailRoute(doc, tags, correspondents)),
     );
+    reloadDocuments();
   }
 
   Future<void> searchDocument(String searchString) async {

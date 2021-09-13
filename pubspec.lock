@@ -35,7 +35,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.5.0"
+    version: "2.6.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -187,9 +187,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: ec8639fffef3d6d0714b260067f77dd1261b39ed
-      resolved-ref: ec8639fffef3d6d0714b260067f77dd1261b39ed
-      url: "https://github.com/bauerj/edge_detection"
+      ref: "1225a9ae9f42a6a87174bc7f85e36fea4a1d18c9"
+      resolved-ref: "1225a9ae9f42a6a87174bc7f85e36fea4a1d18c9"
+      url: "https://github.com/qcasey/edge_detection"
     source: git
     version: "1.0.5"
   extended_image:
@@ -198,14 +198,14 @@ packages:
       name: extended_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.2.1"
   extended_image_library:
     dependency: transitive
     description:
       name: extended_image_library
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.1.0"
   fake_async:
     dependency: transitive
     description:
@@ -526,7 +526,7 @@ packages:
       name: photo_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.6"
+    version: "1.3.2"
   platform:
     dependency: transitive
     description:
@@ -671,7 +671,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0"
+    version: "1.8.1"
   sprintf:
     dependency: transitive
     description:
@@ -741,7 +741,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.19"
+    version: "0.3.0"
   timing:
     dependency: transitive
     description:
@@ -776,14 +776,14 @@ packages:
       name: video_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   video_player_platform_interface:
     dependency: transitive
     description:
       name: video_player_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.2.0"
   video_player_web:
     dependency: transitive
     description:
@@ -811,7 +811,7 @@ packages:
       name: wechat_assets_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
+    version: "5.5.8"
   win32:
     dependency: transitive
     description:

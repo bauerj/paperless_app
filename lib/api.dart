@@ -199,6 +199,10 @@ class API {
 
     if (!baseURL.startsWith("http://") && !baseURL.startsWith("https://"))
       baseURL = "https://" + baseURL;
+
+    if (baseURL.endsWith("/"))
+      baseURL = baseURL.substring(0, baseURL.length - 1);
+
     this.baseURL = baseURL;
     instance = this;
   }

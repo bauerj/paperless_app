@@ -24,8 +24,8 @@ dependencies:
     sdk: flutter
   edge_detection:
     git:
-      url: https://github.com/qcasey/edge_detection
-      ref: 1225a9ae9f42a6a87174bc7f85e36fea4a1d18c9
+      url: https://github.com/bauerj/edge_detection
+      ref: 757259bc1ff1093f14b8385f904cfb83d1189667
   cached_network_image: ^3.0.0
   dio: ^4.0.0
   flutter_secure_storage: ^4.1.0

@@ -187,9 +187,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "1225a9ae9f42a6a87174bc7f85e36fea4a1d18c9"
-      resolved-ref: "1225a9ae9f42a6a87174bc7f85e36fea4a1d18c9"
-      url: "https://github.com/qcasey/edge_detection"
+      ref: "757259bc1ff1093f14b8385f904cfb83d1189667"
+      resolved-ref: "757259bc1ff1093f14b8385f904cfb83d1189667"
+      url: "https://github.com/bauerj/edge_detection"
     source: git
     version: "1.0.5"
   extended_image:

@@ -18,7 +18,7 @@
     "received_events_url": "https://api.github.com/users/bauerj/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 81
+    "contributions": 82
   },
   {
     "login": "qcasey",
@@ -39,7 +39,7 @@
     "received_events_url": "https://api.github.com/users/qcasey/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 7
+    "contributions": 10
   },
   {
     "login": "MatyasK",

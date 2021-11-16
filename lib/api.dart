@@ -214,6 +214,8 @@ class API {
   }
 
   List<APICapability> getCapabilities() {
+    if (this.apiFlavour == "paperless-ng")
+      return [APICapability.UPDATE_DOCUMENTS, APICapability.TAG_COLOR];
     return [];
   }
 
@@ -281,7 +283,11 @@ class API {
       {String ordering = "-created", String? search}) async {
     var json =
         await getAPIResource("documents", ordering: ordering, search: search);
-    return ResponseList<Document>.fromJson(json!);
+    var docs = ResponseList<Document>.fromJson(json!);
+    if (docs.runtimeType != OgDocument) {
+      this.apiFlavour = "paperless-ng";
+    }
+    return docs;
   }
 
   Future<ResponseList<Correspondent>> getCorrespondents() async {
@@ -342,7 +348,7 @@ class API {
   }
 
   Future<void> deleteResource(String type, int? id) async {
-    await dio.delete(getFullURL("/api/$type/$id"));
+    await dio.delete(getFullURL("/api/${type}s/$id/"));
   }
 
   Future<void> deleteDocument(Document doc) async {
@@ -359,7 +365,8 @@ class API {
 
   Future<void> updateResource(
       String type, int? id, Map<String, dynamic> newValue) async {
-    await dio.put(getFullURL("/api/$type/$id"), data: jsonEncode(newValue));
+    await dio.patch(getFullURL("/api/${type}s/$id/"),
+        data: jsonEncode(newValue));
   }
 
   Future<void> updateDocument(int? id, Map<String, dynamic> newDocument) async {

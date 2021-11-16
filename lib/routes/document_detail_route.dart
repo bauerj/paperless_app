@@ -39,8 +39,9 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
 
   @override
   Widget build(BuildContext context) {
-    bool editable = true;
-//        API.instance.getCapabilities().contains(APICapability.UPDATE_DOCUMENTS);
+    bool editable = API.instance!
+        .getCapabilities()
+        .contains(APICapability.UPDATE_DOCUMENTS);
     return Scaffold(
       appBar: AppBar(
         actions: [

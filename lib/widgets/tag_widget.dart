@@ -8,7 +8,7 @@ class TagWidget extends StatelessWidget {
 
   TagWidget(this.tag);
 
-  static TagWidget fromTagId(int _tagId, ResponseList<Tag> tags) {
+  static TagWidget? fromTagId(int? _tagId, ResponseList<Tag>? tags) {
     if (tags == null) {
       Tag tag = Tag();
       tag.name = "...";
@@ -16,7 +16,7 @@ class TagWidget extends StatelessWidget {
       return new TagWidget(tag);
     }
     for (var _tag in tags.results) {
-      if (_tag.id == _tagId) {
+      if (_tag!.id == _tagId) {
         return TagWidget(_tag);
       }
     }
@@ -33,7 +33,7 @@ class TagWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
         child: Row(children: [
           Icon(Icons.label_important_outline, size: 17, color: getTextColor()),
-          Text(tag.name,
+          Text(tag.name!,
               textAlign: TextAlign.right,
               style: TextStyle(color: getTextColor()))
         ]),
@@ -42,7 +42,7 @@ class TagWidget extends StatelessWidget {
   }
 
   Color getColor() {
-    return _fromHex(tag.colourCode);
+    return _fromHex(tag.colourCode!);
   }
 
   Color getTextColor() {
@@ -61,15 +61,15 @@ class TagWidget extends StatelessWidget {
 }
 
 class SelectableTagWidget extends StatefulWidget {
-  final Function(bool) onEdit;
-  final TagWidget child;
+  final Function(bool?)? onEdit;
+  final TagWidget? child;
   final bool value;
 
   const SelectableTagWidget(
     this.child,
     this.value, {
     this.onEdit,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -79,9 +79,9 @@ class SelectableTagWidget extends StatefulWidget {
 }
 
 class SelectableTagWidgetState extends State<SelectableTagWidget> {
-  final Function(bool) onEdit;
-  final TagWidget child;
-  bool value;
+  final Function(bool?)? onEdit;
+  final TagWidget? child;
+  bool? value;
 
   SelectableTagWidgetState(this.child, this.value, {this.onEdit});
 
@@ -91,19 +91,19 @@ class SelectableTagWidgetState extends State<SelectableTagWidget> {
         splashColor: Colors.greenAccent.withOpacity(1 / 2),
         onTap: () {
           setState(() {
-            value = !value;
+            value = !value!;
           });
-          onEdit(value);
+          onEdit!(value);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            child,
+            child!,
             Checkbox(
                 value: value,
                 onChanged: (v) {
                   value = v;
-                  onEdit(v);
+                  onEdit!(v);
                 })
           ],
         ));

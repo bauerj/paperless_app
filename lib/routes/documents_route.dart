@@ -1,29 +1,28 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:i18n_extension/i18n_widget.dart';
-import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+import 'package:paperless_app/delegates/paperless_text_delegate.dart';
+import 'package:paperless_app/i18n.dart';
 import 'package:paperless_app/routes/about_route.dart';
 import 'package:paperless_app/routes/document_detail_route.dart';
-import 'package:paperless_app/scan.dart';
-import 'package:paperless_app/widgets/document_preview.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:get_it/get_it.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-import 'dart:async';
-
 import 'package:paperless_app/routes/server_details_route.dart';
 import 'package:paperless_app/routes/settings_route.dart';
+import 'package:paperless_app/scan.dart';
 import 'package:paperless_app/widgets/correspondent_widget.dart';
+import 'package:paperless_app/widgets/document_preview.dart';
 import 'package:paperless_app/widgets/search_app_bar.dart';
 import 'package:paperless_app/widgets/select_order_route.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
-import 'package:paperless_app/i18n.dart';
-import 'package:paperless_app/delegates/paperless_text_delegate.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../api.dart';
@@ -37,18 +36,18 @@ class DocumentsRoute extends StatefulWidget {
 class _DocumentsRouteState extends State<DocumentsRoute> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  ResponseList<Document> documents;
-  ResponseList<Tag> tags;
-  ResponseList<Correspondent> correspondents;
-  ScrollController scrollController;
+  ResponseList<Document>? documents;
+  ResponseList<Tag>? tags;
+  ResponseList<Correspondent>? correspondents;
+  ScrollController? scrollController;
   bool requesting = true;
   String ordering = "-created";
-  String searchString;
+  String? searchString;
   int scanAmount = 0;
   int shareAmount = 0;
   ScanHandler scanHandler = ScanHandler();
-  StreamSubscription intentDataStreamSubscription;
-  List<SharedMediaFile> sharedFiles;
+  late StreamSubscription intentDataStreamSubscription;
+  List<SharedMediaFile>? sharedFiles;
   bool invertDocumentPreview = true;
 
   Future<void> setOrdering(String ordering) async {
@@ -56,16 +55,17 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     reloadDocuments();
   }
 
-  void showDocument(Document doc) async {
+  void showDocument(Document? doc) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => DocumentDetailRoute(doc, tags, correspondents)),
+          builder: (context) =>
+              DocumentDetailRoute(doc!, tags, correspondents)),
     );
     reloadDocuments();
   }
 
-  Future<void> searchDocument(String searchString) async {
+  Future<void> searchDocument(String? searchString) async {
     if (searchString == this.searchString) {
       return;
     }
@@ -80,7 +80,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       documents = null;
     });
     try {
-      var _documents = await API.instance
+      var _documents = await API.instance!
           .getDocuments(ordering: ordering, search: searchString);
 
       setState(() {
@@ -89,7 +89,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       });
     } catch (e) {
       showDialog(
-          context: _scaffoldKey.currentContext,
+          context: _scaffoldKey.currentContext!,
           builder: (BuildContext context) {
             return AlertDialog(
                 title: Text("Error while connecting to server".i18n),
@@ -120,7 +120,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       scanHandler.scanDocument();
     } catch (e) {
       showDialog(
-          context: _scaffoldKey.currentContext,
+          context: _scaffoldKey.currentContext!,
           builder: (BuildContext context) {
             return AlertDialog(
                 title: Text("Error while uploading document".i18n),
@@ -202,10 +202,10 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                     onRefresh: reloadDocuments,
                     child: ListView.builder(
                       controller: scrollController,
-                      itemCount: documents.results.length,
+                      itemCount: documents!.results.length,
                       itemBuilder: (context, index) {
-                        List<TagWidget> tagWidgets = documents
-                            .results[index].tags
+                        List<TagWidget?> tagWidgets = documents!
+                            .results[index]!.tags!
                             .map((t) => TagWidget.fromTagId(t, tags))
                             .toList();
                         return Card(
@@ -214,9 +214,9 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                             children: <Widget>[
                               DocumentPreview(
                                 invertDocumentPreview,
-                                documents.results[index],
+                                documents!.results[index],
                                 onTap: () =>
-                                    showDocument(documents.results[index]),
+                                    showDocument(documents!.results[index]),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(7),
@@ -225,15 +225,18 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Text(
-                                        '${DocumentsRoute.dateFormat.format(documents.results[index].created..toLocal())}',
+                                        '${DocumentsRoute.dateFormat.format(documents!.results[index]!.created..toLocal())}',
                                         textAlign: TextAlign.left),
                                     CorrespondentWidget.fromCorrespondentId(
-                                        documents.results[index].correspondent,
-                                        correspondents),
+                                        documents!
+                                            .results[index]!.correspondent,
+                                        correspondents)!,
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
-                                      children: tagWidgets,
+                                      children: tagWidgets
+                                          .whereType<Widget>()
+                                          .toList(),
                                     ),
                                   ],
                                 ),
@@ -278,7 +281,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   }
 
   void loadTags() async {
-    var _tags = await API.instance.getTags();
+    var _tags = await API.instance!.getTags();
     while (_tags.hasMoreData()) {
       var moreTags = await _tags.getNext();
       _tags.next = moreTags.next;
@@ -290,7 +293,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   }
 
   void loadCorrespondents() async {
-    var _correspondents = await API.instance.getCorrespondents();
+    var _correspondents = await API.instance!.getCorrespondents();
     while (_correspondents.hasMoreData()) {
       var moreCorrespondents = await _correspondents.getNext();
       _correspondents.next = moreCorrespondents.next;
@@ -315,9 +318,9 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   }
 
   void uploadSharedDocuments() async {
-    if (sharedFiles != null && sharedFiles.isNotEmpty) {
-      for (var f in sharedFiles) {
-        await API.instance.uploadFile(f.path);
+    if (sharedFiles != null && sharedFiles!.isNotEmpty) {
+      for (var f in sharedFiles!) {
+        await API.instance!.uploadFile(f.path);
         setState(() {
           shareAmount--;
         });
@@ -332,7 +335,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       setState(() {
         sharedFiles = value;
         if (sharedFiles != null) {
-          shareAmount += sharedFiles.length;
+          shareAmount += sharedFiles!.length;
         }
       });
       uploadSharedDocuments();
@@ -345,7 +348,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       setState(() {
         sharedFiles = value;
         if (sharedFiles != null) {
-          shareAmount += sharedFiles.length;
+          shareAmount += sharedFiles!.length;
         }
       });
       uploadSharedDocuments();
@@ -368,22 +371,22 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
 
   @override
   void dispose() {
-    scrollController.removeListener(_scrollListener);
+    scrollController!.removeListener(_scrollListener);
     intentDataStreamSubscription.cancel();
     super.dispose();
   }
 
   void _scrollListener() async {
-    if (scrollController.position.extentAfter < 900 &&
+    if (scrollController!.position.extentAfter < 900 &&
         !requesting &&
-        documents.hasMoreData()) {
+        documents!.hasMoreData()) {
       setState(() {
         requesting = true;
       });
-      var _documents = await documents.getNext();
+      var _documents = await documents!.getNext();
       setState(() {
-        documents.next = _documents.next;
-        documents.results.addAll(_documents.results);
+        documents!.next = _documents.next;
+        documents!.results.addAll(_documents.results);
         requesting = false;
       });
     }
@@ -422,7 +425,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   }
 
   Future _getImage(context) async {
-    List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+    List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
         requestType: RequestType.image,
         sortPathDelegate: PaperlessSortPathDelegate(),
         maxAssets: 100,
@@ -435,8 +438,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       });
 
       for (var image in assets) {
-        File img = await image.file;
-        await API.instance.uploadFile(img.path);
+        File img = await (image.file as FutureOr<File>);
+        await API.instance!.uploadFile(img.path);
         setState(() {
           shareAmount--;
         });

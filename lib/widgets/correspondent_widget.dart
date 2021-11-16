@@ -8,8 +8,8 @@ class CorrespondentWidget extends StatelessWidget {
 
   CorrespondentWidget(this.correspondent);
 
-  static CorrespondentWidget fromCorrespondentId(
-      int _correspondentId, ResponseList<Correspondent> correspondents,
+  static CorrespondentWidget? fromCorrespondentId(
+      int? _correspondentId, ResponseList<Correspondent>? correspondents,
       {bool showIfNone: false}) {
     if (correspondents == null || _correspondentId == null) {
       Correspondent correspondent = Correspondent();
@@ -17,7 +17,7 @@ class CorrespondentWidget extends StatelessWidget {
       return new CorrespondentWidget(correspondent);
     }
     for (var _correspondent in correspondents.results) {
-      if (_correspondent.id == _correspondentId) {
+      if (_correspondent!.id == _correspondentId) {
         return CorrespondentWidget(_correspondent);
       }
     }
@@ -26,7 +26,7 @@ class CorrespondentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(correspondent.name,
+    return Text(correspondent.name!,
         textAlign: TextAlign.center,
         style: TextStyle(
             fontWeight: FontWeight.bold,

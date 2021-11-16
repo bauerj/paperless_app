@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DisplayStepsWidget extends StatelessWidget {
-  final int currentStep;
-  final int totalSteps;
+  final int? currentStep;
+  final int? totalSteps;
 
   DisplayStepsWidget({this.currentStep, this.totalSteps});
 
@@ -10,15 +10,15 @@ class DisplayStepsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var widgets = <Widget>[];
 
-    for (int i = 0; i < this.totalSteps; i++) {
+    for (int i = 0; i < this.totalSteps!; i++) {
       var borderRadius = BorderRadius.zero;
-      Color color = (i < this.currentStep) ? Colors.green : Colors.grey;
+      Color color = (i < this.currentStep!) ? Colors.green : Colors.grey;
       if (i == currentStep) color = Colors.grey.shade800;
       if (i == 0) {
         borderRadius = BorderRadius.only(
             topLeft: Radius.circular(10), bottomLeft: Radius.circular(10));
       }
-      if (i == this.totalSteps - 1) {
+      if (i == this.totalSteps! - 1) {
         borderRadius = BorderRadius.only(
             topRight: Radius.circular(10), bottomRight: Radius.circular(10));
       }

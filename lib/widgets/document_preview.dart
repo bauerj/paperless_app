@@ -8,14 +8,14 @@ import 'ink_wrapper.dart';
 
 class DocumentPreview extends StatefulWidget {
   final bool invertPreview;
-  final Document document;
+  final Document? document;
   final double height;
   final bool showTitle;
   final bool showOpen;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const DocumentPreview(this.invertPreview, this.document,
-      {Key key,
+      {Key? key,
       this.height: 200,
       this.showTitle: true,
       this.showOpen: false,
@@ -31,11 +31,11 @@ class DocumentPreview extends StatefulWidget {
 
 class _DocumentPreviewState extends State<DocumentPreview> {
   final bool _invertPreview;
-  final Document _document;
+  final Document? _document;
   final double _height;
   final bool _showTitle;
   final bool _showOpen;
-  final VoidCallback _onTap;
+  final VoidCallback? _onTap;
 
   final List<double> invertMatrix = [
     -1, 0, 0, 0, 255, //
@@ -70,8 +70,8 @@ class _DocumentPreviewState extends State<DocumentPreview> {
             fit: BoxFit.cover,
             height: _height,
             width: double.infinity,
-            imageUrl: _document.getThumbnailUrl(),
-            httpHeaders: {"Authorization": API.instance.authString},
+            imageUrl: _document!.getThumbnailUrl(),
+            httpHeaders: {"Authorization": API.instance!.authString!},
             errorWidget: (context, url, error) => Icon(Icons.error),
           ))
     ];
@@ -96,7 +96,7 @@ class _DocumentPreviewState extends State<DocumentPreview> {
             ),
           ),
           child: Text(
-            '${_document.title}',
+            '${_document!.title}',
             textAlign: TextAlign.start,
             style: TextStyle(fontSize: 20, color: fg),
           ),

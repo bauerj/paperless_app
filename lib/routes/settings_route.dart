@@ -6,7 +6,7 @@ import 'package:paperless_app/i18n.dart';
 final _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class SettingsRoute extends StatefulWidget {
-  SettingsRoute({Key key}) : super(key: key);
+  SettingsRoute({Key? key}) : super(key: key);
 
   @override
   _SettingsRouteState createState() => _SettingsRouteState();
@@ -14,7 +14,7 @@ class SettingsRoute extends StatefulWidget {
 
 class _SettingsRouteState extends State<SettingsRoute> {
   bool invertDocumentPreview = true;
-  SharedPreferences prefs;
+  late SharedPreferences prefs;
   _SettingsRouteState();
 
   @override

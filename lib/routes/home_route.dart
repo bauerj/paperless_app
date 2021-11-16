@@ -38,7 +38,7 @@ class _HomeRouteState extends State<HomeRoute> {
     try {
       url = await GetIt.I<FlutterSecureStorage>().read(key: "server_url");
     } catch (e, s) {
-      ScaffoldMessenger.of(_scaffoldKey.currentContext).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(SnackBar(
         content: Text("Unable to access secure storage: $e ($s))"),
         duration: Duration(seconds: 15),
       ));

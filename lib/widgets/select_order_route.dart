@@ -3,27 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:paperless_app/i18n.dart';
 
 class SelectOrderRoute extends StatefulWidget {
-  final String ordering;
-  final Future<void> Function(String ordering) setOrdering;
-  SelectOrderRoute({this.setOrdering, Key key, this.ordering})
+  final String? ordering;
+  final Future<void> Function(String ordering)? setOrdering;
+  SelectOrderRoute({this.setOrdering, Key? key, this.ordering})
       : super(key: key);
 
   @override
   _SelectOrderRouteState createState() {
-    String selected = "created";
+    String? selected = "created";
     bool ascending = true;
-    if (ordering != null && ordering.length > 1) {
-      ascending = ordering.startsWith("-");
-      selected = ascending ? ordering.substring(1) : ordering;
+    if (ordering != null && ordering!.length > 1) {
+      ascending = ordering!.startsWith("-");
+      selected = ascending ? ordering!.substring(1) : ordering!;
     }
     return new _SelectOrderRouteState(selected, ascending, setOrdering);
   }
 }
 
 class _SelectOrderRouteState extends State<SelectOrderRoute> {
-  String selected;
+  String? selected;
   bool ascending = true;
-  final Future<void> Function(String ordering) setOrdering;
+  final Future<void> Function(String ordering)? setOrdering;
   _SelectOrderRouteState(this.selected, this.ascending, this.setOrdering);
 
   @override
@@ -65,7 +65,7 @@ class _SelectOrderRouteState extends State<SelectOrderRoute> {
                     child: ElevatedButton(
                   child: Text("Okay".i18n),
                   onPressed: () {
-                    setOrdering((ascending ? "-" : "") + selected);
+                    setOrdering!((ascending ? "-" : "") + selected!);
                     Navigator.of(context).pop();
                   },
                 )),
@@ -107,10 +107,10 @@ class _SelectOrderRouteState extends State<SelectOrderRoute> {
 enum SelectedOrder { NONE, ASCENDING, DESCENDING }
 
 class OrderWidget extends StatelessWidget {
-  final String name;
-  final String label;
-  final SelectedOrder selectedOrder;
-  final GestureTapCallback onTap;
+  final String? name;
+  final String? label;
+  final SelectedOrder? selectedOrder;
+  final GestureTapCallback? onTap;
   OrderWidget({this.name, this.label, this.selectedOrder, this.onTap});
 
   @override
@@ -146,7 +146,7 @@ class OrderWidget extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Text(
-                    label,
+                    label!,
                     style: TextStyle(
                         fontWeight: selectedOrder != SelectedOrder.NONE
                             ? FontWeight.bold

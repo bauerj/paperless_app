@@ -1,24 +1,23 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:paperless_app/api.dart';
+import 'package:paperless_app/i18n.dart';
+import 'package:paperless_app/widgets/button_widget.dart';
 import 'package:paperless_app/widgets/textfield_widget.dart';
 
 import '../widgets/display_steps_widget.dart';
-import 'package:paperless_app/widgets/button_widget.dart';
-import 'package:paperless_app/i18n.dart';
-
 import 'login_route.dart';
 
 final _formKey = GlobalKey<FormState>();
 final _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class ServerDetailsRoute extends StatefulWidget {
-  final String url;
+  final String? url;
   final bool isWelcome;
 
-  ServerDetailsRoute({Key key, this.url, this.isWelcome = true})
+  ServerDetailsRoute({Key? key, this.url, this.isWelcome = true})
       : super(key: key);
 
   @override
@@ -26,22 +25,22 @@ class ServerDetailsRoute extends StatefulWidget {
 }
 
 class _ServerDetailsRouteState extends State<ServerDetailsRoute> {
-  String serverUrl;
+  String? serverUrl;
 
   _ServerDetailsRouteState(this.serverUrl);
 
   void save() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      _formKey.currentState.deactivate();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      _formKey.currentState!.deactivate();
       await GetIt.I<FlutterSecureStorage>()
           .write(key: "server_url", value: serverUrl);
 
-      ScaffoldMessenger.of(_scaffoldKey.currentContext).showSnackBar(SnackBar(
-          content: Text('Connecting to %s...'.i18n.fill([serverUrl]))));
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(SnackBar(
+          content: Text('Connecting to %s...'.i18n.fill([serverUrl!]))));
 
       try {
-        if (await API(serverUrl).testConnection()) {
+        if (await API(serverUrl!).testConnection()) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => LoginRoute()),
@@ -49,7 +48,7 @@ class _ServerDetailsRouteState extends State<ServerDetailsRoute> {
         }
       } catch (e) {
         showDialog(
-            context: _scaffoldKey.currentContext,
+            context: _scaffoldKey.currentContext!,
             builder: (BuildContext ctx) {
               return AlertDialog(
                   title: Text("Error while connecting to server".i18n),
@@ -107,11 +106,11 @@ class _ServerDetailsRouteState extends State<ServerDetailsRoute> {
                       keyboardType: TextInputType.url,
                       initialValue: serverUrl,
                       validator: (value) {
-                        if (value.isEmpty || Uri.tryParse(value) == null)
+                        if (value!.isEmpty || Uri.tryParse(value) == null)
                           return "Please enter a URL".i18n;
                         return null;
                       },
-                      onSaved: (String url) {
+                      onSaved: (String? url) {
                         serverUrl = url;
                       },
                     ),

@@ -1,17 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:dio/dio.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
     as SecureStorage;
 import 'package:get_it/get_it.dart';
+import 'package:json_annotation/json_annotation.dart';
+
 part 'api.g.dart';
 
 @JsonSerializable(createToJson: false)
 class Correspondent {
   Correspondent();
-  int id;
-  String name;
+  int? id;
+  String? name;
 
   factory Correspondent.fromJson(Map<String, dynamic> json) =>
       _$CorrespondentFromJson(json);
@@ -20,9 +22,9 @@ class Correspondent {
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class Tag {
   Tag();
-  int id;
-  String name;
-  String colourCode;
+  int? id;
+  String? name;
+  String? colourCode;
 
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
 }
@@ -53,57 +55,59 @@ class OgTag extends Tag {
   }
 
   @JsonKey(fromJson: _colourCodeFromindex, name: "colour")
-  String colourCode;
+  String? colourCode;
 
   factory OgTag.fromJson(Map<String, dynamic> json) => _$OgTagFromJson(json);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: true)
 class Document {
   Document();
-  int id;
-  int correspondent;
-  String title;
-  String content;
-  List<int> tags;
-  String checksum;
-  DateTime created;
-  DateTime modified;
-  String originalFileName;
-  String archivedFileName;
+  int? id;
+  int? correspondent;
+  String? title;
+  String? content;
+  List<int?>? tags;
+  String? checksum;
+  late DateTime created;
+  late DateTime modified;
+  String? originalFileName;
+  String? archivedFileName;
 
   factory Document.fromJson(Map<String, dynamic> json) =>
       _$DocumentFromJson(json);
 
   String getThumbnailUrl() {
-    return "${API.instance.baseURL}/fetch/thumb/$id";
+    return "${API.instance!.baseURL}/fetch/thumb/$id";
   }
 
   String getDownloadUrl() {
-    return "${API.instance.baseURL}/fetch/doc/$id";
+    return "${API.instance!.baseURL}/fetch/doc/$id";
   }
 
-  Correspondent getCorrespondent(ResponseList<Correspondent> correspondents) {
+  Correspondent? getCorrespondent(ResponseList<Correspondent> correspondents) {
     for (var c in correspondents.results) {
-      if (c.id == correspondent) {
+      if (c!.id == correspondent) {
         return c;
       }
     }
     return null;
   }
+
+  Map<String, dynamic> toJson() => _$OgDocumentToJson(this as OgDocument);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: true)
 class OgDocument extends Document {
   OgDocument();
 
-  static int _idFromUrl(String url) {
+  static int? _idFromUrl(String? url) {
     return url == null ? null : _idsFromUrls([url])[0];
   }
 
-  static List<int> _idsFromUrls(List<dynamic> urls) {
-    List<int> ids = [];
-    for (String url in urls) {
+  static List<int?> _idsFromUrls(List<dynamic> urls) {
+    List<int?> ids = [];
+    for (String url in urls as Iterable<String>) {
       var parts = url.split("/");
       ids.add(int.parse(parts[parts.length - 2]));
     }
@@ -111,43 +115,45 @@ class OgDocument extends Document {
   }
 
   @JsonKey(fromJson: _idFromUrl)
-  int correspondent;
+  int? correspondent;
   @JsonKey(fromJson: _idsFromUrls)
-  List<int> tags;
+  List<int?>? tags;
 
   @JsonKey(name: "file_name")
-  String originalFileName;
+  String? originalFileName;
 
   factory OgDocument.fromJson(Map<String, dynamic> json) =>
       _$OgDocumentFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OgDocumentToJson(this);
 }
 
 @JsonSerializable(createToJson: false)
 class ResponseList<T> {
   ResponseList();
-  int count;
-  String next;
+  int? count;
+  String? next;
   @_Converter()
-  List<T> results;
+  late List<T?> results;
 
   factory ResponseList.fromJson(Map<String, dynamic> json) =>
-      _$ResponseListFromJson(json);
+      _$ResponseListFromJson<T>(json);
 
   bool hasMoreData() {
     return next != null;
   }
 
   Future<ResponseList<T>> getNext() async {
-    var json = await API.instance.get(next);
-    return ResponseList<T>.fromJson(json);
+    var json = await API.instance!.get(next!);
+    return ResponseList<T>.fromJson(json!);
   }
 }
 
-class _Converter<T> implements JsonConverter<T, Object> {
+class _Converter<T> implements JsonConverter<T?, Object?> {
   const _Converter();
 
   @override
-  T fromJson(Object json) {
+  T? fromJson(Object? json) {
     if (json is Map<String, dynamic> && json.containsKey('colour')) {
       return OgTag.fromJson(json) as T;
     }
@@ -169,11 +175,11 @@ class _Converter<T> implements JsonConverter<T, Object> {
     // This will only work if `json` is a native JSON type:
     //   num, String, bool, null, etc
     // *and* is assignable to `T`.
-    return json as T;
+    return json as T?;
   }
 
   @override
-  Object toJson(T object) {
+  Object? toJson(T? object) {
     // This will only work if `object` is a native JSON type:
     //   num, String, bool, null, etc
     // Or if it has a `toJson()` function`.
@@ -184,11 +190,11 @@ class _Converter<T> implements JsonConverter<T, Object> {
 enum APICapability { TAG_COLOR, UPDATE_DOCUMENTS }
 
 class API {
-  static API instance;
-  String baseURL;
-  String username;
-  String password;
-  String authString;
+  static API? instance;
+  late String baseURL;
+  String? username;
+  String? password;
+  String? authString;
   String apiFlavour;
   final Dio dio = new Dio();
 
@@ -211,7 +217,7 @@ class API {
     return [];
   }
 
-  String getAuthString(String username, String password) {
+  String getAuthString(String? username, String? password) {
     final token = base64.encode(latin1.encode('$username:$password'));
     final authstr = 'Basic ' + token.trim();
     return authstr;
@@ -252,8 +258,8 @@ class API {
     return url;
   }
 
-  Future<Map<String, dynamic>> getAPIResource(String resourceType,
-      {String ordering, String search}) async {
+  Future<Map<String, dynamic>?> getAPIResource(String resourceType,
+      {String? ordering, String? search}) async {
     String url = "/api/" + resourceType + "/?format=json";
     print(url);
     if (ordering != null) {
@@ -265,31 +271,31 @@ class API {
     return await get(url);
   }
 
-  Future<Map<String, dynamic>> get(String url) async {
+  Future<Map<String, dynamic>?> get(String url) async {
     url = getFullURL(url);
     var response = await dio.get(url);
     return response.data;
   }
 
   Future<ResponseList<Document>> getDocuments(
-      {String ordering = "-created", String search}) async {
+      {String ordering = "-created", String? search}) async {
     var json =
         await getAPIResource("documents", ordering: ordering, search: search);
-    return ResponseList<Document>.fromJson(json);
+    return ResponseList<Document>.fromJson(json!);
   }
 
   Future<ResponseList<Correspondent>> getCorrespondents() async {
     var json = await getAPIResource("correspondents");
-    return ResponseList<Correspondent>.fromJson(json);
+    return ResponseList<Correspondent>.fromJson(json!);
   }
 
   Future<ResponseList<Tag>> getTags() async {
     var json = await getAPIResource("tags");
-    return ResponseList<Tag>.fromJson(json);
+    return ResponseList<Tag>.fromJson(json!);
   }
 
   Future<void> downloadFile(String url, String savePath,
-      {ProgressCallback onReceiveProgress}) async {
+      {ProgressCallback? onReceiveProgress}) async {
     url = getFullURL(url);
     await dio.download(url, savePath, onReceiveProgress: onReceiveProgress);
   }
@@ -311,7 +317,7 @@ class API {
           followRedirects: false,
           contentType: 'multipart/form-data',
           validateStatus: (status) {
-            return status < 400 || status == 405;
+            return status! < 400 || status == 405;
           },
         ),
       );
@@ -335,7 +341,7 @@ class API {
     }
   }
 
-  Future<void> deleteResource(String type, int id) async {
+  Future<void> deleteResource(String type, int? id) async {
     await dio.delete(getFullURL("/api/$type/$id"));
   }
 
@@ -352,11 +358,11 @@ class API {
   }
 
   Future<void> updateResource(
-      String type, int id, Map<String, dynamic> newValue) async {
+      String type, int? id, Map<String, dynamic> newValue) async {
     await dio.put(getFullURL("/api/$type/$id"), data: jsonEncode(newValue));
   }
 
-  Future<void> updateDocument(int id, Map<String, dynamic> newDocument) async {
+  Future<void> updateDocument(int? id, Map<String, dynamic> newDocument) async {
     await updateResource("document", id, newDocument);
   }
 }

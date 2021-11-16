@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class TextfieldWidget extends StatelessWidget {
-  final ValueChanged<String> onFieldSubmitted;
+  final ValueChanged<String>? onFieldSubmitted;
   final bool autofocus;
   final bool autocorrect;
-  final TextInputType keyboardType;
-  final String initialValue;
-  final FormFieldValidator<String> validator;
-  final FormFieldSetter<String> onSaved;
+  final TextInputType? keyboardType;
+  final String? initialValue;
+  final FormFieldValidator<String>? validator;
+  final FormFieldSetter<String>? onSaved;
   final String hintText;
   final bool obscureText;
-  final Iterable<String> autofillHints;
+  final Iterable<String>? autofillHints;
 
   TextfieldWidget(
       {this.onFieldSubmitted,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ButtonWidget extends StatelessWidget {
   final String title;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final double scale;
 
   ButtonWidget(this.title, {this.onPressed, this.scale = 1});
@@ -18,7 +18,7 @@ class ButtonWidget extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(
             20.0 * scale, 15.0 * scale, 20.0 * scale, 15.0 * scale),
         onPressed: () {
-          this.onPressed();
+          this.onPressed!();
         },
         child: Text(
           this.title,

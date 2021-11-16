@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 
 class InkWrapper extends StatelessWidget {
-  final Color splashColor;
+  final Color? splashColor;
   final Widget child;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   InkWrapper({
     this.splashColor,
-    @required this.child,
-    @required this.onTap,
+    required this.child,
+    required this.onTap,
   });
 
   @override

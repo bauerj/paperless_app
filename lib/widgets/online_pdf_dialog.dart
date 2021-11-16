@@ -51,7 +51,7 @@ class _OnlinePdfDialogState extends State<OnlinePdfDialog> {
     final pdfPath = await getDownloadPath(doc);
 
     if (!await io.File(pdfPath).exists()) {
-      await API.instance.downloadFile(doc.getDownloadUrl(), pdfPath,
+      await API.instance!.downloadFile(doc.getDownloadUrl(), pdfPath,
           onReceiveProgress: onReceiveProgress);
     }
 

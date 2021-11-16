@@ -15,7 +15,7 @@ version: 0.0.11+11
 publish_to: none
 
 environment:
-  sdk: ">=2.8.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -25,19 +25,19 @@ dependencies:
   edge_detection:
     git:
       url: https://github.com/bauerj/edge_detection
-      ref: 757259bc1ff1093f14b8385f904cfb83d1189667
-  cached_network_image: ^3.0.0
+      ref: c28f04cff1a4cc8b44ba78962d8d864fb1bb1871
+  cached_network_image: ^3.1.0+1
   dio: ^4.0.0
   flutter_secure_storage: ^4.1.0
   flutter_svg: ^0.19.3
   get_it: ^6.0.0
   http_auth: ^1.0.0
   i18n_extension: ^4.0.0
-  json_annotation: ^3.1.1
+  json_annotation: ^4.3.0
   open_file: ^3.1.0
   receive_sharing_intent: ^1.4.5
-  settings_ui: ^0.6.0
-  shared_preferences: ">=0.5.7+2 <2.0.0"
+  settings_ui: ^1.0.0
+  shared_preferences: ^2.0.8
   wechat_assets_picker: ^5.4.0
   share: ^2.0.1
 
@@ -45,11 +45,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   archive: ^3.1.2
-  build_runner: ^1.10.9
-  json_serializable: ^3.5.1
+  build_runner: ^2.1.5
+  json_serializable: ^6.0.1
 
 dependency_overrides:
-  cached_network_image: any
   flutter_svg: any
 
 # For information on the generic Dart part of this file, see the

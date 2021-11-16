@@ -20,7 +20,7 @@ class PaperlessApp extends StatefulWidget {
 }
 
 class _PaperlessAppState extends State<PaperlessApp> {
-  Future<void> loadAsync;
+  Future<void>? loadAsync;
 
   // This widget is the root of the application.
   @override

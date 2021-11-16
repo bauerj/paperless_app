@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:paperless_app/i18n.dart';
 
 class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
-  final Widget leading;
-  final Widget title;
-  final Widget bottom;
-  final List<Widget> actions;
-  final void Function(String text) searchListener;
+  final Widget? leading;
+  final Widget? title;
+  final Widget? bottom;
+  final List<Widget>? actions;
+  final void Function(String? text)? searchListener;
 
   const SearchAppBar(
-      {Key key,
+      {Key? key,
       this.leading,
       this.title,
       this.bottom,
@@ -29,15 +28,15 @@ class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _SearchAppBarState extends State<SearchAppBar> {
-  final Widget leading;
-  final Widget title;
-  final Widget bottom;
-  final List<Widget> actions;
-  final void Function(String text) listener;
+  final Widget? leading;
+  final Widget? title;
+  final Widget? bottom;
+  final List<Widget>? actions;
+  final void Function(String? text)? listener;
   final FocusNode focusNode = new FocusNode();
 
   IconData searchIcon = Icons.search;
-  Widget appBarTitle;
+  Widget? appBarTitle;
 
   _SearchAppBarState(
       this.leading, this.title, this.bottom, this.actions, this.listener) {
@@ -58,7 +57,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
               focusNode: focusNode,
               textInputAction: TextInputAction.search,
               onFieldSubmitted: (e) {
-                listener(e);
+                listener!(e);
               },
               decoration: new InputDecoration(
                   prefixIcon: new Icon(Icons.search),
@@ -70,14 +69,17 @@ class _SearchAppBarState extends State<SearchAppBar> {
           setState(() {
             searchIcon = Icons.search;
             appBarTitle = title;
-            listener(null);
+            listener!(null);
           });
         }
       },
     ));
-    actions.addAll(this.actions);
+    actions.addAll(this.actions!);
 
     return AppBar(
-        leading: leading, title: appBarTitle, bottom: bottom, actions: actions);
+        leading: leading,
+        title: appBarTitle,
+        bottom: bottom as PreferredSizeWidget?,
+        actions: actions);
   }
 }

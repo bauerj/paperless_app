@@ -22,7 +22,7 @@ void main(List<String> arguments) async {
     print("Warning: Skipping upload since CROWDIN_API_KEY is not set");
     exit(0);
   }
-  String key = Platform.environment["CROWDIN_API_KEY"];
+  String? key = Platform.environment["CROWDIN_API_KEY"];
 
   var dio = Dio();
   dio.options.headers["Authorization"] = "Bearer $key";

@@ -1,12 +1,14 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:paperless_app/i18n.dart';
 import 'package:paperless_app/routes/documents_route.dart';
 import 'package:paperless_app/widgets/button_widget.dart';
 import 'package:paperless_app/widgets/display_steps_widget.dart';
 import 'package:paperless_app/widgets/textfield_widget.dart';
-import 'package:paperless_app/i18n.dart';
 
 import '../api.dart';
 
@@ -14,35 +16,35 @@ final _formKey = GlobalKey<FormState>();
 final _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class LoginRoute extends StatefulWidget {
-  LoginRoute({Key key}) : super(key: key);
+  LoginRoute({Key? key}) : super(key: key);
 
   @override
   _LoginRouteState createState() => _LoginRouteState();
 }
 
 class _LoginRouteState extends State<LoginRoute> {
-  String username;
-  String password;
+  String? username;
+  String? password;
 
   void save() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      _formKey.currentState.deactivate();
-      String serverUrl =
-          await GetIt.I<FlutterSecureStorage>().read(key: "server_url");
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      _formKey.currentState!.deactivate();
+      String serverUrl = await (GetIt.I<FlutterSecureStorage>()
+          .read(key: "server_url") as FutureOr<String>);
       await GetIt.I<FlutterSecureStorage>()
           .write(key: "username", value: username);
       await GetIt.I<FlutterSecureStorage>()
           .write(key: "password", value: password);
 
-      ScaffoldMessenger.of(_scaffoldKey.currentContext).showSnackBar(
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(
           SnackBar(content: Text('Checking credentials...'.i18n)));
 
       try {
         if (await API(serverUrl, username: username, password: password)
             .checkCredentials()) {
           await GetIt.I<FlutterSecureStorage>()
-              .write(key: "api_flavour", value: API.instance.apiFlavour);
+              .write(key: "api_flavour", value: API.instance!.apiFlavour);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => DocumentsRoute()),
@@ -50,7 +52,7 @@ class _LoginRouteState extends State<LoginRoute> {
         }
       } catch (e) {
         showDialog(
-            context: _scaffoldKey.currentContext,
+            context: _scaffoldKey.currentContext!,
             builder: (BuildContext ctx) {
               return AlertDialog(
                   title: Text("Error while connecting to server".i18n),
@@ -109,12 +111,12 @@ class _LoginRouteState extends State<LoginRoute> {
                         keyboardType: TextInputType.emailAddress,
                         initialValue: username,
                         validator: (value) {
-                          if (value.isEmpty)
+                          if (value!.isEmpty)
                             return "Please enter your username".i18n;
                           return null;
                         },
-                        onSaved: (String u) {
-                          username = u.trim();
+                        onSaved: (String? u) {
+                          username = u!.trim();
                         },
                       ),
                       SizedBox(height: 15.0),
@@ -128,11 +130,11 @@ class _LoginRouteState extends State<LoginRoute> {
                         obscureText: true,
                         hintText: "Password".i18n,
                         validator: (value) {
-                          if (value.isEmpty)
+                          if (value!.isEmpty)
                             return "Please enter your password";
                           return null;
                         },
-                        onSaved: (String u) {
+                        onSaved: (String? u) {
                           password = u;
                         },
                       ),

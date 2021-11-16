@@ -13,8 +13,8 @@ class AboutRoute extends StatefulWidget {
 }
 
 class _AboutRouteState extends State<AboutRoute> {
-  List<dynamic> contributors = [];
-  List<dynamic> translators = [];
+  List<dynamic>? contributors = [];
+  List<dynamic>? translators = [];
 
   Future<void> loadContributors() async {
     var _contributors = (await Dio().get(
@@ -38,8 +38,8 @@ class _AboutRouteState extends State<AboutRoute> {
 
   @override
   Widget build(BuildContext context) {
-    List<Text> contributorsTexts = contributors.map((e) => Text(e)).toList();
-    List<Text> translatorsTexts = translators.map((e) => Text(e)).toList();
+    List<Text> contributorsTexts = contributors!.map((e) => Text(e)).toList();
+    List<Text> translatorsTexts = translators!.map((e) => Text(e)).toList();
     return Scaffold(
         body: Center(
             child: SingleChildScrollView(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:edge_detection/edge_detection.dart';
@@ -5,7 +6,7 @@ import 'package:paperless_app/api.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ScanHandler {
-  Directory scansDir;
+  late Directory scansDir;
   List<Function(int scansAmount)> statusListeners = [];
   bool running = false;
 
@@ -29,21 +30,21 @@ class ScanHandler {
       print("Amount: $scansAmount");
       statusListeners.first(scansAmount);
       if (scansAmount == 0) break;
-      await handleScan(await scansDir.list().first);
+      await handleScan(await (scansDir.list().first as FutureOr<File>));
     }
 
     running = false;
   }
 
   Future<void> handleScan(File scannedDocument) async {
-    await API.instance.uploadFile(scannedDocument.path);
+    await API.instance!.uploadFile(scannedDocument.path);
     await scannedDocument.delete();
   }
 
   Future<void> scanDocument() async {
     EdgeDetection.useInternalStorage(true);
-    String imagePath = await EdgeDetection.detectEdge;
-    File(imagePath).rename(scansDir.path + "/" + imagePath.split("/").last);
+    String? imagePath = await EdgeDetection.detectEdge;
+    File(imagePath!).rename(scansDir.path + "/" + imagePath.split("/").last);
     handleScans();
   }
 }

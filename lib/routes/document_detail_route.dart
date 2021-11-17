@@ -59,7 +59,7 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                       return AlertDialog(
                           title: Text("Confirm removal".i18n),
                           content: Text(
-                              "Are you sure you want to remove this document?"
+                              "Are you sure you want to remove this document? This can not be undone."
                                   .i18n),
                           actions: <Widget>[
                             new TextButton(

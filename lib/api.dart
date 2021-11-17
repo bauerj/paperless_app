@@ -187,7 +187,10 @@ class _Converter<T> implements JsonConverter<T?, Object?> {
   }
 }
 
-enum APICapability { TAG_COLOR, UPDATE_DOCUMENTS }
+enum APICapability {
+  TAG_COLOR, // TODO: Do something with this.
+  UPDATE_DOCUMENTS // Can documents be updated through the API?
+}
 
 class API {
   static API? instance;

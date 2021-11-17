@@ -143,7 +143,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
               child: SvgPicture.asset("assets/logo.svg", color: Colors.white),
               padding: EdgeInsets.all(13)),
           title: Text(
-            "My Documents".i18n,
+            "Documents".i18n,
           ),
           searchListener: searchDocument,
           actions: <Widget>[

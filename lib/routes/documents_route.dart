@@ -43,16 +43,27 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   bool requesting = true;
   String ordering = "-created";
   String? searchString;
+  String? autocompleteString;
+  Tag? tagFilter;
+  Correspondent? correspondentFilter;
   int scanAmount = 0;
   int shareAmount = 0;
   ScanHandler scanHandler = ScanHandler();
   late StreamSubscription intentDataStreamSubscription;
   List<SharedMediaFile>? sharedFiles;
+  List<String> autocompletions = [];
+  bool searchOpen = false;
   bool invertDocumentPreview = true;
 
   Future<void> setOrdering(String ordering) async {
     this.ordering = ordering;
     reloadDocuments();
+  }
+
+  void toggleSearch(bool isOpen) {
+    setState(() {
+      searchOpen = isOpen;
+    });
   }
 
   void showDocument(Document? doc) async {
@@ -73,6 +84,18 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     await reloadDocuments();
   }
 
+  Future<void> getAutocompletions(String? autocompleteString) async {
+    setState(() {
+      this.autocompleteString = autocompleteString;
+    });
+    List<String> a = [];
+    if (autocompleteString!.isNotEmpty)
+      a = await API.instance!.getAutocompletions(autocompleteString);
+    setState(() {
+      autocompletions = a;
+    });
+  }
+
   Future<void> reloadDocuments() async {
     scanHandler.handleScans();
     setState(() {
@@ -80,8 +103,11 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       documents = null;
     });
     try {
-      var _documents = await API.instance!
-          .getDocuments(ordering: ordering, search: searchString);
+      var _documents = await API.instance!.getDocuments(
+          ordering: ordering,
+          search: searchString,
+          tag: tagFilter,
+          correspondent: correspondentFilter);
 
       setState(() {
         documents = _documents;
@@ -115,6 +141,12 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     }
   }
 
+  bool isFiltered() {
+    return tagFilter != null ||
+        searchString != null ||
+        correspondentFilter != null;
+  }
+
   Future<void> scanDocument() async {
     try {
       scanHandler.scanDocument();
@@ -129,6 +161,159 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     }
   }
 
+  Widget getCurrentMainWidget() {
+    if (documents == null) {
+      return Container();
+    }
+    if (searchOpen) {
+      // TODO: Tags und Korrespondenten in den ersten zwei Zeilen
+      List<Widget> suggestions = [
+        Column(children: [
+          Text("With Tag".i18n),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: tags == null
+                  ? [Text("None found".i18n)]
+                  : tags!.results
+                      .where(
+                        (element) =>
+                            autocompleteString == null ||
+                            element != null &&
+                                element.name != null &&
+                                element.name!.toLowerCase().contains(
+                                      autocompleteString!.toLowerCase(),
+                                    ),
+                      )
+                      .map(
+                        (t) => InkWell(
+                          onTap: () {
+                            this.tagFilter = t;
+                            this.correspondentFilter = null;
+                            this.searchString = null;
+                            this.searchOpen = false;
+                            this.reloadDocuments();
+                          },
+                          child: Padding(
+                            child: TagWidget(t!),
+                            padding: EdgeInsets.all(5),
+                          ),
+                        ),
+                      )
+                      .toList(),
+            ),
+          ),
+          Text("With Correspondent".i18n),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: correspondents == null
+                  ? [Text("None found".i18n)]
+                  : correspondents!.results
+                      .where(
+                        (element) =>
+                            autocompleteString == null ||
+                            element != null &&
+                                element.name != null &&
+                                element.name!.toLowerCase().contains(
+                                      autocompleteString!.toLowerCase(),
+                                    ),
+                      )
+                      .map(
+                        (t) => InkWell(
+                          onTap: () {
+                            this.correspondentFilter = t;
+                            this.tagFilter = null;
+                            this.searchString = null;
+                            this.searchOpen = false;
+
+                            this.reloadDocuments();
+                          },
+                          child: Padding(
+                            child: Text(t!.name!),
+                            padding: EdgeInsets.all(5),
+                          ),
+                        ),
+                      )
+                      .toList(),
+            ),
+          ),
+        ]),
+      ];
+      for (var a in autocompletions) {
+        suggestions.add(
+          InkWell(
+            child: Text(a),
+            onTap: () {
+              this.searchOpen = false;
+              searchDocument(a);
+            },
+          ),
+        );
+      }
+      return Column(children: suggestions);
+    }
+    return RefreshIndicator(
+        onRefresh: reloadDocuments,
+        child: ListView.builder(
+          controller: scrollController,
+          itemCount: documents!.results.length,
+          itemBuilder: (context, index) {
+            List<TagWidget?> tagWidgets = documents!.results[index]!.tags!
+                .map((t) => TagWidget.fromTagId(t, tags))
+                .toList();
+            return Card(
+              margin: EdgeInsets.all(10),
+              child: Column(
+                children: <Widget>[
+                  DocumentPreview(
+                    invertDocumentPreview,
+                    documents!.results[index],
+                    onTap: () => showDocument(documents!.results[index]),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(7),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                            '${DocumentsRoute.dateFormat.format(documents!.results[index]!.created..toLocal())}',
+                            textAlign: TextAlign.left),
+                        CorrespondentWidget.fromCorrespondentId(
+                            documents!.results[index]!.correspondent,
+                            correspondents)!,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: tagWidgets.whereType<Widget>().toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ));
+  }
+
+  Widget getLeadingAppbarWidget() {
+    var leading = isFiltered()
+        ? IconButton(
+            icon: Icon(Icons.arrow_left),
+            onPressed: () {
+              setState(() {
+                this.searchString = null;
+                this.tagFilter = null;
+                this.correspondentFilter = null;
+              });
+              this.reloadDocuments();
+            })
+        : Padding(
+            child: SvgPicture.asset("assets/logo.svg", color: Colors.white),
+            padding: EdgeInsets.all(13));
+    return leading;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,13 +324,14 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
           },
           child: Icon(Icons.add)),
       appBar: SearchAppBar(
-          leading: Padding(
-              child: SvgPicture.asset("assets/logo.svg", color: Colors.white),
-              padding: EdgeInsets.all(13)),
+          leading: getLeadingAppbarWidget(),
+          key: UniqueKey(),
           title: Text(
             "Documents".i18n,
           ),
           searchListener: searchDocument,
+          toggleSearch: toggleSearch,
+          autoCompleteListener: getAutocompletions,
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.sort_by_alpha),
@@ -197,56 +383,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       body: Stack(
         children: <Widget>[
           Center(
-            child: documents != null
-                ? RefreshIndicator(
-                    onRefresh: reloadDocuments,
-                    child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: documents!.results.length,
-                      itemBuilder: (context, index) {
-                        List<TagWidget?> tagWidgets = documents!
-                            .results[index]!.tags!
-                            .map((t) => TagWidget.fromTagId(t, tags))
-                            .toList();
-                        return Card(
-                          margin: EdgeInsets.all(10),
-                          child: Column(
-                            children: <Widget>[
-                              DocumentPreview(
-                                invertDocumentPreview,
-                                documents!.results[index],
-                                onTap: () =>
-                                    showDocument(documents!.results[index]),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(7),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                        '${DocumentsRoute.dateFormat.format(documents!.results[index]!.created..toLocal())}',
-                                        textAlign: TextAlign.left),
-                                    CorrespondentWidget.fromCorrespondentId(
-                                        documents!
-                                            .results[index]!.correspondent,
-                                        correspondents)!,
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: tagWidgets
-                                          .whereType<Widget>()
-                                          .toList(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ))
-                : Container(),
+            child: getCurrentMainWidget(),
           ),
           PreferredSize(
             child: requesting ? LinearProgressIndicator() : Container(),
@@ -438,8 +575,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       });
 
       for (var image in assets) {
-        File img = await (image.file as FutureOr<File>);
-        await API.instance!.uploadFile(img.path);
+        File? img = await (image.file);
+        await API.instance!.uploadFile(img!.path);
         setState(() {
           shareAmount--;
         });

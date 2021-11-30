@@ -264,15 +264,18 @@ class API {
   }
 
   Future<Map<String, dynamic>?> getAPIResource(String resourceType,
-      {String? ordering, String? search}) async {
+      {String? ordering, String? search, String? additionalFilter}) async {
     String url = "/api/" + resourceType + "/?format=json";
-    print(url);
     if (ordering != null) {
       url += "&ordering=" + ordering;
     }
     if (search != null) {
       url += "&query=" + search;
     }
+    if (additionalFilter != null) {
+      url += "&$additionalFilter";
+    }
+    print(url);
     return await get(url);
   }
 
@@ -283,9 +286,19 @@ class API {
   }
 
   Future<ResponseList<Document>> getDocuments(
-      {String ordering = "-created", String? search}) async {
-    var json =
-        await getAPIResource("documents", ordering: ordering, search: search);
+      {String ordering = "-created",
+      String? search,
+      Tag? tag,
+      Correspondent? correspondent}) async {
+    String? additionalFilter;
+    if (tag != null) {
+      additionalFilter = "tags__id=${tag.id}";
+    }
+    if (correspondent != null) {
+      additionalFilter = "correspondent__id=${correspondent.id}";
+    }
+    var json = await getAPIResource("documents",
+        ordering: ordering, search: search, additionalFilter: additionalFilter);
     var docs = ResponseList<Document>.fromJson(json!);
     if (docs.runtimeType != OgDocument) {
       this.apiFlavour = "paperless-ng";
@@ -301,6 +314,12 @@ class API {
   Future<ResponseList<Tag>> getTags() async {
     var json = await getAPIResource("tags");
     return ResponseList<Tag>.fromJson(json!);
+  }
+
+  Future<List<String>> getAutocompletions(String term) async {
+    var url = getFullURL("/api/search/autocomplete/?term=$term");
+    var response = await dio.get(url);
+    return List.from(response.data);
   }
 
   Future<void> downloadFile(String url, String savePath,

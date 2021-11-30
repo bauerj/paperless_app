@@ -30,14 +30,14 @@ class ScanHandler {
       print("Amount: $scansAmount");
       statusListeners.first(scansAmount);
       if (scansAmount == 0) break;
-      await handleScan(await (scansDir.list().first as FutureOr<File>));
+      await handleScan(await (scansDir.list().first));
     }
 
     running = false;
   }
 
-  Future<void> handleScan(File scannedDocument) async {
-    await API.instance!.uploadFile(scannedDocument.path);
+  Future<void> handleScan(FileSystemEntity? scannedDocument) async {
+    await API.instance!.uploadFile(scannedDocument!.path);
     await scannedDocument.delete();
   }
 

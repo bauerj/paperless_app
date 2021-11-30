@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:paperless_app/i18n.dart';
 
 class SelectOrderRoute extends StatefulWidget {
@@ -137,7 +136,7 @@ class OrderWidget extends StatelessWidget {
         child: InkWell(
       onTap: onTap,
       child: Container(
-        color: selectedOrder != SelectedOrder.NONE ? Colors.greenAccent : null,
+        color: selectedOrder != SelectedOrder.NONE ? Colors.green : null,
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Row(

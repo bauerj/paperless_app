@@ -31,12 +31,25 @@ class TagWidget extends StatelessWidget {
           color: getColor()),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-        child: Row(children: [
-          Icon(Icons.label_important_outline, size: 17, color: getTextColor()),
-          Text(tag.name!,
-              textAlign: TextAlign.right,
-              style: TextStyle(color: getTextColor()))
-        ]),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.label_important_outline,
+                size: 17, color: getTextColor()),
+            Flexible(
+              fit: FlexFit.loose,
+              child: Text(
+                tag.name!,
+                textAlign: TextAlign.right,
+                softWrap: false,
+                overflow: TextOverflow.fade,
+                style: TextStyle(
+                  color: getTextColor(),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

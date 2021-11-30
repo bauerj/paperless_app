@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -30,8 +28,8 @@ class _LoginRouteState extends State<LoginRoute> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       _formKey.currentState!.deactivate();
-      String serverUrl = await (GetIt.I<FlutterSecureStorage>()
-          .read(key: "server_url") as FutureOr<String>);
+      String? serverUrl =
+          await (GetIt.I<FlutterSecureStorage>().read(key: "server_url"));
       await GetIt.I<FlutterSecureStorage>()
           .write(key: "username", value: username);
       await GetIt.I<FlutterSecureStorage>()
@@ -41,7 +39,7 @@ class _LoginRouteState extends State<LoginRoute> {
           SnackBar(content: Text('Checking credentials...'.i18n)));
 
       try {
-        if (await API(serverUrl, username: username, password: password)
+        if (await API(serverUrl!, username: username, password: password)
             .checkCredentials()) {
           await GetIt.I<FlutterSecureStorage>()
               .write(key: "api_flavour", value: API.instance!.apiFlavour);

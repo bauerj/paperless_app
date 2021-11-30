@@ -26,6 +26,8 @@ class _PaperlessAppState extends State<PaperlessApp> {
   Widget build(BuildContext context) {
     final ThemeData darkTheme = ThemeData(
         brightness: Brightness.dark,
+        // ignore: deprecated_member_use
+        accentColor: Colors.lightGreenAccent,
         primaryColor: Colors.green.shade900,
         primarySwatch: Colors.lightGreen,
         fontFamily: 'AlegreyaSans');

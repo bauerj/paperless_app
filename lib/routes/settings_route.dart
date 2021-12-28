@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_settings_ui/flutter_settings_ui.dart';
 import 'package:paperless_app/i18n.dart';
-import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final _scaffoldKey = GlobalKey<ScaffoldState>();

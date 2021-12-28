@@ -28,7 +28,7 @@ dependencies:
       ref: c28f04cff1a4cc8b44ba78962d8d864fb1bb1871
   cached_network_image: ^3.1.0+1
   dio: ^4.0.0
-  flutter_secure_storage: ^4.1.0
+  flutter_secure_storage: ^5.0.2
   flutter_svg: ^0.19.3
   get_it: ^6.0.0
   http_auth: ^1.0.0
@@ -36,7 +36,7 @@ dependencies:
   json_annotation: ^4.3.0
   open_file: ^3.1.0
   receive_sharing_intent: ^1.4.5
-  settings_ui: ^1.0.0
+  flutter_settings_ui: ^2.0.1
   shared_preferences: ^2.0.8
   wechat_assets_picker: ^5.4.0
   share: ^2.0.1

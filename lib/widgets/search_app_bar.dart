@@ -58,6 +58,11 @@ class _SearchAppBarState extends State<SearchAppBar> {
     if (isSearchOpen == true) {
       searchIcon = Icons.close;
       appBarTitle = new TextFormField(
+        style: Theme.of(context)
+            .textTheme
+            .headline6
+            ?.copyWith(color: Theme.of(context).primaryIconTheme.color),
+        cursorColor: Theme.of(context).primaryIconTheme.color,
         onChanged: (t) async {
           if (autoCompleteListener == null) return;
           int thisSearch = ++currentSearch;
@@ -75,7 +80,10 @@ class _SearchAppBarState extends State<SearchAppBar> {
           toggleSearch!(false);
         },
         decoration: new InputDecoration(
-            prefixIcon: new Icon(Icons.search),
+            hintStyle: Theme.of(context)
+                .textTheme
+                .headline6
+                ?.copyWith(color: Theme.of(context).primaryIconTheme.color),
             hintText: 'Search for document...'.i18n),
       );
       focusNode.requestFocus();

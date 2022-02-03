@@ -186,18 +186,19 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                         },
                       ),
                     );
-                    for (var c in _correspondents!.results) {
-                      options.add(SimpleDialogOption(
-                        child: Text(c!.name!),
-                        onPressed: () {
-                          setState(() {
-                            _document.correspondent = c.id;
-                            saveCorrespondent();
-                          });
-                          Navigator.of(context).pop();
-                        },
-                      ));
-                    }
+                    if (_correspondents != null)
+                      for (var c in _correspondents!.results) {
+                        options.add(SimpleDialogOption(
+                          child: Text(c!.name!),
+                          onPressed: () {
+                            setState(() {
+                              _document.correspondent = c.id;
+                              saveCorrespondent();
+                            });
+                            Navigator.of(context).pop();
+                          },
+                        ));
+                      }
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -216,52 +217,33 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                   editable: editable,
                   onEdit: () {
                     List<Widget> items = [];
-                    for (var t in _tags!.results) {
-                      items.add(
-                        SelectableTagWidget(
-                          TagWidget.fromTagId(t!.id, _tags),
-                          _document.tags!.contains(t.id),
-                          onEdit: (v) {
-                            setState(() {
-                              if (v!)
-                                _document.tags!.add(t.id);
-                              else
-                                _document.tags!
-                                    .removeWhere((tag) => t.id == tag);
-                              saveTags();
-                            });
-                          },
-                        ),
-                      );
-                    }
+                    if (_tags != null)
+                      for (var t in _tags!.results) {
+                        items.add(
+                          SimpleDialogOption(
+                            child: SelectableTagWidget(
+                              TagWidget.fromTagId(t!.id, _tags),
+                              _document.tags!.contains(t.id),
+                              onEdit: (v) {
+                                setState(() {
+                                  if (v!)
+                                    _document.tags!.add(t.id);
+                                  else
+                                    _document.tags!
+                                        .removeWhere((tag) => t.id == tag);
+                                  saveTags();
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      }
                     showDialog(
                         context: context,
                         builder: (context) {
-                          return AlertDialog(
+                          return SimpleDialog(
                             title: Text("Select Tags".i18n),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text("OK".i18n),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              )
-                            ],
-                            content: SingleChildScrollView(
-                              child: Container(
-                                width: double.maxFinite,
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxHeight:
-                                        MediaQuery.of(context).size.height *
-                                            0.7,
-                                  ),
-                                  child: ListView(
-                                    children: items,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            children: items,
                           );
                         });
                   },

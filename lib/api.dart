@@ -111,7 +111,7 @@ class OgDocument extends Document {
 
   static List<int?> _idsFromUrls(List<dynamic> urls) {
     List<int?> ids = [];
-    for (String url in urls as Iterable<String>) {
+    for (String url in new List<String>.from(urls)) {
       var parts = url.split("/");
       ids.add(int.parse(parts[parts.length - 2]));
     }

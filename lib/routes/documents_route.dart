@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,6 +22,7 @@ import 'package:paperless_app/widgets/search_app_bar.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../api.dart';
@@ -434,6 +434,9 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                         ordering: ordering,
                       ),
                     );
+                  } else if (selected == "help") {
+                    await launch(
+                        "https://github.com/bauerj/paperless_app/wiki/Help");
                   }
                 },
                 itemBuilder: (BuildContext context) {
@@ -444,6 +447,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                         value: "settings", child: Text("Settings".i18n)),
                     PopupMenuItem<String>(
                         value: "about", child: Text("About".i18n)),
+                    PopupMenuItem<String>(
+                        value: "help", child: Text("Help".i18n)),
                     PopupMenuItem<String>(
                         value: "logout", child: Text("Logout".i18n)),
                   ];

@@ -41,6 +41,7 @@ dependencies:
   wechat_assets_picker: ^5.4.0
   share: ^2.0.1
   url_launcher: ^6.0.20
+  crypto: ^3.0.1
 
 dev_dependencies:
   flutter_test:

@@ -52,6 +52,8 @@ class _HomeRouteState extends State<HomeRoute> {
 
     var username = await GetIt.I<FlutterSecureStorage>().read(key: "username");
     var password = await GetIt.I<FlutterSecureStorage>().read(key: "password");
+    var trustedCertificateSha512 = await GetIt.I<FlutterSecureStorage>()
+        .read(key: "trustedCertificateSha512");
     var apiFlavour =
         await GetIt.I<FlutterSecureStorage>().read(key: "api_flavour");
 
@@ -65,6 +67,8 @@ class _HomeRouteState extends State<HomeRoute> {
     if (apiFlavour == null) {
       apiFlavour = "paperless";
     }
+
+    API.trustedCertificateSha512 = trustedCertificateSha512;
 
     API(url, username: username, password: password, apiFlavour: apiFlavour);
 

@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:i18n_extension/i18n_widget.dart';
+import 'package:paperless_app/api.dart';
 import 'package:paperless_app/i18n.dart';
 import 'package:paperless_app/routes/home_route.dart';
 
@@ -82,5 +85,6 @@ class _PaperlessAppState extends State<PaperlessApp> {
     super.initState();
     GetIt.I.registerSingleton<FlutterSecureStorage>(new FlutterSecureStorage());
     loadAsync = MyI18n.loadTranslations();
+    HttpOverrides.global = SelfSignedCertHttpOverride();
   }
 }

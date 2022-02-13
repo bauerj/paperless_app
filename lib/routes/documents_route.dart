@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,6 +27,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../api.dart';
+import '../util/handle_dio_error.dart';
 
 class DocumentsRoute extends StatefulWidget {
   static DateFormat dateFormat = DateFormat();
@@ -122,31 +124,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
           documents = _documents;
         requesting = false;
       });
-    } catch (e) {
-      showDialog(
-          context: _scaffoldKey.currentContext!,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                title: Text("Error while connecting to server".i18n),
-                content: Text(e.toString()),
-                actions: <Widget>[
-                  new TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        reloadDocuments();
-                      },
-                      child: Text("Retry".i18n)),
-                  new TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ServerDetailsRoute()),
-                        );
-                      },
-                      child: Text("Edit Server Details".i18n))
-                ]);
-          });
+    } on DioError catch (e) {
+      handleDioError(e, context);
     }
   }
 

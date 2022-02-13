@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
     as SecureStorage;
@@ -204,6 +206,7 @@ class API {
   String? authString;
   String apiFlavour;
   final Dio dio = new Dio();
+  static String? trustedCertificateSha512;
 
   API(String baseURL,
       {this.username = "", this.password = "", this.apiFlavour = "paperless"}) {
@@ -397,5 +400,30 @@ class API {
 
   Future<void> updateDocument(int? id, Map<String, dynamic> newDocument) async {
     await updateResource("document", id, newDocument);
+  }
+}
+
+class SelfSignedCertHttpOverride extends HttpOverrides {
+  static X509Certificate? lastFailedCert;
+  static String toSha512(X509Certificate cert) {
+    return sha512.convert(cert.der).toString();
+  }
+
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) {
+        if (!cert.endValidity.isAfter(DateTime.now())) {
+          // Never trust an expired certificate
+          lastFailedCert = cert;
+          return false;
+        }
+        if (API.trustedCertificateSha512 != toSha512(cert)) {
+          // Abort if this is not the known certificate
+          lastFailedCert = cert;
+          return false;
+        }
+        return true;
+      };
   }
 }

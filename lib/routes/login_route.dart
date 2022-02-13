@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,6 +10,7 @@ import 'package:paperless_app/widgets/display_steps_widget.dart';
 import 'package:paperless_app/widgets/textfield_widget.dart';
 
 import '../api.dart';
+import '../util/handle_dio_error.dart';
 
 final _formKey = GlobalKey<FormState>();
 final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -48,14 +50,8 @@ class _LoginRouteState extends State<LoginRoute> {
             MaterialPageRoute(builder: (context) => DocumentsRoute()),
           );
         }
-      } catch (e) {
-        showDialog(
-            context: _scaffoldKey.currentContext!,
-            builder: (BuildContext ctx) {
-              return AlertDialog(
-                  title: Text("Error while connecting to server".i18n),
-                  content: Text(e.toString()));
-            });
+      } on DioError catch (e) {
+        handleDioError(e, context);
       }
     }
   }

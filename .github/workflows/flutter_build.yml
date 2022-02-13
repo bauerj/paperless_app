@@ -31,13 +31,11 @@ jobs:
         flutter-version: '2.10.0'
     - run: flutter pub get
     - run: flutter pub run build_runner build
-    - run: flutter build apk
-    - run: flutter build appbundle
+    - run: flutter build apk --split-per-abi --debug
 
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
         name: release-apk
         path: |
-          build/app/outputs/apk/release/app-release.apk 
-          build/app/outputs/bundle/release/app-release.aab
+          build/app/outputs/apk/*

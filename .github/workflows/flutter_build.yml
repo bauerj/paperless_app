@@ -6,7 +6,7 @@ name: Flutter Build
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [ master, flutter-build-apk ]
     paths-ignore:
       - '**/*.md'
 
@@ -20,8 +20,16 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    env: # For signing the APK
+      KEY_JKS: ${{ secrets.KEY_JKS }}
+      KEY_PATH: /home/runner/key.jks
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      KEY_ALIAS: key
+
     steps:
     - uses: actions/checkout@v2
+    - name: Create key file
+      run: echo $KEY_JKS | base64 -di > $KEY_PATH
     - uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
@@ -31,7 +39,7 @@ jobs:
         flutter-version: '2.10.0'
     - run: flutter pub get
     - run: flutter pub run build_runner build
-    - run: flutter build apk --split-per-abi --debug
+    - run: flutter build apk --split-per-abi
 
     - name: Archive artifacts
       uses: actions/upload-artifact@v2

@@ -41,5 +41,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is needed to scan documents</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Network access is need to contact the server</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access photo library to upload photos from library</string>
 </dict>
 </plist>

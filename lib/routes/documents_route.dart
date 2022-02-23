@@ -59,6 +59,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
 
   Future<void> setOrdering(String ordering) async {
     this.ordering = ordering;
+    (await SharedPreferences.getInstance()).setString("ordering", ordering);
     reloadDocuments();
   }
 
@@ -99,6 +100,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   }
 
   Future<void> reloadDocuments() async {
+    await getOrder();
     var oldTagFilter = tagFilter;
     var oldCorrespondentFilter = correspondentFilter;
     var oldSearchString = searchString;
@@ -545,6 +547,14 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       });
       uploadSharedDocuments();
     });
+  }
+
+  Future<void> getOrder() async {
+    String? order =
+        (await SharedPreferences.getInstance()).getString("ordering");
+    if (order != null) {
+      this.ordering = order;
+    }
   }
 
   @override

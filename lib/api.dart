@@ -30,40 +30,10 @@ class Tag implements Named {
   Tag();
   int? id;
   String? name;
-  String? colourCode;
+  String? color;
+  String? textColor;
 
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
-}
-
-@JsonSerializable(createToJson: false)
-class OgTag extends Tag {
-  static final List<String> _tagColours = [
-    "#000",
-    "#a6cee3",
-    "#1f78b4",
-    "#b2df8a",
-    "#33a02c",
-    "#fb9a99",
-    "#e31a1c",
-    "#fdbf6f",
-    "#ff7f00",
-    "#cab2d6",
-    "#6a3d9a",
-    "#b15928",
-    "#000000",
-    "#cccccc",
-  ];
-
-  OgTag();
-
-  static String _colourCodeFromindex(int index) {
-    return _tagColours[index];
-  }
-
-  @JsonKey(fromJson: _colourCodeFromindex, name: "colour")
-  String? colourCode;
-
-  factory OgTag.fromJson(Map<String, dynamic> json) => _$OgTagFromJson(json);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: true)
@@ -160,10 +130,7 @@ class _Converter<T> implements JsonConverter<T?, Object?> {
 
   @override
   T? fromJson(Object? json) {
-    if (json is Map<String, dynamic> && json.containsKey('colour')) {
-      return OgTag.fromJson(json) as T;
-    }
-    if (json is Map<String, dynamic> && json.containsKey('colour_code')) {
+    if (json is Map<String, dynamic> && json.containsKey('color')) {
       return Tag.fromJson(json) as T;
     }
     if (json is Map<String, dynamic> && json.containsKey('name')) {
@@ -211,7 +178,8 @@ class API {
   API(String baseURL,
       {this.username = "", this.password = "", this.apiFlavour = "paperless"}) {
     authString = getAuthString(username, password);
-    dio.options.headers.addAll({"Authorization": authString});
+    dio.options.headers.addAll(
+        {"Authorization": authString, "Accept": "application/json; version=2"});
 
     if (!baseURL.startsWith("http://") && !baseURL.startsWith("https://"))
       baseURL = "https://" + baseURL;

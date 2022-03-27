@@ -250,9 +250,13 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     }
     return RefreshIndicator(
         onRefresh: reloadDocuments,
-        child: ListView.builder(
+        child: GridView.builder(
           controller: scrollController,
           itemCount: documents!.results.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: (MediaQuery.of(context).size.width / 450).ceil(),
+            mainAxisExtent: 310,
+          ),
           itemBuilder: (context, index) {
             List<Widget?> tagWidgets = documents!.results[index]!.tags!
                 .map(
@@ -293,14 +297,17 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                             child: CorrespondentWidget.fromCorrespondentId(
                                 documents!.results[index]!.correspondent,
                                 correspondents)!),
-                        SizedBox(width: 7),
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: tagWidgets.whereType<Widget>().toList(),
-                          ),
-                        ),
                       ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(7),
+                    child: Container(
+                      height: 35,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: tagWidgets.whereType<Widget>().toList(),
+                      ),
                     ),
                   ),
                 ],

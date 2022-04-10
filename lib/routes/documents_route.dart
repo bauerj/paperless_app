@@ -170,7 +170,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
               onTap: () {
                 removeCurrentFilter();
                 setState(() {
-                  if (i.runtimeType == Tag) this.tagFilter = i as Tag?;
+                  if (i.runtimeType == OgTag) this.tagFilter = i as Tag?;
                   if (i.runtimeType == Correspondent)
                     this.correspondentFilter = i as Correspondent?;
                   this.searchOpen = false;

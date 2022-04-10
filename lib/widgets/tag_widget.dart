@@ -12,8 +12,7 @@ class TagWidget extends StatelessWidget {
     if (tags == null) {
       Tag tag = Tag();
       tag.name = "...";
-      tag.color = "#000";
-      tag.textColor = "#000";
+      tag.colourCode = "#000";
       return new TagWidget(tag);
     }
     for (var _tag in tags.results) {
@@ -56,11 +55,13 @@ class TagWidget extends StatelessWidget {
   }
 
   Color getColor() {
-    return _fromHex(tag.color!);
+    return _fromHex(tag.colourCode!);
   }
 
   Color getTextColor() {
-    return _fromHex(tag.textColor!);
+    if (ThemeData.estimateBrightnessForColor(getColor()) == Brightness.light)
+      return Colors.black;
+    return Colors.white;
   }
 
   // https://stackoverflow.com/a/50081214/1024057

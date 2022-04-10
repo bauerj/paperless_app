@@ -12,7 +12,7 @@ class TagWidget extends StatelessWidget {
     if (tags == null) {
       Tag tag = Tag();
       tag.name = "...";
-      tag.colourCode = "#000";
+      tag.color = "#000";
       return new TagWidget(tag);
     }
     for (var _tag in tags.results) {
@@ -55,7 +55,7 @@ class TagWidget extends StatelessWidget {
   }
 
   Color getColor() {
-    return _fromHex(tag.colourCode!);
+    return _fromHex(tag.color!);
   }
 
   Color getTextColor() {

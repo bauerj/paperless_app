@@ -18,7 +18,7 @@
     "received_events_url": "https://api.github.com/users/bauerj/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 100
+    "contributions": 101
   },
   {
     "login": "qcasey",
@@ -40,6 +40,27 @@
     "type": "User",
     "site_admin": false,
     "contributions": 18
+  },
+  {
+    "login": "BeneGrueter",
+    "id": 79417665,
+    "node_id": "MDQ6VXNlcjc5NDE3NjY1",
+    "avatar_url": "https://avatars.githubusercontent.com/u/79417665?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/BeneGrueter",
+    "html_url": "https://github.com/BeneGrueter",
+    "followers_url": "https://api.github.com/users/BeneGrueter/followers",
+    "following_url": "https://api.github.com/users/BeneGrueter/following{/other_user}",
+    "gists_url": "https://api.github.com/users/BeneGrueter/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/BeneGrueter/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/BeneGrueter/subscriptions",
+    "organizations_url": "https://api.github.com/users/BeneGrueter/orgs",
+    "repos_url": "https://api.github.com/users/BeneGrueter/repos",
+    "events_url": "https://api.github.com/users/BeneGrueter/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/BeneGrueter/received_events",
+    "type": "User",
+    "site_admin": false,
+    "contributions": 1
   },
   {
     "login": "MatyasK",

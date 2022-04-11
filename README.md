@@ -41,7 +41,7 @@ However, I do not plan to release this app for the iOS App Store, since I do not
 - A Mac, which is needed to compile the iOS app
 - An Apple Developer Program Membership (USD99,-)
 
-If anyone else happens to have all of those and wants to take care of distributing the app there, please let me know. 
+If anyone else happens to have all of those and wants to take care of distributing the app there, please help us out in https://github.com/bauerj/paperless_app/issues/54.
 
 ## How to help?
 

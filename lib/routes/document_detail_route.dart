@@ -253,7 +253,8 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                         .map((e) => TagWidget.fromTagId(e, _tags))
                         .whereType<Widget>()
                         .toList()),
-                _EditableHeading("ASN", editable: editable, onEdit: onASNEdit),
+                _EditableHeading("ASN".i18n,
+                    editable: editable, onEdit: onASNEdit),
                 Text(_document.archiveSerialNumber != null
                     ? "#${_document.archiveSerialNumber}"
                     : "")

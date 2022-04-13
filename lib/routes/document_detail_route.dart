@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:paperless_app/api.dart';
 import 'package:paperless_app/i18n.dart';
 import 'package:paperless_app/widgets/correspondent_widget.dart';
@@ -253,7 +253,7 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                         .map((e) => TagWidget.fromTagId(e, _tags))
                         .whereType<Widget>()
                         .toList()),
-                _EditableHeading("ASN", editable: false),
+                _EditableHeading("ASN", editable: editable, onEdit: onASNEdit),
                 Text(_document.archiveSerialNumber != null
                     ? "#${_document.archiveSerialNumber}"
                     : "")
@@ -279,6 +279,48 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
     );
   }
 
+  void onASNEdit() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          var controller = TextEditingController(
+              text: _document.archiveSerialNumber?.toString() ?? "");
+          return AlertDialog(
+            title: Text("Select ASN".i18n),
+            content: TextField(
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              autofocus: true,
+              controller: controller,
+              onSubmitted: (String value) {
+                setState(() {
+                  _document.archiveSerialNumber = int.tryParse(value);
+                });
+                saveASN();
+                Navigator.pop(context);
+              },
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Cancel".i18n)),
+              TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _document.archiveSerialNumber =
+                          int.tryParse(controller.text);
+                    });
+                    saveASN();
+                    Navigator.pop(context);
+                  },
+                  child: Text("OK".i18n))
+            ],
+          );
+        });
+  }
+
   Future<void> saveTags() async {
     await API.instance!.updateDocument(_document.id, {"tags": _document.tags});
   }
@@ -296,6 +338,11 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
   Future<void> saveTitle() async {
     await API.instance!
         .updateDocument(_document.id, {"title": _document.title});
+  }
+
+  Future<void> saveASN() async {
+    await API.instance!.updateDocument(
+        _document.id, {"archive_serial_number": _document.archiveSerialNumber});
   }
 }
 

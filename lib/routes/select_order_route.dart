@@ -4,6 +4,7 @@ import 'package:paperless_app/i18n.dart';
 class SelectOrderRoute extends StatefulWidget {
   final String? ordering;
   final Future<void> Function(String ordering)? setOrdering;
+
   SelectOrderRoute({this.setOrdering, Key? key, this.ordering})
       : super(key: key);
 
@@ -12,8 +13,8 @@ class SelectOrderRoute extends StatefulWidget {
     String? selected = "created";
     bool ascending = true;
     if (ordering != null && ordering!.length > 1) {
-      ascending = ordering!.startsWith("-");
-      selected = ascending ? ordering!.substring(1) : ordering!;
+      ascending = !ordering!.startsWith("-");
+      selected = ascending ? ordering! : ordering!.substring(1);
     }
     return new _SelectOrderRouteState(selected, ascending, setOrdering);
   }
@@ -23,6 +24,7 @@ class _SelectOrderRouteState extends State<SelectOrderRoute> {
   String? selected;
   bool ascending = true;
   final Future<void> Function(String ordering)? setOrdering;
+
   _SelectOrderRouteState(this.selected, this.ascending, this.setOrdering);
 
   @override
@@ -64,7 +66,7 @@ class _SelectOrderRouteState extends State<SelectOrderRoute> {
                     child: ElevatedButton(
                   child: Text("Okay".i18n),
                   onPressed: () {
-                    setOrdering!((ascending ? "-" : "") + selected!);
+                    setOrdering!((ascending ? "" : "-") + selected!);
                     Navigator.of(context).pop();
                   },
                 )),
@@ -110,6 +112,7 @@ class OrderWidget extends StatelessWidget {
   final String? label;
   final SelectedOrder? selectedOrder;
   final GestureTapCallback? onTap;
+
   OrderWidget({this.name, this.label, this.selectedOrder, this.onTap});
 
   @override

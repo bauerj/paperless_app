@@ -252,7 +252,11 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                     children: _document.tags!
                         .map((e) => TagWidget.fromTagId(e, _tags))
                         .whereType<Widget>()
-                        .toList())
+                        .toList()),
+                _EditableHeading("ASN", editable: false),
+                Text(_document.archiveSerialNumber != null
+                    ? "#${_document.archiveSerialNumber}"
+                    : "")
               ],
             ),
           )
@@ -328,7 +332,7 @@ class _EditableHeadingState extends State<_EditableHeading> {
                   text,
                   factor: 0.5,
                 )),
-            editable!
+            editable ?? true
                 ? IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: onEdit,

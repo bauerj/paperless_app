@@ -307,7 +307,11 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Align(
                             alignment: Alignment.centerRight,
-                            child: Text("#42")),
+                            child: Text(documents!
+                                        .results[index]!.archiveSerialNumber !=
+                                    null
+                                ? "#${documents!.results[index]!.archiveSerialNumber}"
+                                : "")),
                       ),
                       Container(
                         height: 35,

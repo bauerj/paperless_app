@@ -77,6 +77,7 @@ class Document {
   String? checksum;
   late DateTime created;
   late DateTime modified;
+  int? archiveSerialNumber;
   String? originalFileName;
   String? archivedFileName;
 

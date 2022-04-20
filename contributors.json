@@ -18,7 +18,7 @@
     "received_events_url": "https://api.github.com/users/bauerj/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 101
+    "contributions": 103
   },
   {
     "login": "qcasey",
@@ -60,7 +60,7 @@
     "received_events_url": "https://api.github.com/users/BeneGrueter/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 1
+    "contributions": 2
   },
   {
     "login": "MatyasK",
@@ -100,6 +100,27 @@
     "repos_url": "https://api.github.com/users/Poussinou/repos",
     "events_url": "https://api.github.com/users/Poussinou/events{/privacy}",
     "received_events_url": "https://api.github.com/users/Poussinou/received_events",
+    "type": "User",
+    "site_admin": false,
+    "contributions": 1
+  },
+  {
+    "login": "vstollen",
+    "id": 14787415,
+    "node_id": "MDQ6VXNlcjE0Nzg3NDE1",
+    "avatar_url": "https://avatars.githubusercontent.com/u/14787415?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/vstollen",
+    "html_url": "https://github.com/vstollen",
+    "followers_url": "https://api.github.com/users/vstollen/followers",
+    "following_url": "https://api.github.com/users/vstollen/following{/other_user}",
+    "gists_url": "https://api.github.com/users/vstollen/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/vstollen/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/vstollen/subscriptions",
+    "organizations_url": "https://api.github.com/users/vstollen/orgs",
+    "repos_url": "https://api.github.com/users/vstollen/repos",
+    "events_url": "https://api.github.com/users/vstollen/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/vstollen/received_events",
     "type": "User",
     "site_admin": false,
     "contributions": 1

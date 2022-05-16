@@ -84,11 +84,11 @@ class Document {
       _$DocumentFromJson(json);
 
   String getThumbnailUrl() {
-    return "${API.instance!.baseURL}/fetch/thumb/$id";
+    return "${API.instance!.baseURL}/api/documents/$id/thumb/";
   }
 
   String getDownloadUrl() {
-    return "${API.instance!.baseURL}/fetch/doc/$id";
+    return "${API.instance!.baseURL}/api/documents/$id/download/";
   }
 
   Correspondent? getCorrespondent(ResponseList<Correspondent> correspondents) {

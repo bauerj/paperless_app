@@ -30,29 +30,26 @@ class CorrespondentWidget extends StatelessWidget {
       decoration: new BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5)),
           color: correspondent.name == "None" ? Colors.grey : null),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-        child: correspondent.name != ""
-            ? Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.person, size: 17),
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: Text(
-                      correspondent.name!,
-                      textAlign: TextAlign.right,
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+      child: correspondent.name != ""
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.person, size: 17),
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    correspondent.name!,
+                    textAlign: TextAlign.right,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              )
-            : SizedBox(),
-      ),
+                ),
+              ],
+            )
+          : SizedBox(),
     );
   }
 }

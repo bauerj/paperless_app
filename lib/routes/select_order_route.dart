@@ -48,6 +48,7 @@ class _SelectOrderRouteState extends State<SelectOrderRoute> {
             getFor("modified", "Last Modification".i18n),
             getFor("title", "Document Title".i18n),
             getFor("correspondent", "Correspondent".i18n),
+            getFor("archive_serial_number", "ASN".i18n),
             Row(
               children: <Widget>[
                 SizedBox(

@@ -31,6 +31,7 @@ import '../util/handle_dio_error.dart';
 
 class DocumentsRoute extends StatefulWidget {
   static DateFormat dateFormat = DateFormat();
+
   @override
   State<StatefulWidget> createState() => _DocumentsRouteState();
 }
@@ -255,7 +256,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
           itemCount: documents!.results.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: (MediaQuery.of(context).size.width / 450).ceil(),
-            mainAxisExtent: 310,
+            mainAxisExtent: 340,
           ),
           itemBuilder: (context, index) {
             List<Widget?> tagWidgets = documents!.results[index]!.tags!
@@ -277,41 +278,52 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                 .toList();
             return Card(
               margin: EdgeInsets.all(10),
-              child: Column(
-                children: <Widget>[
-                  DocumentPreview(
-                    invertDocumentPreview,
-                    documents!.results[index],
-                    onTap: () => showDocument(documents!.results[index]),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(7),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                            '${DocumentsRoute.dateFormat.format(documents!.results[index]!.created..toLocal())}',
-                            textAlign: TextAlign.left),
-                        SizedBox(width: 7),
-                        Flexible(
+              child: Column(children: <Widget>[
+                DocumentPreview(
+                  invertDocumentPreview,
+                  documents!.results[index],
+                  onTap: () => showDocument(documents!.results[index]),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                              '${DocumentsRoute.dateFormat.format(documents!.results[index]!.created..toLocal())}',
+                              textAlign: TextAlign.left),
+                          const SizedBox(width: 8),
+                          Flexible(
                             child: CorrespondentWidget.fromCorrespondentId(
                                 documents!.results[index]!.correspondent,
-                                correspondents)!),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(7),
-                    child: Container(
-                      height: 35,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: tagWidgets.whereType<Widget>().toList(),
+                                correspondents)!,
+                          ),
+                        ],
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(documents!
+                                        .results[index]!.archiveSerialNumber !=
+                                    null
+                                ? "#${documents!.results[index]!.archiveSerialNumber}"
+                                : "")),
+                      ),
+                      Container(
+                        height: 35,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: tagWidgets.whereType<Widget>().toList(),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                )
+              ]),
             );
           },
         ));
@@ -387,7 +399,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
         appBar: SearchAppBar(
             leading: getLeadingAppbarWidget(),
             isSearchOpen: searchOpen,
-            key: Key(k), // Why is this needed? 😓
+            key: Key(k),
+            // Why is this needed? 😓
             title: describeCurrentFilter(),
             searchListener: searchDocument,
             toggleSearch: toggleSearch,

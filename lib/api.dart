@@ -84,11 +84,17 @@ class Document {
       _$DocumentFromJson(json);
 
   String getThumbnailUrl() {
-    return "${API.instance!.baseURL}/api/documents/$id/thumb/";
+    if(API.instance!.apiFlavour == "paperless-ng") {
+      return "${API.instance!.baseURL}/api/documents/$id/thumb/";
+    }
+    return "${API.instance!.baseURL}/fetch/thumb/$id";
   }
 
   String getDownloadUrl() {
-    return "${API.instance!.baseURL}/api/documents/$id/download/";
+    if(API.instance!.apiFlavour == "paperless-ng") {
+      return "${API.instance!.baseURL}/api/documents/$id/download/";
+    }
+    return "${API.instance!.baseURL}/fetch/doc/$id";
   }
 
   Correspondent? getCorrespondent(ResponseList<Correspondent> correspondents) {

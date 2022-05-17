@@ -84,6 +84,27 @@
     "contributions": 2
   },
   {
+    "login": "dorianim",
+    "id": 30153207,
+    "node_id": "MDQ6VXNlcjMwMTUzMjA3",
+    "avatar_url": "https://avatars.githubusercontent.com/u/30153207?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/dorianim",
+    "html_url": "https://github.com/dorianim",
+    "followers_url": "https://api.github.com/users/dorianim/followers",
+    "following_url": "https://api.github.com/users/dorianim/following{/other_user}",
+    "gists_url": "https://api.github.com/users/dorianim/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/dorianim/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/dorianim/subscriptions",
+    "organizations_url": "https://api.github.com/users/dorianim/orgs",
+    "repos_url": "https://api.github.com/users/dorianim/repos",
+    "events_url": "https://api.github.com/users/dorianim/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/dorianim/received_events",
+    "type": "User",
+    "site_admin": false,
+    "contributions": 1
+  },
+  {
     "login": "MatyasK",
     "id": 15628788,
     "node_id": "MDQ6VXNlcjE1NjI4Nzg4",

@@ -30,7 +30,7 @@ class Tag implements Named {
   Tag();
   int? id;
   String? name;
-  String? colourCode;
+  String? color;
 
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
 }
@@ -56,12 +56,12 @@ class OgTag extends Tag {
 
   OgTag();
 
-  static String _colourCodeFromindex(int index) {
+  static String _colorFromindex(int index) {
     return _tagColours[index];
   }
 
-  @JsonKey(fromJson: _colourCodeFromindex, name: "colour")
-  String? colourCode;
+  @JsonKey(fromJson: _colorFromindex, name: "colour")
+  String? color;
 
   factory OgTag.fromJson(Map<String, dynamic> json) => _$OgTagFromJson(json);
 }
@@ -77,6 +77,7 @@ class Document {
   String? checksum;
   late DateTime created;
   late DateTime modified;
+  int? archiveSerialNumber;
   String? originalFileName;
   String? archivedFileName;
 
@@ -84,10 +85,16 @@ class Document {
       _$DocumentFromJson(json);
 
   String getThumbnailUrl() {
+    if (API.instance!.apiFlavour == "paperless-ng") {
+      return "${API.instance!.baseURL}/api/documents/$id/thumb/";
+    }
     return "${API.instance!.baseURL}/fetch/thumb/$id";
   }
 
   String getDownloadUrl() {
+    if (API.instance!.apiFlavour == "paperless-ng") {
+      return "${API.instance!.baseURL}/api/documents/$id/download/";
+    }
     return "${API.instance!.baseURL}/fetch/doc/$id";
   }
 
@@ -163,7 +170,7 @@ class _Converter<T> implements JsonConverter<T?, Object?> {
     if (json is Map<String, dynamic> && json.containsKey('colour')) {
       return OgTag.fromJson(json) as T;
     }
-    if (json is Map<String, dynamic> && json.containsKey('colour_code')) {
+    if (json is Map<String, dynamic> && json.containsKey('color')) {
       return Tag.fromJson(json) as T;
     }
     if (json is Map<String, dynamic> && json.containsKey('name')) {
@@ -211,7 +218,9 @@ class API {
   API(String baseURL,
       {this.username = "", this.password = "", this.apiFlavour = "paperless"}) {
     authString = getAuthString(username, password);
-    dio.options.headers.addAll({"Authorization": authString});
+    // dio.options.headers.addAll({"Authorization": authString});
+    dio.options.headers.addAll(
+        {"Authorization": authString, "Accept": "application/json; version=2"});
 
     if (!baseURL.startsWith("http://") && !baseURL.startsWith("https://"))
       baseURL = "https://" + baseURL;

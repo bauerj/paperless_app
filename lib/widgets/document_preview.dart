@@ -97,6 +97,7 @@ class _DocumentPreviewState extends State<DocumentPreview> {
           ),
           child: Text(
             '${_document!.title}',
+            maxLines: 2,
             textAlign: TextAlign.start,
             style: TextStyle(fontSize: 20, color: fg),
           ),

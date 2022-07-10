@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -22,6 +24,24 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+    <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>ShareMedia</string>
+                </array>
+            </dict>
+            <dict/>
+        </array>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is needed to scan documents</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Network access is need to contact the server</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access photo library to upload photos from library</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

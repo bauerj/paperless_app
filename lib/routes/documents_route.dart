@@ -534,7 +534,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   void uploadSharedDocuments() async {
     if (sharedFiles != null && sharedFiles!.isNotEmpty) {
       for (var f in sharedFiles!) {
-        await API.instance!.uploadFile(f.path);
+        await API.instance!
+            .uploadFile(Uri.decodeFull(f.path).replaceAll('file://', ''));
         setState(() {
           shareAmount--;
         });

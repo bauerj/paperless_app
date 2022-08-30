@@ -4,15 +4,12 @@ on:
   release:
     types: [published]
 
-env:
-  ARTIFACT_NAME: release
-
 jobs:
   build:
     uses: ./.github/workflows/flutter_build.yml
     secrets: inherit
     with:
-      artifactName: ${{ env.ARTIFACT_NAME }}
+      artifactName: 'release'
 
   add-artifacts-to-release:
     runs-on: ubuntu-latest
@@ -22,7 +19,7 @@ jobs:
     - name: Download artifacts
       uses: actions/download-artifact@v3
       with:
-        name: ${{ env.ARTIFACT_NAME }}
+        name: 'release'
 
     - name: Add artifacts to release
       uses: softprops/action-gh-release@v1

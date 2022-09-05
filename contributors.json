@@ -126,6 +126,27 @@
     "contributions": 1
   },
   {
+    "login": "le-jou",
+    "id": 28442160,
+    "node_id": "MDQ6VXNlcjI4NDQyMTYw",
+    "avatar_url": "https://avatars.githubusercontent.com/u/28442160?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/le-jou",
+    "html_url": "https://github.com/le-jou",
+    "followers_url": "https://api.github.com/users/le-jou/followers",
+    "following_url": "https://api.github.com/users/le-jou/following{/other_user}",
+    "gists_url": "https://api.github.com/users/le-jou/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/le-jou/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/le-jou/subscriptions",
+    "organizations_url": "https://api.github.com/users/le-jou/orgs",
+    "repos_url": "https://api.github.com/users/le-jou/repos",
+    "events_url": "https://api.github.com/users/le-jou/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/le-jou/received_events",
+    "type": "User",
+    "site_admin": false,
+    "contributions": 1
+  },
+  {
     "login": "MatyasK",
     "id": 15628788,
     "node_id": "MDQ6VXNlcjE1NjI4Nzg4",

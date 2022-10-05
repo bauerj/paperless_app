@@ -36,9 +36,9 @@ Anything missing? Please open an issue.
 
 ### iOS
 
-[<img src="assets/assets/app-store-badge.png"
+[<img src="assets/app-store-badge.png"
      alt="Get it on the App Store"
-     height="80px">](https://apps.apple.com/us/app/no-paper-app/id1614233414)
+     height="60px">](https://apps.apple.com/us/app/no-paper-app/id1614233414)
 
 
 ## How to help?

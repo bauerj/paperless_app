@@ -1,0 +1,27 @@
+name: Github Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    uses: ./.github/workflows/flutter_build.yml
+    secrets: inherit
+    with:
+      artifactName: 'release'
+
+  add-artifacts-to-release:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: 'release'
+
+    - name: Add artifacts to release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: 'release/*.apk'

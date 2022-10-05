@@ -42,7 +42,7 @@ class ScanHandler {
   }
 
   Future<void> scanDocument() async {
-    EdgeDetection.useInternalStorage(true);
+    // EdgeDetection.useInternalStorage(true);
     String? imagePath = await EdgeDetection.detectEdge;
     File(imagePath!).rename(scansDir.path + "/" + imagePath.split("/").last);
     handleScans();

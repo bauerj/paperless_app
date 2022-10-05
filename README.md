@@ -26,22 +26,16 @@ Anything missing? Please open an issue.
 ## Get The App
 
 ### Android
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/eu.bauerj.paperless_app/)
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
-     alt="Get it on Google Play"
-     height="80">](https://play.google.com/store/apps/details?id=eu.bauerj.paperless_app)
+[![Get it on F-Droid](assets/get-it-on-fdroid.png)](https://f-droid.org/packages/eu.bauerj.paperless_app/)
+
+[![Get it on Google Play"](assets/google-play-badge.png)](https://play.google.com/store/apps/details?id=eu.bauerj.paperless_app)
+
+
 
 ### iOS
-The code for this app should run on iOS as well (maybe it needs a few minor modifications).
-However, I do not plan to release this app for the iOS App Store, since I do not have:
 
-- An iOS device to test this on
-- A Mac, which is needed to compile the iOS app
-- An Apple Developer Program Membership (USD99,-)
+[![Get it on iOS](assets/app-store-badge.svg)](https://apps.apple.com/us/app/no-paper-app/id1614233414)
 
-If anyone else happens to have all of those and wants to take care of distributing the app there, please help us out in https://github.com/bauerj/paperless_app/issues/54.
 
 ## How to help?
 

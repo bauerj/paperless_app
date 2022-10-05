@@ -26,15 +26,19 @@ Anything missing? Please open an issue.
 ## Get The App
 
 ### Android
-[![Get it on F-Droid](assets/get-it-on-fdroid.png)](https://f-droid.org/packages/eu.bauerj.paperless_app/)
 
-[![Get it on Google Play"](assets/google-play-badge.png)](https://play.google.com/store/apps/details?id=eu.bauerj.paperless_app)
-
-
+[<img src="assets/get-it-on-fdroid.png"
+     alt="Get it on F-Droid"
+     height="80px">](https://f-droid.org/packages/eu.bauerj.paperless_app/)
+[<img src="assets/google-play-badge.png"
+     alt="Get it on Google Play"
+     height="80px">](https://play.google.com/store/apps/details?id=eu.bauerj.paperless_app)
 
 ### iOS
 
-[![Get it on iOS](assets/app-store-badge.svg)](https://apps.apple.com/us/app/no-paper-app/id1614233414)
+[<img src="assets/assets/app-store-badge.png"
+     alt="Get it on the App Store"
+     height="80px">](https://apps.apple.com/us/app/no-paper-app/id1614233414)
 
 
 ## How to help?

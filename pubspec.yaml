@@ -15,30 +15,27 @@ version: 0.1.2+14
 publish_to: none
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.18.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  edge_detection:
-    git:
-      url: https://github.com/bauerj/edge_detection
-      ref: c28f04cff1a4cc8b44ba78962d8d864fb1bb1871
+  edge_detection: ^1.0.9
   cached_network_image: ^3.1.0+1
   dio: ^4.0.0
-  flutter_secure_storage: ^5.0.2
+  flutter_secure_storage: ^6.0.0
   flutter_svg: ^0.19.3
-  get_it: ^6.0.0
+  get_it: ^7.2.0
   http_auth: ^1.0.0
-  i18n_extension: ^4.0.0
+  i18n_extension: ^5.0.1
   json_annotation: ^4.3.0
   open_file: ^3.1.0
   receive_sharing_intent: ^1.4.5
   flutter_settings_ui: ^2.0.1
   shared_preferences: ^2.0.8
-  wechat_assets_picker: ^5.4.0
+  wechat_assets_picker: ^8.1.2
   share: ^2.0.1
   url_launcher: ^6.0.20
   crypto: ^3.0.1

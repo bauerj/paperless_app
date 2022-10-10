@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:paperless_app/i18n.dart';
 import 'package:paperless_app/widgets/button_widget.dart';
 import 'package:paperless_app/widgets/heading.dart';

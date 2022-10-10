@@ -436,8 +436,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                       ),
                     );
                   } else if (selected == "help") {
-                    await launch(
-                        "https://github.com/bauerj/paperless_app/wiki/Help");
+                    await launchUrl(Uri.parse(
+                        "https://github.com/bauerj/paperless_app/wiki/Help"));
                   }
                 },
                 itemBuilder: (BuildContext context) {
@@ -659,11 +659,11 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
 
   Future _getImage(context) async {
     List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
-        requestType: RequestType.image,
-        sortPathDelegate: PaperlessSortPathDelegate(),
-        maxAssets: 100,
-        pickerTheme: Theme.of(context),
-        textDelegate: paperlessAssetsPickerTextDelegate());
+        pickerConfig: AssetPickerConfig(
+            requestType: RequestType.image,
+            maxAssets: 100,
+            pickerTheme: Theme.of(context),
+            textDelegate: PaperlessAssetsPickerTextDelegate()));
     Navigator.of(context).pop();
     if (assets != null && assets.length > 0) {
       setState(() {

@@ -1,29 +1,33 @@
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:paperless_app/i18n.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-EnglishTextDelegate paperlessAssetsPickerTextDelegate() {
-  var d = EnglishTextDelegate();
-  d.cancel = 'Cancel'.i18n;
-  d.confirm = 'Confirm'.i18n;
-  d.edit = 'Edit'.i18n;
-  d.loadFailed = 'Failed to load'.i18n;
-  d.original = 'Original'.i18n;
-  d.preview = 'Preview'.i18n;
-  d.select = 'Select'.i18n;
-  return d;
-}
-
-class PaperlessSortPathDelegate extends CommonSortPathDelegate {
-  const PaperlessSortPathDelegate();
+class PaperlessAssetsPickerTextDelegate extends EnglishAssetPickerTextDelegate {
+  const PaperlessAssetsPickerTextDelegate();
 
   @override
-  void sort(List<AssetPathEntity> list) {
-    for (final AssetPathEntity entity in list) {
-      // If the entity `isAll`, that's the "Recent" entity we want.
-      if (entity.isAll) {
-        entity.name = 'Recent'.i18n;
-      }
-    }
-    super.sort(list);
-  }
+  String get confirm => 'Confirm'.i18n;
+
+  @override
+  String get cancel => 'Cancel'.i18n;
+
+  @override
+  String get edit => 'Edit'.i18n;
+
+  @override
+  String get gifIndicator => 'GIF'.i18n;
+
+  @override
+  String get loadFailed => 'Load failed'.i18n;
+
+  @override
+  String get original => 'Origin'.i18n;
+
+  @override
+  String get preview => 'Preview'.i18n;
+
+  @override
+  String get select => 'Select'.i18n;
+
+  @override
+  String get emptyList => 'Empty list'.i18n;
 }

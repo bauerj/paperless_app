@@ -25,6 +25,21 @@ class Correspondent implements Named {
       _$CorrespondentFromJson(json);
 }
 
+@JsonSerializable(createToJson: false)
+class DocumentType implements Named {
+  DocumentType();
+  int? id;
+  String? name;
+  String? slug;
+  String? match;
+  int? matchingAlgorithm;
+  int? documentCount;
+  bool? isInsensitive;
+
+  factory DocumentType.fromJson(Map<String, dynamic> json) =>
+      _$DocumentTypeFromJson(json);
+}
+
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class Tag implements Named {
   Tag();
@@ -70,6 +85,7 @@ class OgTag extends Tag {
 class Document {
   Document();
   int? id;
+  int? documentType;
   int? correspondent;
   String? title;
   String? content;
@@ -107,6 +123,15 @@ class Document {
     return null;
   }
 
+  DocumentType? getDocumentType(ResponseList<DocumentType> documentTypes) {
+    for (var d in documentTypes.results) {
+      if (d!.id == documentType) {
+        return d;
+      }
+    }
+    return null;
+  }
+
   Map<String, dynamic> toJson() => _$OgDocumentToJson(this as OgDocument);
 }
 
@@ -129,6 +154,10 @@ class OgDocument extends Document {
 
   @JsonKey(fromJson: _idFromUrl)
   int? correspondent;
+
+  @JsonKey(fromJson: _idFromUrl)
+  int? documentType;
+
   @JsonKey(fromJson: _idsFromUrls)
   List<int?>? tags;
 
@@ -167,14 +196,23 @@ class _Converter<T> implements JsonConverter<T?, Object?> {
 
   @override
   T? fromJson(Object? json) {
+    bool isType<T, Y>() => T == Y;
+
     if (json is Map<String, dynamic> && json.containsKey('colour')) {
       return OgTag.fromJson(json) as T;
     }
     if (json is Map<String, dynamic> && json.containsKey('color')) {
       return Tag.fromJson(json) as T;
     }
-    if (json is Map<String, dynamic> && json.containsKey('name')) {
+    if (json is Map<String, dynamic> &&
+        json.containsKey('name') &&
+        isType<T, Correspondent?>()) {
       return Correspondent.fromJson(json) as T;
+    }
+    if (json is Map<String, dynamic> &&
+        json.containsKey('slug') &&
+        isType<T, DocumentType?>()) {
+      return DocumentType.fromJson(json) as T;
     }
     if (json is Map<String, dynamic> &&
         json.containsKey('correspondent') &&
@@ -305,13 +343,17 @@ class API {
       {String ordering = "-created",
       String? search,
       Tag? tag,
-      Correspondent? correspondent}) async {
+      Correspondent? correspondent,
+      DocumentType? documentType}) async {
     String? additionalFilter;
     if (tag != null) {
       additionalFilter = "tags__id=${tag.id}";
     }
     if (correspondent != null) {
       additionalFilter = "correspondent__id=${correspondent.id}";
+    }
+    if (documentType != null) {
+      additionalFilter = "document_type__id=${documentType.id}";
     }
     var json = await getAPIResource("documents",
         ordering: ordering, search: search, additionalFilter: additionalFilter);
@@ -325,6 +367,11 @@ class API {
   Future<ResponseList<Correspondent>> getCorrespondents() async {
     var json = await getAPIResource("correspondents");
     return ResponseList<Correspondent>.fromJson(json!);
+  }
+
+  Future<ResponseList<DocumentType>> getDocumentTypes() async {
+    var json = await getAPIResource("document_types");
+    return ResponseList<DocumentType>.fromJson(json!);
   }
 
   Future<ResponseList<Tag>> getTags() async {
@@ -399,6 +446,10 @@ class API {
 
   Future<void> deleteCorrespondent(Correspondent correspondent) async {
     await deleteResource("correspondent", correspondent.id);
+  }
+
+  Future<void> deleteDocumentType(DocumentType documentType) async {
+    await deleteResource("documentType", documentType.id);
   }
 
   Future<void> updateResource(

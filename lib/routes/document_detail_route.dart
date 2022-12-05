@@ -4,6 +4,7 @@ import 'package:paperless_app/api.dart';
 import 'package:paperless_app/i18n.dart';
 import 'package:paperless_app/widgets/correspondent_widget.dart';
 import 'package:paperless_app/widgets/document_preview.dart';
+import 'package:paperless_app/widgets/document_type_widget.dart';
 import 'package:paperless_app/widgets/heading.dart';
 import 'package:paperless_app/widgets/online_pdf_dialog.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
@@ -14,14 +15,17 @@ class DocumentDetailRoute extends StatefulWidget {
   final Document document;
   final ResponseList<Tag>? tags;
   final ResponseList<Correspondent>? correspondents;
+  final ResponseList<DocumentType>? documentTypes;
 
-  const DocumentDetailRoute(this.document, this.tags, this.correspondents,
+  const DocumentDetailRoute(
+      this.document, this.tags, this.correspondents, this.documentTypes,
       {Key? key})
       : super(key: key);
 
   @override
   _DocumentDetailRouteState createState() {
-    return _DocumentDetailRouteState(document, tags, correspondents);
+    return _DocumentDetailRouteState(
+        document, tags, correspondents, documentTypes);
   }
 }
 
@@ -29,8 +33,10 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
   final Document _document;
   final ResponseList<Tag>? _tags;
   final ResponseList<Correspondent>? _correspondents;
+  final ResponseList<DocumentType>? _documentTypes;
 
-  _DocumentDetailRouteState(this._document, this._tags, this._correspondents);
+  _DocumentDetailRouteState(
+      this._document, this._tags, this._correspondents, this._documentTypes);
 
   @override
   void initState() {
@@ -253,6 +259,54 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
                         .map((e) => TagWidget.fromTagId(e, _tags))
                         .whereType<Widget>()
                         .toList()),
+                _EditableHeading(
+                  "Document Type".i18n,
+                  editable: editable,
+                  onEdit: () {
+                    List<Widget> options = [];
+                    options.add(
+                      SimpleDialogOption(
+                        child: Text(
+                          "None".i18n,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _document.documentType = null;
+                            saveDocumentType();
+                          });
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    );
+                    if (_documentTypes != null)
+                      for (var dt in _documentTypes!.results) {
+                        options.add(SimpleDialogOption(
+                          child: Text(dt!.name!),
+                          onPressed: () {
+                            setState(() {
+                              _document.documentType = dt.id;
+                              saveDocumentType();
+                            });
+                            Navigator.of(context).pop();
+                          },
+                        ));
+                      }
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SimpleDialog(
+                            title: Text("Select Document Type".i18n),
+                            children: options,
+                          );
+                        });
+                  },
+                ),
+                DocumentTypeWidget.fromDocumentTypeId(
+                    _document.documentType, _documentTypes,
+                    showIfNone: true)!,
                 _EditableHeading("ASN".i18n,
                     editable: editable, onEdit: onASNEdit),
                 Text(_document.archiveSerialNumber != null
@@ -334,6 +388,11 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
   Future<void> saveCorrespondent() async {
     await API.instance!.updateDocument(
         _document.id, {"correspondent": _document.correspondent});
+  }
+
+  Future<void> saveDocumentType() async {
+    await API.instance!.updateDocument(
+        _document.id, {"document_type": _document.documentType});
   }
 
   Future<void> saveTitle() async {

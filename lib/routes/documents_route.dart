@@ -18,6 +18,7 @@ import 'package:paperless_app/routes/server_details_route.dart';
 import 'package:paperless_app/routes/settings_route.dart';
 import 'package:paperless_app/scan.dart';
 import 'package:paperless_app/widgets/correspondent_widget.dart';
+import 'package:paperless_app/widgets/document_type_widget.dart';
 import 'package:paperless_app/widgets/document_preview.dart';
 import 'package:paperless_app/widgets/search_app_bar.dart';
 import 'package:paperless_app/widgets/tag_widget.dart';
@@ -42,6 +43,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   ResponseList<Document>? documents;
   ResponseList<Tag>? tags;
   ResponseList<Correspondent>? correspondents;
+  ResponseList<DocumentType>? documentTypes;
   ScrollController? scrollController;
   bool requesting = true;
   String ordering = "-created";
@@ -49,6 +51,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   String? autocompleteString;
   Tag? tagFilter;
   Correspondent? correspondentFilter;
+  DocumentType? documentTypeFilter;
   int scanAmount = 0;
   int shareAmount = 0;
   ScanHandler scanHandler = ScanHandler();
@@ -75,7 +78,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       context,
       MaterialPageRoute(
           builder: (context) =>
-              DocumentDetailRoute(doc!, tags, correspondents)),
+              DocumentDetailRoute(doc!, tags, correspondents, documentTypes)),
     );
     reloadDocuments();
   }
@@ -104,6 +107,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     await getOrder();
     var oldTagFilter = tagFilter;
     var oldCorrespondentFilter = correspondentFilter;
+    var oldDocumentTypeFilter = documentTypeFilter;
     var oldSearchString = searchString;
     scanHandler.handleScans();
     setState(() {
@@ -115,14 +119,16 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
           ordering: ordering,
           search: searchString,
           tag: tagFilter,
-          correspondent: correspondentFilter);
+          correspondent: correspondentFilter,
+          documentType: documentTypeFilter);
 
       setState(() {
         if (oldTagFilter != tagFilter ||
             oldCorrespondentFilter != correspondentFilter ||
+            oldDocumentTypeFilter != documentTypeFilter ||
             searchString != oldSearchString) {
           print(
-              "Discarding documents as filters have changed ($oldTagFilter != $tagFilter || $oldCorrespondentFilter != $correspondentFilter || $searchString != $oldSearchString)");
+              "Discarding documents as filters have changed ($oldTagFilter != $tagFilter || $oldCorrespondentFilter != $correspondentFilter || $oldDocumentTypeFilter != $documentTypeFilter || $searchString != $oldSearchString)");
         } else
           documents = _documents;
         requesting = false;
@@ -135,7 +141,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
   bool isFiltered() {
     return tagFilter != null ||
         searchString != null ||
-        correspondentFilter != null;
+        correspondentFilter != null ||
+        documentTypeFilter != null;
   }
 
   Future<void> scanDocument() async {
@@ -174,6 +181,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                   if (i.runtimeType == OgTag) this.tagFilter = i as Tag?;
                   if (i.runtimeType == Correspondent)
                     this.correspondentFilter = i as Correspondent?;
+                  if (i.runtimeType == DocumentType)
+                    this.documentTypeFilter = i as DocumentType?;
                   this.searchOpen = false;
                 });
 
@@ -201,6 +210,8 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
           tags, autocompleteString, (t) => TagWidget(t as Tag));
       List<Widget>? matchingCorrespondents = getFilterResults(correspondents,
           autocompleteString, (c) => CorrespondentWidget(c as Correspondent));
+      List<Widget>? matchingDocumentTypes = getFilterResults(documentTypes,
+          autocompleteString, (c) => DocumentTypeWidget(c as DocumentType));
       List<Widget> suggestions = [
         Column(children: [
           SizedBox(height: 5),
@@ -222,6 +233,15 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: matchingCorrespondents),
+          ),
+          SizedBox(height: 15),
+          Text(
+            "Filter By DocumentType".i18n,
+            textScaleFactor: 1.5,
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(children: matchingDocumentTypes),
           ),
         ]),
         SizedBox(height: 5),
@@ -303,15 +323,22 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
                           ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(documents!
-                                        .results[index]!.archiveSerialNumber !=
-                                    null
-                                ? "#${documents!.results[index]!.archiveSerialNumber}"
-                                : "")),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                              documents!.results[index]!.archiveSerialNumber !=
+                                      null
+                                  ? "#${documents!.results[index]!.archiveSerialNumber}"
+                                  : "",
+                              textAlign: TextAlign.left),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: DocumentTypeWidget.fromDocumentTypeId(
+                                documents!.results[index]!.documentType,
+                                documentTypes)!,
+                          ),
+                        ],
                       ),
                       Container(
                         height: 35,
@@ -334,6 +361,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       this.searchString = null;
       this.tagFilter = null;
       this.correspondentFilter = null;
+      this.documentTypeFilter = null;
       this.autocompleteString = "";
       this.autocompletions = [];
     });
@@ -366,6 +394,12 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     if (correspondentFilter != null) {
       return Text(
         "From %s".fill([correspondentFilter!.name!]),
+        overflow: TextOverflow.fade,
+      );
+    }
+    if (documentTypeFilter != null) {
+      return Text(
+        "Type %s".fill([documentTypeFilter!.name!]),
         overflow: TextOverflow.fade,
       );
     }
@@ -518,6 +552,18 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     });
   }
 
+  void loadDocumentTypes() async {
+    var _documentTypes = await API.instance!.getDocumentTypes();
+    while (_documentTypes.hasMoreData()) {
+      var moreDocumentTypes = await _documentTypes.getNext();
+      _documentTypes.next = moreDocumentTypes.next;
+      _documentTypes.results.addAll(moreDocumentTypes.results);
+    }
+    setState(() {
+      documentTypes = _documentTypes;
+    });
+  }
+
   void loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -582,6 +628,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     reloadDocuments();
     loadTags();
     loadCorrespondents();
+    loadDocumentTypes();
     initializeDateFormatting();
     loadSettings();
     DocumentsRoute.dateFormat = new DateFormat.yMMMMd(I18n.language);
@@ -607,15 +654,17 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       });
       var oldTagFilter = tagFilter;
       var oldCorrespondentFilter = correspondentFilter;
+      var oldDocumentTypeFilter = documentTypeFilter;
       var oldSearchString = searchString;
 
       var _documents = await documents!.getNext();
 
       if (oldTagFilter != tagFilter ||
           oldCorrespondentFilter != correspondentFilter ||
+          oldDocumentTypeFilter != documentTypeFilter ||
           searchString != oldSearchString) {
         print(
-            "Discarding documents as filters have changed ($oldTagFilter != $tagFilter || $oldCorrespondentFilter != $correspondentFilter || $searchString != $oldSearchString)");
+            "Discarding documents as filters have changed ($oldTagFilter != $tagFilter || $oldCorrespondentFilter != $correspondentFilter || $oldDocumentTypeFilter != $documentTypeFilter|| $searchString != $oldSearchString)");
       } else
         setState(() {
           documents!.next = _documents.next;

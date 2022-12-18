@@ -16,16 +16,17 @@ class DocumentDetailRoute extends StatefulWidget {
   final ResponseList<Tag>? tags;
   final ResponseList<Correspondent>? correspondents;
   final ResponseList<DocumentType>? documentTypes;
+  final bool invertDocumentPreview; 
 
   const DocumentDetailRoute(
-      this.document, this.tags, this.correspondents, this.documentTypes,
+      this.document, this.tags, this.correspondents, this.documentTypes, this.invertDocumentPreview,
       {Key? key})
       : super(key: key);
 
   @override
   _DocumentDetailRouteState createState() {
     return _DocumentDetailRouteState(
-        document, tags, correspondents, documentTypes);
+        document, tags, correspondents, documentTypes, invertDocumentPreview);
   }
 }
 
@@ -34,9 +35,10 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
   final ResponseList<Tag>? _tags;
   final ResponseList<Correspondent>? _correspondents;
   final ResponseList<DocumentType>? _documentTypes;
+  final bool _invertDocumentPreview;
 
   _DocumentDetailRouteState(
-      this._document, this._tags, this._correspondents, this._documentTypes);
+      this._document, this._tags, this._correspondents, this._documentTypes, this._invertDocumentPreview);
 
   @override
   void initState() {
@@ -139,7 +141,7 @@ class _DocumentDetailRouteState extends State<DocumentDetailRoute> {
       body: SingleChildScrollView(
         child: Column(children: [
           DocumentPreview(
-            true,
+            _invertDocumentPreview,
             _document,
             height: 300,
             showTitle: false,

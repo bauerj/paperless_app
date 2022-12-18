@@ -78,7 +78,7 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
       context,
       MaterialPageRoute(
           builder: (context) =>
-              DocumentDetailRoute(doc!, tags, correspondents, documentTypes)),
+              DocumentDetailRoute(doc!, tags, correspondents, documentTypes, invertDocumentPreview)),
     );
     reloadDocuments();
   }

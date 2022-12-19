@@ -204,7 +204,17 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
 
   Widget getCurrentMainWidget() {
     if (documents == null) {
-      return Container();
+      return Container(
+          height : 100,
+          margin : EdgeInsets.symmetric(horizontal : 100, vertical : 100),
+          child : Column(
+            children:[
+              Text("Loading".i18n,
+                style : TextStyle(fontSize : 25),
+                textAlign : TextAlign.center,),
+            ],
+          )
+      );
     }
     if (searchOpen) {
       List<Widget>? matchingTags = getFilterResults(
@@ -272,7 +282,22 @@ class _DocumentsRouteState extends State<DocumentsRoute> {
     }
     return RefreshIndicator(
         onRefresh: reloadDocuments,
-        child: GridView.builder(
+        child: documents!.results.length == 0 ? Container(//noDocuments
+            height : 100,
+            margin : EdgeInsets.symmetric(horizontal : 100, vertical : 100),
+            child : Column(
+              children:[
+                Text("There are no documents \n containing".i18n,
+                  style : TextStyle(fontSize : 15),
+                  textAlign : TextAlign.center,),
+
+                Text(('$searchString').i18n,
+                  style : TextStyle(fontSize: 21, color : Colors.green),
+                  textAlign : TextAlign.center,),
+              ],
+            )
+        )
+        :GridView.builder(
           controller: scrollController,
           itemCount: documents!.results.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

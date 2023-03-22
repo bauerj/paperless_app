@@ -24,7 +24,7 @@ dependencies:
     sdk: flutter
   edge_detection: ^1.0.9
   cached_network_image: ^3.1.0+1
-  dio: ^4.0.0
+  dio: ^5.0.3
   flutter_secure_storage: ^6.0.0
   flutter_svg: ^0.19.3
   get_it: ^7.2.0

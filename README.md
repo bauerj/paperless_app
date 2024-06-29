@@ -1,5 +1,10 @@
 # Paperless App
 
+⚠️ **This app is no longer maintained. Please use https://github.com/astubenbord/paperless-mobile instead.** ⚠️
+
+---
+
+
 [![Gitter](https://badges.gitter.im/paperless_app/community.svg)](https://gitter.im/paperless_app/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Crowdin](https://badges.crowdin.net/paperless-app/localized.svg)](https://crowdin.com/project/paperless-app)
 
